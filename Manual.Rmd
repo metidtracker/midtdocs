@@ -1,0 +1,933 @@
+---
+title: "MetIDTracker User Manual"
+output: 
+  html_document:
+    toc: TRUE
+---
+
+# MetIDTracker User Manual
+
+## Overview
+MetIDTracker is intended to be used as a tool for collaborative annotation of LC-MS/MSMS data. It is developed to improve the identification confidence in untargeted metabolomics experiments but may also be used to annotate other kinds of MS/MSMS data.
+
+The system includes two components - the software with graphic user interface and the database. The database serves as a repository for reference data (compound database, MSMS libraries, etc.), experimental results (MS and MSMS spectra), and metadata (sample description, experimental conditions, instrument methods, etc.). Multiple users may access the same database and collaborate on the annotation of spectra. 
+
+## Basic operations
+It is highly recommended to run the software on a computer with at least 16GB RAM and to use a large high-resolution monitor (24" or more).
+
+### Staring the program
+To start MetIDTracker double-click StartMetIDTracker.bat file inside the MetIDTracker… folder. Software distribution includes its own version of Java runtime, so it doesn't matter if you have Java installed on your computer or not. By default, maximum RAM allocation for the program is set to 8GB. If your computer has RAM smaller than 12GB you may want to reduce memory allocation to MetIDTracker by editing HEAP\_SIZE variable in the StartMetIDTracker.bat file before starting the program. The software was not tested with memory allocation of less than 4GB, however.
+
+#### Establishing connection between MetIDTracker and database
+During program startup it will try to establish connection with the database using the settings from preferences. If this fails (e.g. during the first time you run the program, when database location and credentials were not provided yet), Database connection setup dialog is displayed (21). 
+
+![](assets/images/5bf92be9f759.001.png)
+
+2.1 *Database connection setup dialog*
+
+Edit host name, port, user, and password fields to match the parameters of your database configuration (SID/database and schema are determined by the database dump you've used at the previous steps and should not be changed). Click "Test connection" (22) button to verify that database connection can be established using the parameters in the form. Click "Continue program startup" to save the connection parameters and launch the program.
+
+![](assets/images/5bf92be9f759.002.png)
+
+2.2 *Testing database connection parameters*
+
+Database connection parameters are stored in program preferences and unless the database can not be accessed (because it is down or there are network issues) or access credentials are changed, the connection will be established automatically, and Database connection setup dialog will not be shown.
+
+While the program is starting up it will display the splash screen with the program version and build date ().
+
+![](assets/images/5bf92be9f759.003.png)
+
+2.3 *Startup splash screen*
+
+Current startup operation is displayed in blue at the bottom of the splash screen "Initializing user interface" stage may take some time (half a minute or more, depending on the available CPU resources and RAM).
+
+#### Logging into the database
+MetIDTracker is a collaborative environment, and each user must provide his/her personal credentials to access and annotate the data. In the fresh installation there is a single user in the database with username "admin" and password "admin" (no quotations). Admin user may create other users with administrative or regular access, and it is recommended to change the admin password during the first program run.
+
+To log into the system, click the ![](assets/images/5bf92be9f759.004.png) icon on the right side of the main toolbar. The login dialog is displayed (24). Provide the credentials (e.g. admin/admin at first connection) and click "Log in" button.
+
+![](assets/images/5bf92be9f759.005.png)
+
+2.4 *IDTracker login dialog*
+
+If you log in as a user with administrative privileges, ![](assets/images/5bf92be9f759.004.png) icon is replaced by ![](assets/images/5bf92be9f759.004.png) (superuser), otherwise it is replaced by the icon for regular user (![](assets/images/5bf92be9f759.004.png)). To log out click on the user icon.
+
+To change the password, click "Change password", fill all the information in the dialog (25) and click "Change password" button to confirm the change. Enter new password in the login dialog and click "Log in".
+
+![](assets/images/5bf92be9f759.006.png)
+
+5.5 *Change password dialog*
+
+### Managing system users
+If you log in as a user with administrative privileges, you will be able to access the User Manager Dialog (26). To display it, click the ![](assets/images/5bf92be9f759.004.png) icon on the right side of the main toolbar. Use icons on the panel toolbar to create, edit or delete the users. "Create User" and "Edit User" dialogs (27) are identical, except "Edit User" dialog is pre-populated with the data for user selected in the User Manager. All fields must be populated with data. Every user has to be associate with organization (see the section below).
+
+![](assets/images/5bf92be9f759.007.png)
+
+6.6 *User manager dialog*
+
+![](assets/images/5bf92be9f759.008.png)
+
+7.7 *User editor dialog*
+
+### Managing organizations
+MetIDTracker is developed as a part of a larger software package adapted to the needs of the service lab, so the underlying database requires some additional structured information about the users. Organization Manager (28), available for users with administrative access, allows users to add or edit this information.
+
+![](assets/images/5bf92be9f759.009.png)
+
+8.8 *Organization Manager*
+
+To call the Organization Manager click on the ![](assets/images/5bf92be9f759.004.png) icon next to the User Manager icon on the main toolbar.
+
+"Add New Organization" and "Edit Organization" dialogs (29) are identical, except the "Edit Organization" dialog is pre-populated with the data for organization selected in the Organization Manager. All fields must be populated with data.
+
+![](assets/images/5bf92be9f759.010.png)
+
+9.9 *Organization editor dialog*
+
+### General notes about Graphical User Interface
+
+#### Rearranging panels
+The user interface is based on DockingFrames library (www.docking-frames.org). It allows for flexible customization of the working area based on user preferences, preserving the layout between the sessions, and using more than one computer monitor for data analysis. 
+
+![](assets/images/5bf92be9f759.011.png)
+
+10.10 *Panel controls*
+
+Panel controls used in the new GUI are shown on 210. The horizontal bar (1) allows to minimize any panel to a small bar with icon, panel name and "restore" button (4). The corner button (2) allows to toggle the panel between its current size maximized within its parent panel. The detach/attach button (3) is present only on major panels ("IDTracker workbench", "IDTracker LIMS", "Raw data examiner", "Databases"). It allows the user to use the whole panel as a separate program window that may be moved to the second monitor.
+
+All major panels may be rearranged inside the main program window and all smaller panels inside each of the major panels may also be rearranged according to user preferences. Moving the panel is achieved by clicking on its title tab (5) and dragging it to the desired location. Legitimate locations are highlighted by the blue frame and panel will snap to the new position when you release the mouse button (211).
+
+![](assets/images/5bf92be9f759.012.png)
+
+11.11 *Switching between side-by-side and overlay layouts and back using drag and drop*
+
+Layout of all program windows is preservedd between sessions (program will re-open with the layout it when last closed). User may show/hide major program panels using "Panels" menu (212).
+
+![](assets/images/5bf92be9f759.013.png)
+
+12.12 *Program panels menu*
+
+#### Progress dialog
+The progress dialog serves several purposes: it allows the user to monitor the execution of long tasks (database search, library search, etc.), it prevents the user from interacting with the program when the tasks that require heavy computations are running, and it allows the user to interrupt the long running tasks if necessary using commands from the context menu (213). Maximal allowed number of concurrent running tasks is defined in the general preferences.
+
+![](assets/images/5bf92be9f759.014.png)
+
+13.13 *Progress dialog*
+
+## MetIDTracker LIMS system
+LIMS stands for Laboratory Information Management System. Its purpose is to provide a database back end and friendly user interface for managing multiple kinds of data associated with MSMS experiments.
+
+### Projects and experiments
+
+#### Project configuration
+Projects allow the grouping of related identification experiments. Every experiment has to be associated with the project. To create the new project, click the ![](assets/images/5bf92be9f759.004.png) icon on the IDTracker LIMS panel toolbar to display the Project Editor Dialog (31).
+
+![](assets/images/5bf92be9f759.015.png)
+
+1.1 *Project Editor Dialog*
+
+The name is obligatory, description and notes are optional, Project ID, start date and laboratory are populated automatically based on the currently logged in user data.
+
+To edit project information, select it in the tree, right-click and choose "Show Edit compound identification project" from the popup menu (32). 
+
+![](assets/images/5bf92be9f759.016.png)
+
+2.2 *Project context menu*
+
+#### Experiment configuration
+The easiest and least error-prone way to create an experiment and load data in is by using the wizard (see below). Different steps for unguided experiment definition and data upload will be added to the manual later since this part of the software still needs some refinement. 
+
+To edit some basic experiment information, select the experiment in the tree, right-click and choose "Show Edit compound identification project" from the popup menu (33) to show Experiment Editor Dialog (34).
+
+![](assets/images/5bf92be9f759.017.png)
+
+3.3 *Experiment context menu*
+
+![](assets/images/5bf92be9f759.018.png)
+
+4.4 *Experiment Editor Dialog*
+
+### Data acquisition and analysis
+   1. ### Instrument manager
+Instrument manager (35) allows the user to enter and edit some basic information about the LC-MS instruments used to perform the analysis (36).
+
+![](assets/images/5bf92be9f759.019.png)
+
+5.5 *Instrument manager panel*
+
+![](assets/images/5bf92be9f759.020.png)
+
+6.6 *Instrument editor*
+
+#### Chromatographic columns manager
+Chromatographic columns manager (37) allows the user to keep an inventory of columns used for sample separation (add, edit, delete columns (38)). 
+
+![](assets/images/5bf92be9f759.021.png)
+
+7.7 *Chromatographic columns manager*
+
+![](assets/images/5bf92be9f759.022.png)
+
+8.8 *Chromatographic column editor*
+
+#### Mobile phase manager
+The mobile phase manager (39) keeps an inventory of mobile phases used for the chromatographic separation of compounds.
+
+![](assets/images/5bf92be9f759.023.png)
+
+9.9 *Mobile phase manager and editor*
+
+#### Data acquisition method manager
+Data acquisition method manager (310) is intended to maintain the list of instrument (LC-MS) methods. Method files are stored in the database together with some descriptive information and may be downloaded for re-use in new studies.
+
+![](assets/images/5bf92be9f759.024.png)
+
+10.10 *Data acquisition method manager*
+
+Data acquisition method editor (311) allows the user to specify several parameters for the method. Gradient and mobile phase definition are not fully implemented yet, so the corresponding paneles are hidden on the figure. For definition of the new method all fields are obligatory.
+
+![](assets/images/5bf92be9f759.025.png)
+
+11.11 *Data acquisition method editor*
+
+#### Data extraction method manager
+Data extraction method manager (312) is intended to maintain the list of vendor or third-party methods used to extract MS and/or MSMS data from raw data files. Method files are stored in the database together with some descriptive information and may be downloaded for re-use in new studies.
+
+![](assets/images/5bf92be9f759.026.png)
+
+12.12 *Data extraction method manager*
+
+Data extraction methods are highly diverse and difficult to classify in a meaningful way, so only a field for free-form description is provided (313).
+
+![](assets/images/5bf92be9f759.027.png)
+
+13.13 *Data extraction method editor*
+
+#### SOPs and protocols manager
+The SOPs and protocols manager (314) maintains a library of standard procedures and protocols of different categories. Documents are stored in the database together with some descriptive information and may be downloaded as needed.
+
+![](assets/images/5bf92be9f759.028.png)
+
+14.14 *SOPs and protocols manager*
+
+Protocol name, category, description, and document file must be specified to define a new protocol. Other fields are auto-populated (315). If the document file is specified when editing the protocol, it will replace the document currently associated with the protocol ID.
+
+![](assets/images/5bf92be9f759.029.png)
+
+15.15 *SOP/protocol editor*
+
+#### Stock samples manager
+Compound identification experiments are often performed using multiple aliquots of the same sample for analysis under different chromatographic and MSMS conditions. Stock samples manager (316) is designed to maintain the list of these samples.
+
+![](assets/images/5bf92be9f759.030.png)
+
+16.16 *Stock samples manager*
+
+To define the new stock sample it is necessary to specify name, description, type and species (317). 
+
+![](assets/images/5bf92be9f759.031.png)
+
+17.17 *Stock sample editor*
+
+Sample types are selected (318) from the list based on [NCBI MESH term list](https://www.ncbi.nlm.nih.gov/mesh/). Species are selected (319) from [NCBI taxonomy list](https://www.ncbi.nlm.nih.gov/taxonomy).
+
+![](assets/images/5bf92be9f759.032.png)
+
+18.18 *Sample type lookup*
+
+![](assets/images/5bf92be9f759.033.png)
+
+19.19 *Species lookup*
+
+## iDDA data upload Wizard
+
+### Introduction
+This section of the manual is walking through the process of uploading MSMS data. At the moment, only MSMS data generated by Agilent instruments and extracted into Agilent CEF format are supported. The data used as example in this manual were obtained by iterative data-dependent MSMS acquisition (iDDA) using one sample, but the same process can be applied to upload MSMS data for multiple distinct samples.
+
+This manual covers the process of creating a new experiment and uploading MSMS data using the wizard. Data upload is a complex multistep process. The goal of the wizard is to ensure that all the necessary information is collected and checked for errors and integrity before it is entered into the database. The wizard guides the process through the following steps:
+
+- Creating experiment
+- Adding samples
+- Adding sample preparation data
+- Adding data acquisition and data analysis methods
+- Adding instrument worklists
+- Verification of MS/MSMS data
+- Uploading of all collected data to the database
+
+Each step must be completed and verified before the data can be entered at the next step and all steps must be completed and free of errors to complete the data upload. The wizard is intended to create a NEW experiment and upload the MSMS data for it. If you want to add the data to an existing experiment you will have to use individual tools on the "IDTracker LIMS" tab.
+
+### Wizard-guided workflow
+Start MRC2 data analysis software and switch to "IDTracker LIMS" tab. Login into ID tracker by clicking ![](assets/images/5bf92be9f759.034.png) icon on the right side of the main software toolbar and entering your METLims or ID tracker username and password in the dialog. If login is successful, the system will fetch the current data from the database to populate the different tables and the login icon will change to ![](assets/images/5bf92be9f759.035.png) followed by your name. To open the wizard dialog (43), click on the ![](assets/images/5bf92be9f759.036.png) icon on the "ID tracker LIMS" tab toolbar. The wizard toolbar contains the buttons that correspond to individual data preparation steps (41).
+
+![](assets/images/5bf92be9f759.037.png)
+
+1.1 *Wizard toolbar*
+
+Clicking on each button loads the corresponding wizard page in the main area of the dialog. The active stage is indicated by the red border around the icon. The user may switch between the screens at any point in the process, but some of the screens may not allow data to be enteredunless previous steps are completed. Each wizard screen has a "Complete ‘…Step name…'" button in the lower right corner (42) that users must click to verify the entered information and proceed to the next step if there are no errors:
+
+![](assets/images/5bf92be9f759.038.png)
+
+2.2 *Complete step button*
+
+In the bottom left corner of the wizard dialog there is a progress indicator. A red dot indicates an incomplete step. Once the data preparation step is completed and its data verified, the dot color is changed to green (43).
+
+### Experiment definition step
+![](assets/images/5bf92be9f759.039.png)
+
+3.3 *Experiment definition screen*
+
+Enter an experiment name (obligatory) and optionally - the description and notes. Select the parent project for the experiment from the dropdown. If you want to add a new project you have to do it in the ID tracker LIMS panel before starting the wizard. Click "Complete experiment definition" button. If there are no errors, organization and contact person fields will be populated automatically and the screen for the next stage will be loaded.
+
+### Adding samples to the experiment
+At this stage you must add one or more samples (aliquots) to the experiment. MSMS is performed either on aliquots of samples prepared specifically for this purpose (like MoTrPAC reference tissue types, CHEAR plasma urine, etc.) or pooled samples from MRC2 client experiments. For this reason, ID Tracker samples are handled differently than regular LIMS samples using a two-tier system that includes stock samples and aliquots created from them. Stock samples hold the information about the origin of the sample (tissue type, species, LIMS experiment if available), aliquot references the stock sample for this information and represents a small portion of the stock sample prepared for the specific compound identification experiment.
+
+You may add new aliquots either based on existing stock samples or create new stock samples and then add aliquots based on them. 
+
+#### Create the aliquot from existing stock sample
+To create the aliquot from existing stock sample, click the ![](assets/images/5bf92be9f759.040.png) icon on the "Add samples" panel toolbar to show "Add new sample" dialog. Click "Select stock sample" button in the upper right corner of the dialog to show the list of available stock samples. You may use the filters in the table header to quickly find samples by name, description, etc. Select the sample in the table and click the "Select stock sample" button in the lower right corner of the dialog (44).
+
+![](assets/images/5bf92be9f759.041.png)
+
+4.4 *Creating aliquot from existing stock sample*
+
+The "Add new sample" dialog fields will be automatically populated with the data for the selected stock sample (45). You may change the name and description of the sample at this point. 
+
+![](assets/images/5bf92be9f759.042.png)
+
+5.5 *New sample definition dialog*
+
+Click "Add sample" to complete the sample definition and add it to the experiment. The sample will appear in the experiment sample list (46)
+
+![](assets/images/5bf92be9f759.043.png)
+
+6.6 *Experiment sample list*
+
+To edit the sample name and description select the sample in the table and click the ![](assets/images/5bf92be9f759.044.png) button to show the "Edit sample" dialog (45). To delete the sample from experiment select it in the table and click the![](assets/images/5bf92be9f759.045.png) button.
+
+#### Create new stock sample
+To create a new stock sample, click the ![](assets/images/5bf92be9f759.046.png) icon on the on the "Add samples" panel toolbar to show the "Add new stock sample" dialog (47).
+
+![](assets/images/5bf92be9f759.047.png)
+
+7.7 *Add new stock sample dialog*
+
+Provide the sample name and description. External source and ID are optional and may be useful for inter-laboratory data exchange (e.g. MoTrPAC reference sample IDs). Sample type and species are obligatory. Click "Select sample type" / "Select species" to display one of corresponding dialogs. The table in "Select sample type" dialog (48) will be pre-populated with data for previously analyzed samples. If it doesn't contain the sample type of interest you may use the search function (at the top of the dialog). Search is based on partial match, search string has to be at least 4 characters long. 
+
+![](assets/images/5bf92be9f759.048.png)
+
+8.8 *Sample type lookup*
+
+The table in "Select species" dialog (49) will be pre-populated with data for previously analyzed samples. If it doesn't contain the species of interest, you may use the search function (at the top of the dialog). Search is based on partial match, search string has to be at least 4 characters long. 
+
+![](assets/images/5bf92be9f759.049.png)
+
+9.9 *Species lookup dialog*
+
+After the sample type and species are defined, click "Save" to add a new stock sample to the database (410). After that you may use the process described in the previous section to add an aliquot of this stock sample to your new experiment.
+
+![](assets/images/5bf92be9f759.050.png)
+
+10.10 *Defined stock sample*
+
+You may add multiple aliquots of different samples to the experiment one at a time. After you have added all of the required aliquots, click the "Complete sample list definition" button to verify the data and move to the next step. The only obligatory requirement to the "Add samples" step is that there should be at least one sample in the list.
+
+### Adding sample preparation information
+"Add sample preparation" panel (411) has several sections. The sample list table will be populated automatically based on the data entered on the previous steps. Sample prep name, "Prepared by", date of preparation, and at least one SOP protocol are obligatory to complete the sample prep definition step. To set the date click on the button next to the "Prepared on" field and select the date from the popup calendar (411). To select the user responsible for this sample preparation, click the "Select user" button to show the user selection dialog. Highlight the user in the table and click "Select user" (412).
+
+![](assets/images/5bf92be9f759.051.png)
+
+11.11 *Sample preparation panel*
+
+![](assets/images/5bf92be9f759.052.png)
+
+12.12 *User selector*
+
+To add SOPs switch to the "SOP protocols" tab and click ![](assets/images/5bf92be9f759.053.png) button to display the list of available SOPs (413). You may use the filters in the table header to narrow down the list and find the required SOPs. Select one or more SOPs that you would like to add and click the "Add selected protocols" button. 
+
+![](assets/images/5bf92be9f759.054.png)
+
+13.13 *Adding SOPs*
+
+After all of the required prep information was added click the "Complete sample preparation definition" button to save the prep data and move to the next step.
+
+### Adding data acquisition and data analysis methods
+
+#### Adding data acquisition methods
+There are three ways to add the data acquisition methods to the experiment:
+
+- By scanning the raw data directories
+- By choosing the existing methods from the database manually
+- By manually defining and uploading the new methods
+
+##### Adding acquisition methods using raw data directory scan
+Click ![](assets/images/5bf92be9f759.055.png) icon on the "Data acquisition methods" section toolbar of the wizard screen (414) and select the directory containing the raw data files in the file explorer. Click "Open" to scan the directory for acquisition methods. The scan is NOT recursive, so if you have separate directories for positive and negative mode data you must scan each of them. All found methods will be added to the table. If the method is already in the database, DB ID column will have the corresponding ID. 
+
+![](assets/images/5bf92be9f759.056.png)
+
+14.14 *Data acquisition and data analysis method manager*
+
+If DB ID column is empty, you must add the method to the database. To do it select the method without DB ID in the table and click ![](assets/images/5bf92be9f759.057.png) button on the toolbar to open the new method definition dialog (415). Method name, description and path to method file will be populated automatically. All the fields in the method editor must be defined to save the method. Click "Save" to save a new method to the database. The methods table will be updated, and the DB ID column will now contain the ID for the method (416).
+
+![](assets/images/5bf92be9f759.058.png)
+
+15.15 *Acquisition method editor dialog*
+
+![](assets/images/5bf92be9f759.059.png)
+
+16.16 *Newly defined method*
+
+##### Select existing method from the database
+If you know exactly which method(s) were used for data acquisition you may manually select them from the database (one at a time). Click ![](assets/images/5bf92be9f759.057.png) button on the data acquisition section toolbar to show method selector (417). You may use table header filters to find the method. Select the method in the table and click the "Select data acquisition method" button to add it to the experiment.
+
+![](assets/images/5bf92be9f759.060.png)
+
+17.17 *Acquisition method list*
+
+##### Manually define new acquisition method
+Click the ![](assets/images/5bf92be9f759.057.png) button on the data acquisition section toolbar to show the method editor (415). Use the "Method file" button to navigate to the method folder. Method name will be auto-populated using method file name and cannot be edited. Complete all the necessary information and click "Save" to save the method to the database and add it to the experiment.
+
+#### Adding data analysis methods
+There are two ways to add the data analysis methods to the experiment:
+
+- By choosing the existing methods from the database manually
+- By manually defining and uploading the new methods
+
+##### Select existing method from the database
+If you know exactly which method(s) were used for data analysis you may manually select them from the database (one at a time). Click the ![](assets/images/5bf92be9f759.057.png) button on the data analysis section toolbar to show method selector (418). You may use table header filters to find the method. Select the method in the table and click the "Select data analysis method" button to add it to the experiment.
+
+![](assets/images/5bf92be9f759.061.png)
+
+18.18 *Data analysis method list*
+
+##### Manually define new data analysis method
+Click the ![](assets/images/5bf92be9f759.057.png) button on the data acquisition section toolbar to show the method editor (415). Use the "Method file" button to navigate to the method folder. The method name will be auto-populated using method file name and cannot be edited. Click "Save" to save the method to the database and add it to the experiment.
+
+After all the necessary methods were added click the "Complete analysis methods definition" button to save the data and move to the next step.
+
+### Adding instrument worklist data
+Worklist data (raw data file names, acquisition methods, file names, etc.) are obtained by scanning the directories containing raw data the same way they are scanned to collect acquisition method data. Directory scans are not recursive, so if there is more than one directory with raw data files from the current experiment (e.g. positive and negative mode) they all should be scanned individually. During the scan acquisition method for each data file is checked against the list defined at the previous step. When directory scan is completed information for all data files is entered into the table (419). If any of the detected acquisition methods was not previously added to the experiment the user is given a choice:
+
+- ignore raw data files that are using the missing methods 
+- cancel worklist import, return to methods screen, and add the missing methods
+
+![](assets/images/5bf92be9f759.062.png)
+
+19.19 *Worklist data panel*
+
+The icon ![](assets/images/5bf92be9f759.057.png) is used to add the first batch of data (if any data are already in the table, they will be replaced). To add more data files to the list, use the ![](assets/images/5bf92be9f759.057.png) icon. Duplicate files will be ignored, so there is no possibility of entering duplicate data by accidentally scanning the same folder more than once.
+
+To complete the worklist import step it is necessary to assign samples to data files. To do that select all the files in the table that correspond to the same sample, right click to show the context menu, and select "Edit design for selected samples" (419). In the new dialog select the sample from the dropdown, prep item will be populated automatically (420). After all data files have been linked to the samples click the "Complete worklist verification" button to save the data and move to the next step.
+
+![](assets/images/5bf92be9f759.063.png)
+
+20.20 *Assign sample to data files dialog*
+
+### MSMS data verification
+This step is necessary to ensure that any MSMS data that contain compound identification information (e.g. were matched against a MSMS library as a part of data extraction process) can be properly matched to the local MetIDTracker compound database.
+
+![](assets/images/5bf92be9f759.064.png)
+
+421 *MSMS data verification panel*
+
+Use the ![](assets/images/5bf92be9f759.057.png) button to select CEF files containing MSMS data. Data may be added from multiple folders, duplicate file names will be ignored. CEF files will be matched to raw data files by name. The data analysis method must be specified for every data file. Select all of the files processed with the same data analysis method, right-click and select "Select data analysis method for selected files" from the context menu (*4**21*). In the new dialog select the method from the dropdown and click "Assign method" (422).
+
+![](assets/images/5bf92be9f759.065.png)
+
+22.22 *Data analysis method assignment dialog*
+
+To check for missing compound IDs click the ![](assets/images/5bf92be9f759.057.png) button on the panel toolbar. The progress window will appear. It may take some time to run the checks. The time depends on the number of files and the number of features in each file. If any new library entries will be uploaded to the MSMS database during the pre-scan of the data and/or if any of the compound IDs can't be matched to the compound database this information will be displayed in the "Data prescan details" dialog. Unmatched compound IDs will prevent the correct data upload, so if they are present, please copy the log and use it to edit/extend compound database (//**TODO** needs section in the manual). Otherwise at this point the experiment is fully defined. Click the "Complete data verification" button to save these step results and then the - "Upload data" button in the lower right corner of the wizard to start the actual data upload process. 
+
+## ID tracker data search
+The amount of data in ID tracker and the number of parameters has increased since the original search form was created, and it became apparent that a more comprehensive and flexible searching mechanism was required. At the moment, the search is functional for MS2 data only.
+
+The search form is a separate dialog called by clicking the ![](assets/images/5bf92be9f759.045.png) button on the tracker toolbar (first on the left side). The dialog has five panels for different search parameter groups. Setting specific values to any parameter on any panel will narrow the search results. You may reset all the parameters on all panels using the "Reset form" button at the bottom of the dialog or reset individual panels using the "Reset to default values" button. All parameters are preserved between search sessions.
+
+Search parameters may be saved and loaded to/from database using the load (![](assets/images/5bf92be9f759.066.png)) and save (![](assets/images/5bf92be9f759.067.png)) buttons on dialog toolbar:
+
+![](assets/images/5bf92be9f759.068.png) 
+
+You may either click the "Load selected query …" button or double-click the line in the table to load the selected parameter set. You may load other user's parameters, but you may delete only those that you created yourself. To create a new set, click ![](assets/images/5bf92be9f759.067.png) button, give a descriptive name in the dialog and click "Save".
+
+### LC-MSMS related options
+![](assets/images/5bf92be9f759.069.png)
+
+On the MZ/RT search panel you can specify the precursor M/Z, one or more fragment masses, polarity, MS depth, collision energy and retention range. As within the original search, checking "Ignore M/Z" will disregard any precursor/fragment data.
+
+### Sample and experiment options
+![](assets/images/5bf92be9f759.070.png)
+
+You may limit the search to one or more sample type(s)/experiment(s) by selecting one or more lines in each of the tables. You may sort and filter the tables to find the necessary data. To clear selections click "Reset to default values".
+
+### ID and annotations options
+![](assets/images/5bf92be9f759.071.png)
+
+-"Filter by identification status" defaults to "All", but you may change it to select only identified or only unknowns.
+-"Filter by name or ID" works the same way as in the original search.
+-"Filter by formula" - search by molecular formula
+-"Filter by InChiKey" - search by complete InChiKey or by the first section (14 characters before the first dash that encode structure without any stereo information, e.g. D/L, R/S compounds will have the same first 14 characters)
+
+Check "Search all identifications" to search all IDs in the database. If left unchecked, only primary/default IDs will be considered
+
+"Only features with annotation" - limit to features with custom manual annotations (NOT ID levels and follow-up steps)
+
+Select any combination of ID levels and follow-up steps in the corresponding tables
+
+### Data acquisition and data extraction options
+![](assets/images/5bf92be9f759.072.png)
+
+Allows multiple selections in each table.
+
+### MSMS Library options
+![](assets/images/5bf92be9f759.073.png) 
+
+Limit search results to hits from specific MSMS libraries and /or specific library entries (you may use NIST ID, MONA ID etc.).
+
+"Search all matches" will consider all library hits, not only the default IDs.
+
+## Exporting results
+
+### Exporting MSMS features in TAB-delimited format
+![](assets/images/5bf92be9f759.074.png)
+
+To export the features first run the search to populate MS2 and/or MS1 feature tables.
+
+Click the button "Show ID tracker data export dialog" (marked above) to call the export setup dialog. The drop-boxes on the top of the dialog allow to select the subset of features to export:
+
+- MS level - MS1 or MS2
+- Feature subset
+  - All - all features loaded after search was competed
+  - Filtered - only features visible in the table if any of the filters in the table header were used
+  - Selected only - only those selected by the user in the feature table
+- Identification status
+  - All
+  - Identified only
+  - Unknowns only
+
+There are two lists of parameters available for export - feature properties and identification properties. Columns will be created in the export file for all selected fields and data added where available. To change the field selection hold the "Control" button and click on the field to select/deselect. You may reset the selection to default values using the button below the lists. Your current selection will be preserved between sessions.
+
+Use the "Browse" button to set the export file name and location, then click "Export IDTracker data" to write out the export file.
+
+### Exporting MSMS features in NIST MSP format
+Click on the ![](assets/images/5bf92be9f759.004.png) button on the IDTracker Workbench panel toolbar. If no MSMS features are selected in the table, the prompt will pop up asking whether you want to export all of the features in the table followed by the file explorer to select the export destination. If some MSMS features are selected in the table, only those features will be exported to the specified file.
+
+### Exporting MSMS features in SIRIUS MS format
+[SIRIUS](https://bio.informatik.uni-jena.de/software/sirius/) software package provides a set of tools for MSMS interpretation and compound identification through MSMS. SIRIUS results are more reliable when multiple MSMS data for the same compounds are interpreted together (e.g. multiple fragmentation energies). The SIRIUS export function allows the grouping of selected MSMS features by the M/Z of the precursor ion and retention time based on specified tolerances.
+
+Click on the ![](assets/images/5bf92be9f759.004.png) button on the IDTracker Workbench panel toolbar to show the SIRIUS data export dialog (423).
+
+![](assets/images/5bf92be9f759.075.png)
+
+23.23 *SIRIUS data export dialog*
+
+Specify filters to limit the set of features to export and adjust m/z and RT grouping windows if necessary. Choose the destination file and click "Export data". The resulting file in MS format is ready for import into SIRIUS for further analysis. 
+
+## ID tracker feature identification parameters
+
+### ID status flags
+To consider the cases where feature were identified by automated searches against spectral libraries/databases, but were rejected by manual curation the "Ambiguity" column is replaced by the "ID status" column which has one of the following icons:
+
+![](assets/images/5bf92be9f759.004.png)	Single active ID
+
+![](assets/images/5bf92be9f759.004.png)	Single ID, rejected by curator (table cell will have gray border)
+
+![](assets/images/5bf92be9f759.004.png)	Multiple IDs, one set as default
+
+![](assets/images/5bf92be9f759.004.png)	Multiple IDs, NONE set as default (table cell will have gray border)
+
+![](assets/images/5bf92be9f759.004.png)	True unknown
+
+24.24 *How to disable default id*
+
+Right-click anywhere in the identification table and select "Disable primary identification" from the popup (424). The ID radio-button will clear and the icon in the feature table will change accordingly. To assign the ID click on the corresponding radio button in the identification table. The database response is still sluggish, so please wait for GUI to update properly.
+
+![](assets/images/5bf92be9f759.076.png)
+
+24.24 *Identification table popup menu*
+
+### ID certainty levels
+ID certainty levels are for internal use and do not have any direct relation to established ID confidence levels specified by different metabolomics consortia. Levels are color-coded for easier visualization, colors are user-specified. The values are assigned not to the feature, but to its default identification. If there is a default ID, the info will be shown both in the feature table and in the identifications table. If the default ID is disabled, the corresponding cell in the feature table will be blank. 
+
+#### Managing ID certainty levels
+There is a list of pre-defined identification levels. It may be edited and expanded using the Identification Level Manager (425). You may call the manager by clicking the ![](assets/images/5bf92be9f759.004.png) icon on the IDTracker workbench toolbar.
+
+![](assets/images/5bf92be9f759.077.png)
+
+25.25 *Identification Level Manager*
+
+You may add, edit, or delete ID levels steps using the Identification Level Editor dialog (426). To edit or delete the level it should be highlighted in the manager. The editor dialog allows the user to specify name, numerical rank, and color code for the level. The lower the rank, the higher ID confidence.
+
+![](assets/images/5bf92be9f759.078.png)
+
+26.26 *Identification Level Editor dialog*
+
+#### Assigning ID certainty level
+Select the identification in the "Identifications" table and right-click to show the popup menu. Select "Set ID confidence level" -> desired level (427).
+
+![](assets/images/5bf92be9f759.079.png)
+
+27.27 *Setting ID confidence level*
+
+### Follow-up steps
+
+#### Managing follow up steps
+There is a list of pre-defined follow-up steps. It may be edited and expanded using the Follow-up step manager (428). You may call the manager by clicking the ![](assets/images/5bf92be9f759.004.png) icon on the IDTracker workbench toolbar:
+
+![](assets/images/5bf92be9f759.080.png)
+
+28.28 *Follow-up step manager*
+
+You may add, edit, or delete follow-up steps using the Follow-up Step Editor dialog (429). To edit or delete the follow-up step it should be highlighted in the manager.
+
+![](assets/images/5bf92be9f759.081.png)
+
+29.29 *Follow-up step editor*
+
+#### Assigning follow-up steps to the feature
+Select the feature in MS1 or MS2 table and right-click to show the popup menu. Select "Assign follow-up steps to feature" (430) to show the "Edit identification follow-up steps …" dialog (431).
+
+![](assets/images/5bf92be9f759.082.png)
+
+30.30 *MSMS feature popup menu*
+
+The dialog will show:
+
+![](assets/images/5bf92be9f759.083.png)
+
+31.31 *Edit identification follow-up steps dialog*
+
+If any follow-up steps were already assigned to the feature they will be on the right side. Move items around by selecting them and clicking add/remove buttons in the middle. Click "Save" to send the new selection to the database. If the feature has at least one follow-up step it will be flagged in the "Follow-up" column and assigned steps will be listed in the "Follow-up" table (432).
+
+![](assets/images/5bf92be9f759.084.png)
+
+32.32 *Identification follow-up step display*
+
+### Free form and document-linked annotations
+It is possible to attach extended annotations to MSMS features. In annotation manager (433) you may create formatted text annotations that may include pictures and attach documents as annotation (e.g. pdf or PowerPoint).
+
+![](assets/images/5bf92be9f759.085.png)
+
+33.33 *Annotation manager*
+
+To create a new free-form annotation click ![](assets/images/5bf92be9f759.004.png) icon on the annotation manager toolbar to show "Edit annotation" dialog (434). The editor allows the user to format the text in various ways and add pictures by copying/pasting or selecting a file on the disk.
+
+![](assets/images/5bf92be9f759.086.png)
+
+34.34 *Free form annotation editor*
+
+To attach a document, click the ![](assets/images/5bf92be9f759.004.png) icon on the annotation manager toolbar to show the "Attach document annotation" dialog (435). Use the "Browse" button to select the document. By default, the title is set to the document file name, but you may change it to a more meaningful name if necessary.
+
+![](assets/images/5bf92be9f759.087.png)
+
+35.35 *Attach document annotation dialog*
+
+Double-click on the annotation in the table to view or edit it. Free-form annotations will be opened in the editor, PDF or PowerPoint documents will open in a built-in viewer.
+
+To download the annotation document, select it in the table and click the ![](assets/images/5bf92be9f759.004.png) icon on the annotation manager toolbar.
+
+### Standard annotations
+Standard forms of annotation (ID level and follow-up steps) can be applied only to the identified features since they are associated with feature ID but not with the feature itself. Unknown features may be annotated by typing in free form comments, but it is time consuming and more difficult to search and summarize later. For this reason, MetIDTracker includes an option to add "Standard annotations" to any feature regardless of identification status. It works the same way as "Follow-up" steps. To add one or more standard annotations select the feature in the table, right-click to display the context menu and select "Assign standard feature annotations to feature" (436) to show the "Edit standard annotations for selected feature" dialog (437).
+
+![](assets/images/5bf92be9f759.088.png)
+
+36.36 *Invoking standard annotation assignment dialog*
+
+![](assets/images/5bf92be9f759.089.png)
+
+37.37 *Feature standard annotation editor*
+
+Use "Add" and "Remove" buttons in the middle of the form to move the annotations between "Available" and "Assigned" lists. Click "Save" to commit the changes to the database.
+
+Standard annotations manager (438) allows users to add new or edit existing annotations. To show the standard annotations manager click the ![](assets/images/5bf92be9f759.004.png) icon on the ID tracker workbench toolbar. Available annotations will be listed in the table. All users may add new annotations and edit code and the description for existing annotations using Standard Annotations Editor (439). You need administrative privileges to delete the annotation as it is with other data types in the tracker. 
+
+![](assets/images/5bf92be9f759.090.png)
+
+38.38 *Standard annotations manager*
+
+![](assets/images/5bf92be9f759.091.png)
+
+39.39 *Standard Annotations Editor*
+
+For now, standard annotations are shown the same way as follow-up steps - using a separate table on the workbench panel. There also will be a flag in the "Annotations" column.
+
+## Custom feature collections
+MetIDTracker has extensive feature search capabilities. There is also an option to create custom collections of features that can be preserved between sessions and loaded on demand. 
+
+### Feature collection manager
+Feature collection manager (*440*) allows to create new empty feature collections or to create collections from external lists of features. The latter may be necessary if some analysis was performed by software tools not integrated with Tracker. Feature collection manager is called by clicking the ![](assets/images/5bf92be9f759.004.png) icon on the MetIDTracker workbench toolbar.
+
+![](assets/images/5bf92be9f759.092.png)
+
+40.40 *Feature collection manager*
+
+Collections "Current MS1 feature search" and "Current MSMS feature search" hold the results of the latest corresponding database searches. The MS1 portion doesn't have almost any functionality yet, so for now it is just a placeholder. For now, any user can create new and edit existing collections, but only the admin or the person who created the collection can delete it. 
+
+To load a collection in the workbench panel for analysis double-click on it in the table or select and click the "Load selected …" button on the toolbar. To go back to the last database search results, load the "Current MSMS feature search" collection or click the "reload" icon ![](assets/images/5bf92be9f759.004.png) on the MSMS table toolbar (*441*).
+
+![](assets/images/5bf92be9f759.093.png)
+
+41.41 *Reload latest database search results for MSMS features*
+
+### Creating new collections
+
+New MSMS feature collections can be created in three ways:
+
+- From the feature collection manager (empty, or reading feature ID list from file)
+- From features selected on MZ/RT plot
+- From features selected in the MSMS features table.
+
+#### Creating feature collection using manager
+In the feature collection manager click the "New collection" icon on the toolbar to show the collection editor dialog (*442*), specify name and description (optional), check "Load collection in the workbench", if you want to activate the collection for analysis right away, and click the "Create new empty feature collection" button.
+
+![](assets/images/5bf92be9f759.094.png)
+
+42.42 *Feature collection data editor*
+
+If you want to create the new collection from an external list of feature IDs, you may specify the file containing the list using "Browse…" button. The file should be plain text with txt, csv or tsv extension. It has to contain a single column of MSMS feature IDs, one per line. The format of MSMS feature ID is MSN\_XXXXXXXXXXXX (MSN\_ followed by 12 digits), they are included in the standard IDTracker export file. Any line in the file that doesn't match the ID format will be ignored. The IDs in valid format will also be checked against the database and if any of them are not present anymore, (features deleted from database), they also will be ignored. The final count of valid feature IDs will be shown at the end of file import (*443*). Check "Load collection in the workbench", if you want to activate the collection for analysis right away and click the "Create new feature collection with selected features" button to complete the process.
+
+![](assets/images/5bf92be9f759.095.png)
+
+43.43 *Creating MSMS feature collection from the list of IDs*
+
+#### Creating new feature collection from MZ-RT plot
+To select the features for collection, zoom to the region of interest, if necessary, then press and hold "Shift", press the left mouse button and drag the mouse to highlight the features of interest. Release the mouse button and then release the "Shift" key. To clear the selection Shift-click on the plot. If you make a new selection, the old one is cleared automatically. Right-click on the highlighted region to show the context menu and select "Create new collection…" (*445*) to show the "Create new feature collection" dialog (*442*).
+
+![](assets/images/5bf92be9f759.096.png)
+
+44.44 *Create collection from features selected on MZ/RT plot*
+
+To display only the selected features in the MetIDTracker workbench panel without creating the collection, choose "Filter selected ..." from the context menu.
+
+#### Creating new feature collection from MSMS feature table
+To create a new collection from the MSMS feature table select the features, right-click on the table to show the context menu and choose "Create new collection from selected features" (*445*) to show "Create new feature collection" dialog (*442*).
+
+![](assets/images/5bf92be9f759.097.png)
+
+45.45 *New collection from features selected in the table*
+
+Adding features to existing collections
+
+MSMS features can be added to existing collections in three ways:
+
+- From feature collection manager (reading feature ID list from file)
+- From features selected on MZ/RT plot
+- From features selected in the MSMS features table
+
+#### Adding features using feature collection manager
+Select target collection in the manager table and click the "Edit collection" icon on the toolbar. Select the file containing the list of MSMS feature IDs (see above for the file format details). Edit feature collection name and description, if necessary, check "Load collection in the workbench", if you want to activate the collection for analysis right away and click the "Save" button. 
+#### Adding features using MZ-RT plot
+To select the features for collection, zoom to the region of interest, if necessary, then press and hold "Shift", press the left mouse button and drag the mouse to highlight the features of interest. Release the mouse button and then release the "Shift" key. To clear the selection Shift-click on the plot. If you make a new selection, the old one is cleared automatically. Right-click on the highlighted region to show the context menu and select "Add selected features to existing collection…" to show the "Add features …" dialog (*446*). Select the target collection, check "Load modified collection in the workbench", if you want to activate the collection for analysis right away and click the "Add features to selected collection" button. 
+
+![](assets/images/5bf92be9f759.098.png)
+
+46.46 *Add features to existing collection dialog*
+
+#### Adding features using MSMS feature table
+To add features from the MSMS feature table select the features, right-click on the table to show the context menu and choose "Add selected features to existing collection…" to show the "Add features …" dialog (*446*). Select the target collection, check "Load modified collection in the workbench", if you want to activate the collection for analysis right away and click the "Add features to selected collection" button.
+
+#### Removing features from collection
+To remove the features from a collection, load the collection into the workbench panel, select the features you want to remove, right-click on the table to show the context menu, choose "Remove selected features from active feature collection" and confirm removing the features.
+
+## Searching MSMS libraries
+MetIDTracker allows users to search the experimental features against MSMS libraries using NIST MSPepSearch. 
+
+The software is available [here](https://chemdata.nist.gov/dokuwiki/doku.php?id=peptidew:mspepsearch) Please use "Current release (02/22/2019, with new hybrid and hi-res searches, no GUI)". MSPepSearch doesn't require installation, just unpack the archive in your preferred location on the disk and set the location of the executable in MetIDTracker preferences. 
+
+MSMS libraries have to be modified and formatted in a specific way so that the search results may be uploaded to the MetIDTracker database and properly linked to the library entries and compound information. Several libraries ready to use with MetIDTracker are provided for download [here](https://github.com/araskind/MRC2Toolbox#msms-libraries):
+
+- [MS-DIAL metabolomics MSP spectral kit, VS15, positive mode](https://umich.box.com/s/4p6usq555ab5f46l4bgheigamlbxvj95)
+- [MS-DIAL metabolomics MSP spectral kit, VS15, negative mode](https://umich.box.com/s/2drqabukveaog1ers89qcu3qx9uocfie)
+- [MS-DIAL LipidBlast, V68, positive mode](https://umich.box.com/s/dat5kj9xafg6z4qw4vnju9v1z01drsg9)
+- [MS-DIAL LipidBlast, V68, negative mode](https://umich.box.com/s/gm4yf920uad53wpqv1gvsk82epxd2t4w)
+
+All libraries are in NIST format. Extract the archives and place the library folders in your preferred location on the disk.
+
+### MSMS search setup
+To call MSPepSearch setup dialog (447) click ![](assets/images/5bf92be9f759.004.png) icon on the MetIDTracker workbench panel toolbar. If you want to run the search without uploading the results to MetIDTracker database, click ![](assets/images/5bf92be9f759.004.png) icon. The search setup procedure is identical in both cases.
+
+![](assets/images/5bf92be9f759.099.png)
+
+47.47 *PepSearch setup options*
+
+#### Search options
+"Search options" (447) defines the parameters of the search algorithm. The GUI is a front-end to the MSPepSearch command line options and implements most of the functionality, except the options related to the search against unit-mass resolution GCMS libraries. For details regarding specific parameters please consult the MSPepSearch Readme file and NIST MSSEARCH manual.
+
+#### Input data and libraries
+"Input data and libraries" (448) is used to specify the source of experimental MSMS spectra and the set of MSMS libraries to use in the search. "Internal" input means that the set or subset of MSMS features currently active in MetIDTracker will be searched against the specified libraries. The subset of features is determined by the option selected in the "For internal data" dropdown menu. "All" means all features in the currently active feature collection. "Filtered" means all features visible in the MSMS feature table (relevant when at least one data filter is applied to the table). "Selected only" - only features selected in the table will be used. Selected subset of features will be written out in NIST MSP format to the MetIDTracker \data\mssearch directory. If the "File" input data source is selected, use the "Browse" button to select the MSP input file. 
+
+Use the Add/Remove library buttons to manage the list of libraries. Libraries should be in NIST format. Libraries that were not properly integrated with MetIDTracker still can be searched, but results cannot be uploaded. The MSPepSearch output file will be written out to MetIDTracker \data\mssearch directory.
+
+![](assets/images/5bf92be9f759.100.png)
+
+48.48 *PepSearch input data and libraries*
+
+Use the checkboxes in the "Enabled" column to control which libraries should be used for the search.
+
+#### Output options
+"Output options" (450) set result filters (minimal match factor and maximal number of hits per feature) and the types of data included in the output file. The latter is only important in case you are planning to review search results directly, without uploading to MetIDTracker.
+
+#### Command preview
+"Command preview" (449) allows the user to generate and copy the actual MSPepSearch command based on the options specified in other panels.
+
+![](assets/images/5bf92be9f759.101.png)
+
+49.49 *PepSearch command preview*
+
+![](assets/images/5bf92be9f759.102.png)
+
+50.50 *PepSearch output options*
+
+Click "Search NIST MSMS libraries" button to start the search. Depending on the size of the dataset, libraries, and search parameters it may take significant time, especially for "In-source" and "Hybrid" search modes.
+
+## Adduct and fragment assignment
+
+### Adding and editing new adducts
+The system for handling adducts and fragments was redesigned and significantly enhanced. All adducts now fall into two groups: 
+
+- Simple, or charge carriers (M+H, M-H, M+Na, M+Cl, etc) 
+- Composite - a combination of charge carrier and one or more neutral loss and/or "Repeats" (neutral additions, e.g. formic acid, sodium formate, etc.)
+
+Simple and composite adducts are now created and edited separately. To create a new simple adduct, neutral loss or repeat click the first button on the adduct manager toolbar (*451*, marked by red circle)
+
+![](assets/images/5bf92be9f759.103.png)
+
+51.51 *Simple adduct editor*
+
+Editable fields on the form and some values will be automatically adjusted depending on the selected category of modification (for repeats only "Added group" is allowed, for neutral losses - only "removed group", etc.). For complex neutral losses you may now specify the structure using a SMILES string. 
+
+To create a new composite adduct call the composite adduct editor on the adduct manager toolbar (*452*, marked by red circle)
+
+![](assets/images/5bf92be9f759.104.png)
+
+52.52 *Composite adduct editor*
+
+In order to create new composite adduct you have to first define the charge carrier (click "Select charge carrier" and choose one from the table that pops up). Then you must add at least one neutral loss or neutral adduct (repeat) using the corresponding buttons. For the cases when there is more than one loss or repeat of the same kind you will have to add each modification separately. The name for a new adduct will be created automatically based on the names of the building blocks, but you may add your own description if necessary.
+
+To edit an adduct select it in the adduct manager table and click the "Edit adduct" button on the toolbar. Depending on the type of adduct (simple or composite) the appropriate dialog will show pre-populated with the data for selected adduct.
+
+### Assigning adduct to feature
+By default all the features are assigned simple charge carriers based on their charge (\[M+H\]+, \[M+2H\]2+, \[M+3H\]3+, \[M-H\]-, \[M-2H\]2-, \[M-3H\]3-).
+
+It is now possible to manually assign any adduct from the list in the database to any identified feature. You may select any feature and use contextual popup menu to call manual identification dialog (*453*).
+
+![](assets/images/5bf92be9f759.105.png)
+
+53.53 *Manual identification assignment dialog*
+
+By default, precursor M/Z for MSMS feature and default adduct for charge will be selected in the adducts table. If the feature was previously identified and assigned a different adduct, it will be selected in the table instead. To look up the compounds in the database by neutral mass based on M/Z and selected adduct click the "Search" button under the adducts table. You may use other fields in the search form to narrow down the search. The fields are additive (the more different search parameters you specify the more filters are applied to search results). You may exclude searching by mass altogether by clearing the mass field. After the search is completed you may select one of the entries in the "Database search results" table and click the "Assign selected identification" button to set it as a default identity for the selected feature. The adduct selected in the adducts table will be also assigned as default.
+
+## Working with raw MS data in ID tracker
+There is now a possibility to examine underlying raw data for the features stored in the tracker database. At the moment it is limited to MSMS data only since only MSMS features are unambiguously linked to individual raw data files.
+
+### Raw data repository
+The software library used to access the raw data requires converting original instrument files to mzML or mzXML format. The repository for converted files must be created on the local hard drive or accessible network drive. Location of the raw data repository must be specified in the preferences to let the software know where to look for the data files:
+
+![](assets/images/5bf92be9f759.106.png)
+
+### Raw data examiner panel
+Raw data examiner panel provides the basic functionality to explore the raw MS and MSMS data.
+
+![](assets/images/5bf92be9f759.107.png)
+
+#### Toolbar buttons
+
+![](assets/images/5bf92be9f759.108.png)
+
+From left to right:
+
+- Expand/collapse the tree
+- Group tree by data file or object type (chromatogram, spectra, etc)
+- Open data files - open any mzml or mzxml file(s) in any folder
+- Close data files - close one or more of the opened raw files
+- Convert original instrument raw data files to mzml and put the converted files into the repository
+
+When raw data files are opened, TIC is extracted automatically
+
+To use the raw data conversion you will need to specify the location of msconvert.exe file in the preferences (see picture above). Msconvert is part of the ProteoWizard package and may be downloaded [here](http://proteowizard.sourceforge.net/download.html)
+
+### Extracting chromatograms
+![](assets/images/5bf92be9f759.109.png)
+
+To extract chromatograms:
+
+- Select data files in the table
+- Choose chromatogram type (TIC, BPC or extracted ion)
+- Choose MS level
+- Specify m/z window for XIC extraction
+- Change polarity if necessary (not automated yet)
+- For XIC type in one or more m/z values separated by comma, check "Sum all" if you want cumulative XIC, otherwise separate XICs will be extracted for each mass.
+- If you want to limit RT range, specify lower and upper limits and check "Limit RT range" checkbox
+- Click "Extract chromatograms"
+
+All settings except data file selection are preserved across sessions.
+
+### Extracting average mass spectrum
+![](assets/images/5bf92be9f759.110.png)
+
+To extract average MS
+
+Select data file(s)
+
+- Specify retention range (manually or from selection on the chromatogram panel). To select the range on a chromatogram, hold the "Shift" button, press the left mouse button, drag the mouse across the desired range and release the mouse button. To clear selection shift-click anywhere in the chromatogram panel.
+- Specify m/z window for peak averaging
+- Specify MS level (1 - MS1, 2 - MS2, etc.)
+- Click "Extract average MS"
+
+### Raw data conversion
+![](assets/images/5bf92be9f759.111.png)
+
+Toolbar buttons (left to right)
+
+- Add instrument raw files
+- Remove selected files
+- Remove all files
+- Set output directory
+
+### Integration with MetIDTracker
+![](assets/images/5bf92be9f759.112.png)
+
+The two buttons on the tracker workbench toolbar marked in red above are related to the raw data repository. The first is used to index/re-index the raw data files. This will be necessary only if you manually add raw data files to the repository.
+
+Clicking the second button will tell the program to try loading the raw data files for all of the features currently in the MS2 features table. This can be done only if the raw data repository location is correctly defined in the preferences. If any of the required files are not in the repository, the information message will be shown.
+
+### Extracting chromatograms for the selected feature
+Highlight the feature in the table, right-click to show the context menu and choose "Extract XIC setup" to show the dialog.
+
+![](assets/images/5bf92be9f759.113.png)
+
+The "Define chromatograms" panel will be populated with all currently opened data files and the source file for selected MSMS features will be highlighted. M/Z for the most intensive peak in the MSMS will be placed in the M/Z values field. Other fields in the form will be populated with the last used values. 
+
+"Select masses for extraction" panel will have a list of all peaks in MSMS (intensity of 999 corresponds to parent ion and is not a measured value unless by a very rare chance a real peak has intensity of exactly 999). You may select any combination of M/Z values and send them to the "M/Z values" field by clicking the "Add masses to extract" button at the bottom. 
+
+Click the "Extract chromatogram" button to run the process. Once XICs are extracted the software will switch to the "Raw data" panel.
+
+## General user interface tips and tricks
+
+### Table layout manager manual
+Some of the ID tracker tables contain a large number of columns which makes it difficult to see the necessary data and in different workflows the most suitable subset of columns, relative column order and line sorting order may be different. This manual describes how to customize these parameters. 
+
+To call table customization dialog right-click on the table header and select "Show table preferences" near the bottom of the context popup menu (*454*).
+
+![](assets/images/5bf92be9f759.114.png)
+
+54.54 *Table header popup menu*
+
+The table customization dialog has two parts (*455*). The upper part contains all the columns in the current order. All hidden columns are listed at the end. To enable or disable the column check/uncheck the corresponding box in the "Visible" column.
+
+![](assets/images/5bf92be9f759.115.png)
+
+55.55 *Table customization dialog*
+
+It is now possible to sort the tables by multiple columns (Excel-like). To add the column to the sorter select it in the upper list, right-click and choose "Add column to sorter" from the context menu. The selected column will appear at the end of the sorter list below with ascending sort direction by default. You may change the direction of the sorting by selecting the necessary value in the "Sort order" column (*456*).
+
+![](assets/images/5bf92be9f759.116.png)
+
+56.56 *Changing sort order*
+
+To change sorting priority, select the sorter in the list, right-click and select "Increase sort priority to move sorter up, or "Decrease …" to move it down. Select "Remove column from sorter" to stop sorting by the values in this column (*457*).
+
+![](assets/images/5bf92be9f759.117.png)
+
+57.57 *Changing sort priority.*
+
+Click "Apply" to apply the changes to the table. The changes will be saved, and the new layout will be used the next time you start the software. It also applies to the order of the columns. To reorder columns click and drag the column header to the new position (this operation is disabled on some tables, so the column order remains constant).
+

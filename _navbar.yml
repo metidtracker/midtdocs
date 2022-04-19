@@ -1,0 +1,25 @@
+name: "MetIDTrackerDocs"
+title: "MetIDTracker documentation"
+type: inverse
+left:
+  - text: "Setup"
+    href: ./Setup.html
+  - text: "Manual"
+    href: ./Manual.html
+  - text: "Change log"
+    href: ./changelog.html
+  - text: "FAQ"
+    href: ./faq.html
+  - text: "Report bugs"
+    href: ./bugreport.html
+  - text: "Developers"
+    href: ./developers.html   
+  - text: "Tutorials"
+    menu:
+       - text: "Tutorial 1"
+         href: ./tutorial1.html
+       - text: "Tutorial 2"
+         href: ./tutorial2.html
+right:
+  - icon: fa-github fa-lg
+    href: https://github.com/metidtracker/midtdocs

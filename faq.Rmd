@@ -1,0 +1,8 @@
+---
+title: "FAQ"
+output: 
+  html_document:
+    toc: TRUE
+---
+
+# FAQ

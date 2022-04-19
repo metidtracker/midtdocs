@@ -1,0 +1,591 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+
+
+<title>MetIDTracker setup manual</title>
+
+<script src="site_libs/header-attrs-2.13/header-attrs.js"></script>
+<script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/spacelab.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<style>h1 {font-size: 34px;}
+       h1.title {font-size: 38px;}
+       h2 {font-size: 30px;}
+       h3 {font-size: 24px;}
+       h4 {font-size: 18px;}
+       h5 {font-size: 16px;}
+       h6 {font-size: 12px;}
+       code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
+       pre:not([class]) { background-color: white }</style>
+<script src="site_libs/jqueryui-1.11.4/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/font-awesome-5.1.0/css/all.css" rel="stylesheet" />
+<link href="site_libs/font-awesome-5.1.0/css/v4-shims.css" rel="stylesheet" />
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+
+
+
+
+
+
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+details > summary > p:only-child {
+  display: inline;
+}
+pre code {
+  padding: 0;
+}
+</style>
+
+
+<style type="text/css">
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #adb5bd;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script type="text/javascript">
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark it active
+  menuAnchor.tab('show');
+
+  // if it's got a parent navbar menu mark it active as well
+  menuAnchor.closest('li.dropdown').addClass('active');
+
+  // Navbar adjustments
+  var navHeight = $(".navbar").first().height() + 15;
+  var style = document.createElement('style');
+  var pt = "padding-top: " + navHeight + "px; ";
+  var mt = "margin-top: -" + navHeight + "px; ";
+  var css = "";
+  // offset scroll position for anchor links (for fixed navbar)
+  for (var i = 1; i <= 6; i++) {
+    css += ".section h" + i + "{ " + pt + mt + "}\n";
+  }
+  style.innerHTML = "body {" + pt + "padding-bottom: 40px; }\n" + css;
+  document.head.appendChild(style);
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "&#xe258;";
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+
+
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+@media print {
+.toc-content {
+  /* see https://github.com/w3c/csswg-drafts/issues/4434 */
+  float: right;
+}
+}
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+.tocify-subheader {
+  display: inline;
+}
+.tocify-subheader .tocify-item {
+  font-size: 0.95em;
+}
+
+</style>
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="navbar navbar-inverse  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-bs-toggle="collapse" data-target="#navbar" data-bs-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">MetIDTracker documentation</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="./Setup.html">Setup</a>
+</li>
+<li>
+  <a href="./Manual.html">Manual</a>
+</li>
+<li>
+  <a href="./changelog.html">Change log</a>
+</li>
+<li>
+  <a href="./faq.html">FAQ</a>
+</li>
+<li>
+  <a href="./bugreport.html">Report bugs</a>
+</li>
+<li>
+  <a href="./developers.html">Developers</a>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    Project
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="./project1.html">Project part 1</a>
+    </li>
+    <li>
+      <a href="./project2.html">Project part 2</a>
+    </li>
+  </ul>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li>
+  <a href="https://github.com/metidtracker/midtdocs">
+    <span class="fa fa-github fa-lg"></span>
+     
+  </a>
+</li>
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div id="header">
+
+
+
+<h1 class="title toc-ignore">MetIDTracker setup manual</h1>
+
+</div>
+
+
+<div id="metidtracker-setup-manual" class="section level1">
+<h1>MetIDTracker setup manual</h1>
+<div id="introduction" class="section level2">
+<h2>Introduction</h2>
+<p>MetIDTracker is written in Java and in theory may run on any platform that supports Java version 8 and above. However, for some operations it relies on additional software, which is Windows-based, so in order to use all the features of MetIDTracker it has to be installed under Windows operating system.</p>
+<p>MetIDTracker relies on the database for storage of reference and experimental data. It was tested with Oracle 19 and PostgreSQL 13. This manual will describe the setup using PostgreSQL database under Windows, since it is a free open-source software and MetIDTracker is developed and run under Windows. However, the database may be installed on a different computer under any other supported operating system, as long as it can be accessed from the computer running MetIDTracker over the network.</p>
+</div>
+<div id="installing-and-configuring-postgresql-database" class="section level2">
+<h2>Installing and configuring PostgreSQL database</h2>
+<p>The latest version of the software may be downloaded from <a href="https://www.enterprisedb.com/downloads/postgres-postgresql-downloads">here</a></p>
+<p>For Windows 10 please use the “Windows x86-64” version. Start the installer and follow the prompts. You will be asked to enter the database administrator password, make a note of it for later use.</p>
+<div id="configure-windows-firewall" class="section level3">
+<h3>Configure Windows Firewall</h3>
+<p>If you are planning to run the database and MetIDTracker on different computers, or allow multiple users of MetIDTracker to collaborate on the same projects running the software on personal computers, it is necessary to allow proper access to the database over the network.</p>
+<p>Open Windows Defender Firewall:</p>
+<p><img src="assets/images/d72d8b7238f2.001.png" /></p>
+<p>Go to “Advanced settings”:</p>
+<p><img src="assets/images/d72d8b7238f2.002.png" /></p>
+<p>Select “Inbound Rules” on the left and then “New Rule” on the right:</p>
+<p><img src="assets/images/d72d8b7238f2.003.png" /></p>
+<p>Select “Port” under “Rule Type” and click “Next”:</p>
+<p><img src="assets/images/d72d8b7238f2.004.png" /></p>
+<p>Select TCP and specify 5432 under “Specific local ports”. This is the default PostgreSQL setup. You may change the port number if you need, but you will also have to re-configure the database accordingly. Click “Next”.</p>
+<p><img src="assets/images/d72d8b7238f2.005.png" /></p>
+<p>Select “Allow the connection”, click “Next”.</p>
+<p><img src="assets/images/d72d8b7238f2.006.png" /></p>
+<p>Choose networks allowed to connect. Usually it is fine to check all three options, unless you have some specific restrictions in mind. Click “Next”.</p>
+<p><img src="assets/images/d72d8b7238f2.007.png" /></p>
+<p>Give the rule some meaningful name and click “Finish” to save it:</p>
+<p><img src="assets/images/d72d8b7238f2.008.png" /></p>
+</div>
+<div id="enable-ssl-for-postgres" class="section level3">
+<h3>Enable SSL for Postgres</h3>
+<p>MetIDTracker is configured to use secure connection with PostgreSQL and the database needs some additional configuration to handle it correctly.</p>
+<p>Detailed information on how to do it on Unix systems may be found <a href="https://docs.microfocus.com/itom/Database_Middleware_Automation:10.61_Ultimate/SSLPostgreSQLClu">here</a></p>
+<p>First stop the database. Open Windows Task manager, go to “Services” tab, right-click on “postgresql …” and select “Stop”:</p>
+<p><img src="assets/images/d72d8b7238f2.009.png" /></p>
+<div id="create-server-key-and-certificate" class="section level4">
+<h4>Create server key and certificate</h4>
+<p>To create the key and certificate you will need the openssl program. The easiest and safest way to get openssl for Windows is to install Git. You may get it here: <a href="https://gitforwindows.org/" class="uri">https://gitforwindows.org/</a></p>
+<p>Open Windows command prompt in the PostgreSQL “data” directory (e.g. C:Files\13). If you are using Windows 10 the easy way is to navigate to this folder in system explorer, type “cmd” in the address bar and press “Enter”:</p>
+<p><img src="assets/images/d72d8b7238f2.010.png" /></p>
+<p>Run the following commands in command prompt (change path to openssl if it is in a different location on your system):</p>
+<pre><code>&quot;C:\Program Files\Git\usr\bin\openssl.exe&quot; genrsa -des3 -out server.key 1024
+
+&quot;C:\Program Files\Git\usr\bin\openssl.exe&quot; rsa -in server.key -out server.key</code></pre>
+<p>Convert server.key file to read only mode (right-click on the file, select “Properties”, check “Read-only” checkbox, click “Apply”)</p>
+<p>Run the following in command prompt:</p>
+<pre><code>&quot;C:\Program Files\Git\usr\bin\openssl.exe&quot; req -new -key server.key -days 3650 -out server.crt -x509</code></pre>
+<p>You will be asked to enter information that will be incorporated into your certificate request. For some fields, there will be a default value. If you enter ‘.’, the field will be left blank.</p>
+<p>Country Name (2 letter code) [XX]:US</p>
+<p>State or Province Name (full name) []:MA</p>
+<p>Locality Name (eg, city) [Default City]:Boston</p>
+<p>Organization Name (eg, company) [Default Company Ltd]:EDB Organizational Unit Name (eg, section) []:PS</p>
+<p>Common Name (eg, your name or your server’s hostname) []:snvm001</p>
+<p>Email Address []:<a href="mailto:info@edb.com" class="email">info@edb.com</a></p>
+<p>File server.crt will be created. Make a copy of the file and name it root.crt.</p>
+</div>
+<div id="edit-postgresql-configuration" class="section level4">
+<h4>Edit PostgreSQL configuration</h4>
+<p>Open postgresql.conf file inside PostgeSQL data directory in plain text editor (Notepad, Notepad++, etc.), find SSL section and modify it to look like this:</p>
+<pre><code># - SSL -
+ssl = on
+ssl\_ca\_file = &#39;root.crt&#39;
+ssl\_cert\_file = &#39;server.crt&#39;
+ssl\_crl\_file = &#39;&#39;
+ssl\_key\_file = &#39;server.key&#39;
+ssl\_ciphers = &#39;HIGH:MEDIUM:+3DES:!aNULL&#39; # allowed SSL ciphers
+ssl\_prefer\_server\_ciphers = on
+#ssl\_ecdh\_curve = &#39;prime256v1&#39;
+#ssl\_min\_protocol\_version = &#39;TLSv1.2&#39;
+#ssl\_max\_protocol\_version = &#39;&#39; 
+#ssl\_dh\_params\_file = &#39;&#39;
+#ssl\_passphrase\_command = &#39;&#39;
+#ssl\_passphrase\_command\_supports\_reload = off</code></pre>
+<p>In “Connection Settings” section check that “listen_addresses” line looks like this:</p>
+<pre><code>listen\_addresses = &#39;\*&#39;</code></pre>
+<p>In “Authentication” section check that “password_encryption” line looks like this:</p>
+<pre><code>password\_encryption = scram-sha-256</code></pre>
+<p>Save and close the file.</p>
+<p>Open pg_hba.conf file and edit the connections section at the bottom to look like this:</p>
+<pre><code># TYPE  DATABASE        USER            ADDRESS                 METHOD
+# &quot;local&quot; is for Unix domain socket connections only
+local   all             all                                     scram-sha-256
+# IPv4 local connections:
+host    all             all             127.0.0.1/32            scram-sha-256
+host    all             all              0.0.0.0/0              scram-sha-256
+# IPv6 local connections:
+host    all             all             ::1/128                 scram-sha-256
+host    all             all              ::/0                   scram-sha-256</code></pre>
+<p>This is necessary to allow connection to the database from other computers. Save and close the file.</p>
+<p>To start the database, open Windows Task manager, go to “Services” tab, right-click on “postgresql …”, and select “Start”.</p>
+</div>
+</div>
+</div>
+<div id="deploying-metidtracker-database" class="section level2">
+<h2>Deploying MetIDTracker database</h2>
+<div id="create-database-and-user" class="section level3">
+<h3>Create database and user</h3>
+<p>Before deploying MetIDTracker database schema it is necessary to create the parent database and user that will provide credentials for the software database connection. PostgreSQL installation on Windows includes user-friendly pgAdmin application for managing the database. To start it, double-click “Path\134.exe” (substitute Pathfor actual location on disk).</p>
+<p>At first startup pgAdmin will ask you to specify the master password. It is separate from the database administrator password you specified when installing the database itself and is used to access pgAdmin itself. After you specify the master password, connect to the server (PostgreSQL 13 on the picture below). At that point you will be prompted for the database administrator password:</p>
+<p><img src="assets/images/d72d8b7238f2.011.png" /></p>
+<p>In the fresh PostgreSQL installation there is a single postgres database. To create the database for MetIDTracker data right-click on “Databases” node in the tree and select Create-&gt;Database…</p>
+<p><img src="assets/images/d72d8b7238f2.012.png" /></p>
+<p>Name the new database “idtracker”.</p>
+<p>Right-click on “Login/Group Roles” in the tree and select Create-&gt;Login/Group Role.</p>
+<p><img src="assets/images/d72d8b7238f2.013.png" /></p>
+<p>In “General” tab specify user name, in “Definition” specify the password, in “Privileges” switch “Can login” and “Superuser” to yes, click “Save” to create the user:</p>
+<p><img src="assets/images/d72d8b7238f2.014.png" /></p>
+<p>Make a note of user ID and password you just created since you will need this information to establish connection from the software to the database.</p>
+</div>
+<div id="uploading-metidtracker-database" class="section level3">
+<h3>Uploading MetIDTracker database</h3>
+<p>MetIDTracker database is distributed as database dump file that may be loaded into the new database in a single operation. To upload the database, open windows command prompt and enter the following command:</p>
+<p>“Path\13_restore.exe” -U postgres -d idtracker “Path_tracker_db_20210811.dump”</p>
+<p>Edit “Path” to reflect the actual location of the pg_restore and dump file on your disk. You will be prompted for the database administrator password. Type it at the prompt and press “Enter” (the password will not show when you type, and the cursor will not move). The database dump file is about 1GB in size, so it will take some time for the upload to finish (once upload is done the prompt sign “&gt;” should appear on the new line in command prompt window).</p>
+</div>
+<div id="establishing-connection-between-metidtracker-and-database" class="section level3">
+<h3>Establishing connection between MetIDTracker and database</h3>
+<p>During program startup it will try to establish connection with database using default settings from preferences. If this fails, Database connection setup dialog is displayed. Edit host name, port, user, and password fields to match the parameters of your database configuration (SID/database and schema are determined by the database dump you’ve used at the previous steps and should not be changed):</p>
+<p><img src="assets/images/d72d8b7238f2.015.png" /></p>
+<p>Click “Test connection” button to verify that database connection can be established using the parameters in the form. Click “Continue program startup” to save the connection parameters and launch the program.</p>
+<p><img src="assets/images/d72d8b7238f2.016.png" /></p>
+</div>
+</div>
+<div id="third-party-software-used-by-metidtracker" class="section level2">
+<h2>Third party software used by MetIDTracker</h2>
+<p>For a number of operations MetIDTracker relies on third party software. This software needs to be installed on the same computer and the location of each external program has to specified in the preferences.</p>
+<ul>
+<li><a href="https://chemdata.nist.gov/dokuwiki/doku.php?id=peptidew:mspepsearch">NIST MSPepSearch</a> Please use “Current release (02/22/2019)”; the software is necessary to run MSMS library searches.</li>
+<li>Msconvert is part of <a href="https://proteowizard.sourceforge.io/index.html">ProteoWizard</a> package The software is necessary if you are planning to work with raw MS data</li>
+<li><a href="https://bio.informatik.uni-jena.de/software/sirius/">SIRIUS</a> is not properly integrated into the workflow yet, but data may be exported from MetIDTracker in the format accepted by SIRIUS for MSMS interpretation</li>
+<li>Lib2nist – the tool for converting MSMS libraries to NIST format for use with MSPepSearch. Can be downloaded as standalone or as a part of <a href="https://chemdata.nist.gov/dokuwiki/doku.php?id=chemdata:nist17">NIST Search Software</a></li>
+</ul>
+<p>Open MetIDTracker preferences, switch to “External programs/templates” tab and use the corresponding “Browse” buttons to specify the location of each external program. Only parameters in the red frame are related to MetIDTracker functionality, all the rest is part of a larger project and may be ignored.</p>
+<p><img src="assets/images/d72d8b7238f2.017.png" /></p>
+</div>
+</div>
+
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open');
+  });
+});
+</script>
+
+<!-- code folding -->
+
+<script>
+$(document).ready(function ()  {
+
+    // temporarily add toc-ignore selector to headers for the consistency with Pandoc
+    $('.unlisted.unnumbered').addClass('toc-ignore')
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_');
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = false;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

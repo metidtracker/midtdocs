@@ -1,0 +1,215 @@
+---
+title: "MetIDTracker setup manual"
+output: 
+  html_document:
+    toc: TRUE
+---
+
+# MetIDTracker setup manual
+
+## Introduction
+
+MetIDTracker is written in Java and in theory may run on any platform that supports Java version 8 and above. However, for some operations it relies on additional software, which is Windows-based, so in order to use all the features of MetIDTracker it has to be installed under Windows operating system.
+
+MetIDTracker relies on the database for storage of reference and experimental data. It was tested with Oracle 19 and PostgreSQL 13. This manual will describe the setup using PostgreSQL database under Windows, since it is a free open-source software and MetIDTracker is developed and run under Windows. However, the database may be installed on a different computer under any other supported operating system, as long as it can be accessed from the computer running MetIDTracker over the network.
+
+## Installing and configuring PostgreSQL database
+The latest version of the software may be downloaded from [here](https://www.enterprisedb.com/downloads/postgres-postgresql-downloads)
+
+For Windows 10 please use the "Windows x86-64" version. Start the installer and follow the prompts. You will be asked to enter the database administrator password, make a note of it for later use.
+
+### Configure Windows Firewall
+
+If you are planning to run the database and MetIDTracker on different computers, or allow multiple users of MetIDTracker to collaborate on the same projects running the software on personal computers, it is necessary to allow proper access to the database over the network. 
+
+Open Windows Defender Firewall:
+
+![](assets/images/d72d8b7238f2.001.png)
+
+Go to "Advanced settings":
+
+![](assets/images/d72d8b7238f2.002.png)
+
+Select "Inbound Rules" on the left and then "New Rule" on the right:
+
+![](assets/images/d72d8b7238f2.003.png)
+
+Select "Port" under "Rule Type" and click "Next":
+
+![](assets/images/d72d8b7238f2.004.png)
+
+Select TCP and specify 5432 under "Specific local ports". This is the default PostgreSQL setup. You may change the port number if you need, but you will also have to re-configure the database accordingly. Click "Next".
+
+![](assets/images/d72d8b7238f2.005.png)
+
+Select "Allow the connection", click "Next".
+
+![](assets/images/d72d8b7238f2.006.png)
+
+Choose networks allowed to connect. Usually it is fine to check all three options, unless you have some specific restrictions in mind. Click "Next".
+
+![](assets/images/d72d8b7238f2.007.png)
+
+Give the rule some meaningful name and click "Finish" to save it:
+
+![](assets/images/d72d8b7238f2.008.png)
+
+### Enable SSL for Postgres
+
+MetIDTracker is configured to use secure connection with PostgreSQL and the database needs some additional configuration to handle it correctly.
+
+Detailed information on how to do it on Unix systems may be found [here](https://docs.microfocus.com/itom/Database_Middleware_Automation:10.61_Ultimate/SSLPostgreSQLClu)
+
+First stop the database. Open Windows Task manager, go to "Services" tab, right-click on "postgresql …" and select "Stop":
+
+![](assets/images/d72d8b7238f2.009.png)
+
+#### Create server key and certificate
+
+To create the key and certificate you will need the openssl program. The easiest and safest way to get openssl for Windows is to install Git. You may get it here: <https://gitforwindows.org/>
+
+Open Windows command prompt in the PostgreSQL "data" directory (e.g. C:\Program Files\PostgreSQL\13\data). If you are using Windows 10 the easy way is to navigate to this folder in system explorer, type "cmd" in the address bar and press "Enter":
+
+![](assets/images/d72d8b7238f2.010.png)
+
+Run the following commands in command prompt (change path to openssl if it is in a different location on your system):
+
+```
+"C:\Program Files\Git\usr\bin\openssl.exe" genrsa -des3 -out server.key 1024
+
+"C:\Program Files\Git\usr\bin\openssl.exe" rsa -in server.key -out server.key
+```
+
+Convert server.key file to read only mode (right-click on the file, select "Properties", check "Read-only" checkbox, click "Apply")
+
+Run the following in command prompt:
+```
+"C:\Program Files\Git\usr\bin\openssl.exe" req -new -key server.key -days 3650 -out server.crt -x509
+```
+You will be asked to enter information that will be incorporated into your certificate request. For some fields, there will be a default value. If you enter '.', the field will be left blank.
+
+Country Name (2 letter code) [XX]:US
+
+State or Province Name (full name) []:MA
+
+Locality Name (eg, city) [Default City]:Boston
+
+Organization Name (eg, company) [Default Company Ltd]:EDB Organizational Unit Name (eg, section) []:PS
+
+Common Name (eg, your name or your server's hostname) []:snvm001
+
+Email Address []:info@edb.com
+
+File server.crt will be created. Make a copy of the file and name it root.crt.
+
+#### Edit PostgreSQL configuration
+Open postgresql.conf file inside PostgeSQL data directory in plain text editor (Notepad, Notepad++, etc.), find SSL section and modify it to look like this:
+```
+# - SSL -
+ssl = on
+ssl\_ca\_file = 'root.crt'
+ssl\_cert\_file = 'server.crt'
+ssl\_crl\_file = ''
+ssl\_key\_file = 'server.key'
+ssl\_ciphers = 'HIGH:MEDIUM:+3DES:!aNULL' # allowed SSL ciphers
+ssl\_prefer\_server\_ciphers = on
+#ssl\_ecdh\_curve = 'prime256v1'
+#ssl\_min\_protocol\_version = 'TLSv1.2'
+#ssl\_max\_protocol\_version = '' 
+#ssl\_dh\_params\_file = ''
+#ssl\_passphrase\_command = ''
+#ssl\_passphrase\_command\_supports\_reload = off
+```
+
+In "Connection Settings" section check that "listen\_addresses" line looks like this:
+
+```
+listen\_addresses = '\*'
+```
+
+In "Authentication" section check that "password\_encryption" line looks like this:
+
+```
+password\_encryption = scram-sha-256
+```
+
+Save and close the file.
+
+Open pg\_hba.conf file and edit the connections section at the bottom to look like this:
+
+```
+# TYPE  DATABASE        USER            ADDRESS                 METHOD
+# "local" is for Unix domain socket connections only
+local   all             all                                     scram-sha-256
+# IPv4 local connections:
+host    all             all             127.0.0.1/32            scram-sha-256
+host    all             all              0.0.0.0/0              scram-sha-256
+# IPv6 local connections:
+host    all             all             ::1/128                 scram-sha-256
+host    all             all              ::/0                   scram-sha-256
+```
+
+This is necessary to allow connection to the database from other computers. Save and close the file.
+
+To start the database, open Windows Task manager, go to "Services" tab, right-click on "postgresql …", and select "Start".
+
+## Deploying MetIDTracker database
+
+### Create database and user
+
+Before deploying MetIDTracker database schema it is necessary to create the parent database and user that will provide credentials for the software database connection. PostgreSQL installation on Windows includes user-friendly pgAdmin  application for managing the database. To start it, double-click "Path\to\PostgreSQL\13\pgAdmin 4\bin\pgAdmin4.exe" (substitute Path\to for actual location on disk).
+
+At first startup pgAdmin will ask you to specify the master password. It is separate from the database administrator password you specified when installing the database itself and is used to access pgAdmin itself. After you specify the master password, connect to the server (PostgreSQL 13 on the picture below). At that point you will be prompted for the database administrator password:
+
+![](assets/images/d72d8b7238f2.011.png)
+
+In the fresh PostgreSQL installation there is a single postgres database. To create the database for MetIDTracker data right-click on "Databases" node in the tree and select Create->Database… 
+
+![](assets/images/d72d8b7238f2.012.png)
+
+Name the new database "idtracker".
+
+Right-click on "Login/Group Roles" in the tree and select Create->Login/Group Role. 
+
+![](assets/images/d72d8b7238f2.013.png)
+
+In "General" tab specify user name, in "Definition" specify the password, in "Privileges" switch "Can login" and "Superuser" to yes, click "Save" to create the user:
+
+![](assets/images/d72d8b7238f2.014.png)
+
+Make a note of user ID and password you just created since you will need this information to establish connection from the software to the database.
+
+### Uploading MetIDTracker database
+
+MetIDTracker database is distributed as database dump file that may be loaded into the new database in a single operation. To upload the database, open windows command prompt and enter the following command:
+
+"Path\to\PostgreSQL\13\bin\pg\_restore.exe" -U postgres -d idtracker "Path\to\id\_tracker\_db\_20210811.dump"
+
+Edit "Path\to" to reflect the actual location of the pg\_restore and dump file on your disk. You will be prompted for the database administrator password. Type it at the prompt and press "Enter" (the password will not show when you type, and the cursor will not move). The database dump file is about 1GB in size, so it will take some time for the upload to finish (once upload is done the prompt sign ">" should appear on the new line in command prompt window).
+
+
+### Establishing connection between MetIDTracker and database
+During program startup it will try to establish connection with database using default settings from preferences. If this fails, Database connection setup dialog is displayed. Edit host name, port, user, and password fields to match the parameters of your database configuration (SID/database and schema are determined by the database dump you’ve used at the previous steps and should not be changed): 
+
+![](assets/images/d72d8b7238f2.015.png)
+
+Click "Test connection" button to verify that database connection can be established using the parameters in the form. Click "Continue program startup" to save the connection parameters and launch the program.
+
+![](assets/images/d72d8b7238f2.016.png)
+
+
+## Third party software used by MetIDTracker
+For a number of operations MetIDTracker relies on third party software. This software needs to be installed on the same computer and the location of each external program has to specified in the preferences.
+
+- [NIST MSPepSearch](https://chemdata.nist.gov/dokuwiki/doku.php?id=peptidew:mspepsearch)
+  Please use "Current release (02/22/2019)"; the software is necessary to run MSMS library searches.
+- Msconvert is part of [ProteoWizard](https://proteowizard.sourceforge.io/index.html) package 
+  The software is necessary if you are planning to work with raw MS data
+- [SIRIUS](https://bio.informatik.uni-jena.de/software/sirius/) is not properly integrated into the workflow yet, but data may be exported from MetIDTracker in the format accepted by SIRIUS for MSMS  interpretation
+- Lib2nist – the tool for converting MSMS libraries to NIST format for use with MSPepSearch. Can be downloaded as standalone or as a part of [NIST Search Software](https://chemdata.nist.gov/dokuwiki/doku.php?id=chemdata:nist17)
+
+Open MetIDTracker preferences, switch to "External programs/templates" tab and use the corresponding "Browse" buttons to specify the location of each external program. Only parameters in the red frame are related to MetIDTracker functionality, all the rest is part of a larger project and may be ignored.
+
+![](assets/images/d72d8b7238f2.017.png)
+
+

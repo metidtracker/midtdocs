@@ -1,0 +1,8 @@
+---
+title: "Developer information"
+output: 
+  html_document:
+    toc: TRUE
+---
+
+# Developer information
