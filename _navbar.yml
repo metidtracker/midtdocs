@@ -20,6 +20,8 @@ left:
          href: ./tutorial1.html
        - text: "Tutorial 2"
          href: ./tutorial2.html
+       - text: "Tutorial 3"
+         href: ./tutorial3.html         
 right:
   - icon: fa-github fa-lg
     href: https://github.com/metidtracker/midtdocs
