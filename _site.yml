@@ -1,9 +1,10 @@
-name: "My new website"
+name: "MetIDTracker documentation website"
 output_dir: 'docs'
 output:
   html_document:
     theme: spacelab
     highlight: zenburn
+    number_sections: true
     toc: true
     toc_depth: 3
     toc_float:
