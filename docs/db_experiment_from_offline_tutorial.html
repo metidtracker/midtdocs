@@ -396,7 +396,7 @@ div.tocify {
 </div>
 <div id="defining-experiment-design" class="section level3" number="1.1.2">
 <h3><span class="header-section-number">1.1.2</span> Defining experiment design</h3>
-<p>In the database MS and MSMS data must be linked to biological samples. MetIDTracker main task is in-depth characterization of the samples which implies analysis of the data obtained from the same biological material in multiple ways (e.g. exhaustive MSMS through iDDA in positive and negative mode). The term “Stock sample” denotes the source of material for multiple assays. Usually it is a pooled sample created combining aliquots of individual biological samples (for liquid samples) or extracts (for cell and tissue samples). Click “Add sample” button (<img src="assets/images/icons/addSample.png" width="24" height="24" />) on the toolbar to show the corresponding dialog, then click “Select stock sample” button, select sample in the table and double-click it or use “Select stock sample” button to add it to sample definition (<a href="#metadataWizardStep2">Fig. 3</a>). By default the sample will be named “Aliquot of … (stock sample name)”. You may change the name and add some notes at this point. Click “Add sample button” to complete the process. Sample ID at this stage is just a placeholder, actual sample ID will be assigned during the database upload.</p>
+<p>In the database MS and MSMS data must be linked to biological samples. MetIDTracker main task is in-depth characterization of the samples which implies analysis of the data obtained from the same biological material in multiple ways (e.g. exhaustive MSMS through iDDA in positive and negative mode). The term “Stock sample” denotes the source of material for multiple assays. Usually it is a pooled sample created combining aliquots of individual biological samples (for liquid samples) or extracts (for cell and tissue samples). Click “Add sample” button (<img src="assets/images/icons/addSample.png" width="24" height="24" />) on the toolbar to show the corresponding dialog, then click “Select stock sample” button, select sample in the table and double-click it or use “Select stock sample” button to add it to sample definition (<a href="#metadataWizardStep2">Fig. 3</a>). By default the sample will be named “Aliquot of … (stock sample name)”. You may change the name and add some notes at this point. Click “Add sample button” to complete the process. Sample ID at this stage is just a placeholder, actual sample ID will be assigned during the database upload. If you have the raw data coming from blanks or other control samples, these sample types also must be defined in the database as stock samples and added at this stage.</p>
 <div class="figure">
 <img src="assets/images/UPL/metadataWizardStep2.png" id="metadataWizardStep2" alt="" />
 <p class="caption">Fig. 3 Experiment metadata wizard - experiment design</p>
@@ -446,13 +446,46 @@ div.tocify {
 <img src="assets/images/UPL/metadataWizardStep4-new.png" id="metadataWizardStep4-new" alt="" />
 <p class="caption">Fig. 11 Experiment metadata wizard - data acquisition methods, add new method</p>
 </div>
+<p>Click “Next” to verify and save the information and go to “Add instrument worklist” step of the wizard.</p>
+</div>
+<div id="adding-instrument-worklist" class="section level3" number="1.1.5">
+<h3><span class="header-section-number">1.1.5</span> Adding instrument worklist</h3>
+<p>This is the final stage of metadata definition where all previously added pieces of information are properly linked with sample run sequence. Using table contextual menu you must link every data file to the sample (<a href="#metadataWizardStep5-samples">Fig. 12</a>) and acquisition method (<a href="#metadataWizardStep5-methods">Fig. 13</a>), specify injection volume (<a href="#metadataWizardStep5-injvol">Fig. 14</a>), and if necessary, injection timestamp. mzML files usually contain the correct timestamp and this field will be populated automatically. mzXML files, however do not carry this information over from the original vendor file, so it must be specified manually (<a href="#metadataWizardStep5-timestamp">Fig. 15</a>). You may assign values to multiple files at once if you select more than one file before choosing the command from the contextual menu.</p>
+<div class="figure">
+<img src="assets/images/UPL/metadataWizardStep5-samples.png" id="metadataWizardStep5-samples" alt="" />
+<p class="caption">Fig. 12 Experiment metadata wizard - instrument worklist, link samples to data files</p>
+</div>
+<div class="figure">
+<img src="assets/images/UPL/metadataWizardStep5-methods.png" id="metadataWizardStep5-methods" alt="" />
+<p class="caption">Fig. 13 Experiment metadata wizard - instrument worklist, link acquisition methods to data files</p>
+</div>
+<div class="figure">
+<img src="assets/images/UPL/metadataWizardStep5-injvol.png" id="metadataWizardStep5-injvol" alt="" />
+<p class="caption">Fig. 14 Experiment metadata wizard - instrument worklist, setting injection volumes</p>
+</div>
+<div class="figure">
+<img src="assets/images/UPL/metadataWizardStep5-timestamp.png" id="metadataWizardStep5-timestamp" alt="" />
+<p class="caption">Fig. 15 Experiment metadata wizard - instrument worklist, setting injection volumes</p>
+</div>
+<p>Once all the necessary information is provided click “Save experiment metadata” button. The wizard will check if the metadata definition is complete and save the experiment to preserve the information you entered. At this point the experiment is ready for database upload. You may continue to perform data analysis in the offline mode and upload the experiment later.</p>
 </div>
 </div>
 <div id="uploading-the-experiment" class="section level2" number="1.2">
 <h2><span class="header-section-number">1.2</span> Uploading the experiment</h2>
+<p>Select “Set experiment database upload parameters” from “IDTracker integration” menu (<a href="#experimentDbUploadSetup">Fig. 16</a>). At the moment there is only one parameter - “MS1 extraction window for database upload: +/-”. It’s purpose is to reduce the amount of data uploaded to the database by limiting uploaded MS1 scan portion to the region of interest around the parent ion in a way that is still sufficient to calculate precursor purity and determine whether monoisotopic peak was selected for fragmentation.</p>
+<div class="figure">
+<img src="assets/images/UPL/experimentDbUploadSetup.png" id="experimentDbUploadSetup" alt="" />
+<p class="caption">Fig. 16 Experiment upload parameters</p>
+</div>
+<p>Click “Send experiment data to database” to start the upload. It may take some time depending on the number of features detected and whether analysis data (library search results, etc.) are present. Once upload is complete the experiment is automatically saved to preserve all the offline data in sync with the database copy (this mainly includes identifiers assigned to various objects when they are saved to the database). Once experiment is uploaded to the database all further analysis must be performed in online mode. Editing metadata and repeated uploads will be blocked to preserve data integrity of the central repository (<a href="#blockExistingExperimentUpload">Fig. 17</a>).</p>
+<div class="figure">
+<img src="assets/images/UPL/blockExistingExperimentUpload.png" id="blockExistingExperimentUpload" alt="" />
+<p class="caption">Fig. 17 Experiment upload parameters</p>
+</div>
 </div>
 <div id="retrieving-experiment-data-from-repository" class="section level2" number="1.3">
 <h2><span class="header-section-number">1.3</span> Retrieving experiment data from repository</h2>
+<p>There is a number of ways to retrieve the data from specific experiment for further analysis.</p>
 </div>
 </div>
 
