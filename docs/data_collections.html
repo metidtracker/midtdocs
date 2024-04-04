@@ -407,18 +407,18 @@ interpretation. The following types of data collections are supported at
 the moment:</p>
 <ul>
 <li><p>MSMS feature collections</p></li>
-<li><p>MSMS feature cluster collections</p>
+<li><p>MSMS feature cluster data sets</p>
 <ul>
 <li>Based on MZ/RT search list</li>
 <li>Based on spectra similarity and optional retention time window</li>
 <li>Based on Binner annotations list</li>
 </ul></li>
-<li><p>MS/RT search lists</p></li>
-<li><p>Binner annotation lists</p></li>
+<li><p>Feature lookup lists (MZ/RT search lists)</p></li>
+<li><p>Binner annotation data sets</p></li>
 </ul>
-<p>Feature and cluster collections may be stored in the database, if
-underlying experimental data are already uploaded, or as parts of the
-offline raw data analysis experiments.</p>
+<p>Feature colections and cluster data sets may be stored in the
+database, if underlying experimental data are already uploaded, or as
+parts of the offline raw data analysis experiments.</p>
 </div>
 <div id="managing-data-collections" class="section level1">
 <h1>Managing data collections</h1>
@@ -427,8 +427,8 @@ offline raw data analysis experiments.</p>
 data collections. It hosts separate tabs for different data collection
 types (see sections below). The <img
 src="assets/images/icons/refreshDbData.png" width="24" height="24" />
-icon on the dialog toolbar is to force synchronization of all data
-collections with database.</p>
+icon on the dialog toolbar is to force synchronization of all the data
+collection listings with the database.</p>
 <div class="float" id="dataCollectionsManager">
 <img src="assets/images/DM/dataCollectionsManager.png"
 alt="Fig. 1 Data collections manager dialog" />
@@ -785,9 +785,39 @@ IDtracker data explorer plot</div>
 </div>
 <p><br/></p>
 </div>
-<div id="adding-from-mz-freaquency-analysis-window"
+<div id="adding-from-mz-frequency-analysis-window"
 class="section level3">
-<h3>Adding from M/Z freaquency analysis window</h3>
+<h3>Adding from M/Z frequency analysis window</h3>
+<p>Background ions may constitute a significant portion of all acquired
+MSMS data. They are usually present over large regions of chromatogram
+and the same MZ may be encountered multiple times. One way to identify
+bakcground ions is to find these large groups of similar features
+binning them based on narrow M/Z window. To set up this analysis load
+the data set of interest into IDTracker and select “Set up M/Z frequency
+analysis” from the “Explore data” menu of the workbench panel (<a
+href="#mzFrequencyAnalysisSetup">Fig. 17</a>). Adjust M/Z binning
+frequency if necessary and click “Run M/Z frequency analysis” to start
+the calculations.</p>
+<div class="float" id="mzFrequencyAnalysisSetup">
+<img src="assets/images/DM/mzFrequencyAnalysisSetup.png"
+alt="Fig. 17 Adding the features to collection from IDtracker data explorer plot" />
+<div class="figcaption">Fig. 17 Adding the features to collection from
+IDtracker data explorer plot</div>
+</div>
+<p><br/></p>
+<p>Once the analysis is complete the results are displayed in the new
+dialog in table form. Select one or more compound groups in the table
+and use the toolbar or context menu command to apply various annotations
+to multiple features. Options for adding the features to collections are
+the same as described in the <a
+href="#adding-from-msms-feature-table">Adding from MSMS feature
+table</a> section above.</p>
+<div class="float" id="mzFrequencyAnalysisResults">
+<img src="assets/images/DM/mzFrequencyAnalysisResults.png"
+alt="Fig. 18 Adding the features to collection from M/Z frequency analysis results dialog" />
+<div class="figcaption">Fig. 18 Adding the features to collection from
+M/Z frequency analysis results dialog</div>
+</div>
 </div>
 </div>
 </div>
