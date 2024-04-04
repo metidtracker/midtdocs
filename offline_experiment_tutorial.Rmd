@@ -1,81 +1,135 @@
-# Offline experiment
+---
+title: "Creating offline raw data analysis experiment"
+---
 
 Offline experiment in MetIDTracker is a starting point of analysis of MSMS data when you are not relying on any third-party tools.It allows to extract MSMS features and corresponding chromatograms from raw data files and use all the tools for feature identification and annotation without uploading the results to the database. Once MSMS extraction and identification parameters are optimized, experiment may be uploaded in the database for collaborative data curation and analysis.
 
 MetIDTracker supports working with mzML and mzXML file formats. Proprietary raw data formats from all major LC/MS equipment vendors may be converted to mzML or mzXML using msconvert routine from ProteoWizard package. MetIDTracker provides the graphical user interface to msconvert described in details in the [manual](#Manual.html#raw-data-conversion)
 
-## Creating offline experiment
+# Creating new offline experiment
 
 To create new offline experiment select "New raw data analysis experiment" from "Experiment" menu to display "Create new raw data analysis experiment" dialog ([Fig. 1](#createOfflineExperimentFig))
 
+<br>
+
 ![Fig. 1 Creating new raw data analysis experiment](assets/images/OET/createOfflineExperiment.png){#createOfflineExperimentFig}
 
-Specifying name, location, instrument and MSMS files is obligatory, other fields are optional. To select LCMS instrument click "Select" button next to instrument field, choose instrument from the table ([Fig. 2](instrumentSelector)) and either double-click on it or click "Select instrument button" to complete selection. You have to specify the instruments in the MetIDTracker LIMS [Instrument manager](Manual.html#instrument-manager) in advance.
+<br>
+
+Specifying name, location, instrument and MSMS files is obligatory, other fields are optional. To select LCMS instrument click "Select" button next to instrument field, choose instrument from the table ([Fig. 2](#instrumentSelector)) and either double-click on it or click "Select instrument button" to complete selection. You have to specify the instruments in the MetIDTracker LIMS [Instrument manager](Manual.html#instrument-manager) in advance.
+
+<br>
 
 ![Fig. 2 Instrument selector dialog](assets/images/OET/instrumentSelector.png){#instrumentSelector}
 
+<br>
+
 To add MSMS and optionally MS1 files use the toolbars on the corresponding tabs of the dialog: -
 
--   ![](assets/images/icons/addMultifile.png){height="24px" width="24px"} - add raw data files
--   ![](assets/images/icons/removeMultifile.png){height="24px" width="24px"} - remove selected raw data files
--   ![](assets/images/icons/clearWorklist.png){height="24px" width="24px"} - clear file list
+* ![](assets/images/icons/addMultifile.png){height="24px" width="24px"} - add raw data files
+* ![](assets/images/icons/removeMultifile.png){height="24px" width="24px"} - remove selected raw data files
+* ![](assets/images/icons/clearWorklist.png){height="24px" width="24px"} - clear file list
+
+<br>
 
 Having MS1-only files included in the experiment is optional, but may allow for much better quality feature chromatograms when MSMS is acquired at significantly higher rate than MS1 scans. Including blank MS1 runs is also recommended since they allow to discriminate between relevant signal and chemical noise/contamination.
 
 Once all the necessary data are specified in the "Create new raw data analysis experiment" dialog, click "Create new raw data analysis experiment" button to complete the process.Progress dialog will display the current operations. It will take some time to copy raw data to the experiment location and extract total ion chromatogram for every file. At the end the Raw data examiner panel will look as shown on [Fig. 3](#newProjectLoaded)
 
+<br>
+
 ![Fig. 3 Raw data examiner panel with loaded new experiment](assets/images/OET/newProjectLoaded.png){#newProjectLoaded}
+
+<br>
 
 ## Extracting MSMS features
 
 Go to the "MSMS analysis" menu of the Raw data examiner panel and select "Set up MSMS feature extraction" ([Fig. 4](#initMSMSextraction)).
 
+<br>
+
 ![Fig. 4 Calling MSMS extraction setup](assets/images/OET/initMSMSextraction.png){#initMSMSextraction}
+
+<br>
 
 Adjust the parameters in the "MSMS feature extraction settings" dialog ([Fig. 5](#msmsExtractionSetup)) if necessary. By default the latest used settings are loaded.
 
+<br>
+
 ![Fig. 5 MSMS extraction setup dialog](assets/images/OET/msmsExtractionSetup.png){#msmsExtractionSetup}
 
--   Parameter set name and description are auto-generated and may be edited
+<br>
 
--   Polarity - raw data with different (or alternating) polarity may be present in a single experiment, but MSMS extraction procedure must be performed for one polarity at a time.
+Alternatively you may load one of the previously used sets of MSMS extraction parameters from the database. CLick ![](assets/images/icons/loadList.png){height="24px" width="24px"} button on the toolbar to display the list of available methods ([Fig. 6](#msmsExtractionMethodList)), select the method, review the parameters, and click "Load MSMS feature extraction method from database".
 
--   "Extract data only for retention time ..." if checked and time limits specified will restrict analysis to this retention time range. This may be useful to exclude the regions with poorly separated features (e.g. at the start of chromatogram) or without many features (e.g. reequilibration region at the end of the run if it is present in raw data).
+<br>
 
--   Minimal precursor intensity - MSMS scans with parent ion intensity below this value will be excluded from analysis.
+![Fig. 6 Experiment metadata wizard - data acquisition methods, add new method](assets/images/OET/msmsExtractionMethodList.png){#msmsExtractionMethodList}
 
--   Precursor isolation window (if not in data) - will be used if actual precursor isolation window is not recorded in mzML/mzXML files (this is the case with Agilent data, for example).
+<br>
 
--   MSMS grouping - it is common occurence that more than one MSMS scan is acquired for the same MS feature during the elution of chromatographic peak, so to reduce the redundancy of the final MSMS feature set these scans may be combined to create an average spectrum.
+### MSMS extraction parameters
 
-    -   Group MSMS if within RT window of... - MSMS scans must be within this RT distance to be considered for averaging
-    -   Precursor mass tolerance - mass difference between precursor ions for MSMS scans must be within this range for them to be considered for averaging.
-    -   Spectrum similarity cutoff - MSMS similarity calculated as [entropy score](#ref) must be above this cutoff for MSMS scans to be considered for averaging.
-    -   Merge collision energies - if checked, MSMS scans with different collision energies may be averaged when they satisfy all other cutoffs.
+* **Parameter set name** and **description** are auto-generated and may be edited.
 
--   MSMS filtering - this set of parameters determines how raw MSMS scans are cleaned for creating the features
+* **Extract data only for retention time ...** - if checked and time limits specified will restrict analysis to this retention time range. This may be useful to exclude the regions with poorly separated features (e.g. at the start of chromatogram) or without many features (e.g. re-equilibration region at the end of the run if it is present in raw data).
 
-    -   Remove all masses above parent ion - in case of single-charged precursor this should remove unrelated contamination, but for double- or triple-charged species some valuable information may be lost
-    -   Remove all masses below Absolute, counts / Relative to base peak, % - sets absolute or relative threshold for noise removal
-    -   Leave only \# major fragments - if number > 0 is specified, only that many major fragments will be retained
+* **Minimal precursor intensity** - MSMS scans with parent ion intensity below this value will be excluded from analysis.
 
--   MS1 pattern extraction - MS1 feature extraction is not implemented yet, but some parameters in this section are used in the analysis
+* **Minimal precursor purity** - Minimal % of intensity recorded parent ion constitutes of all ions that fit in the precursor isolation window.
 
-    -   Chromatogram extraction window - determines the width of the region across which ion chromatogram is extracted for each detected MSMS feature parent ion (feature RT +/- extraction window). If MS1-only files are present, chromatograms are extracted from these files, otherwise they are extracted from MS1 scan subset of the MSMS files.
-    -   Smoothing filter width - Savitzky Golay smoothing filter width for chromatogram extraction
+* **Precursor isolation window** - will be used if actual precursor isolation window is not recorded in mzML/mzXML files (this is the case with Agilent data, for example).
 
-Click "Extract MSMS features" to start the analysis. Progress dialog allows to monitor the search. Once the analysis is completed the message is displayed showing the number of features found in each MSMS raw data file ([Fig. 6](#msmsSearchCompleteMessage)).
+* **MSMS grouping** - it is common occurrence that more than one MSMS scan is acquired for the same MS feature during the elution of chromatographic peak, so to reduce the redundancy of the final MSMS feature set these scans may be combined to create an average spectrum.
 
-![Fig. 6 Information message for completed MSMS feature extraction](assets/images/OET/msmsSearchCompleteMessage.png){#msmsSearchCompleteMessage}
+    + **Group MSMS if within RT window of...** - MSMS scans must be within this RT distance to be considered for averaging.
+    + **Precursor mass tolerance** - mass difference between precursor ions for MSMS scans must be within this range for them to be considered for averaging.
+    + **Spectrum similarity cutoff** - MSMS similarity calculated as [entropy score](#ref) must be above this cutoff for MSMS scans to be considered for averaging.
+    + **Merge collision energies** - if checked, MSMS scans with different collision energies may be averaged when they satisfy all other cutoffs.
 
-Detected MSMS features are added to the data tree under corresponding file nodes. Clicking on the MSMS feature will display parent ion chromatogram(s), parent MS1 scan and extracted MSMS for the feature ([Fig. 7](#msmsSearchResultsInDataExaminer)).
+* **MSMS filtering** - this set of parameters determines how raw MSMS scan data are cleaned for creating the spectra.
 
-![Fig. 7 MSMS search results in raw data examiner panel](assets/images/OET/msmsSearchResultsInDataExaminer.png){#msmsSearchResultsInDataExaminer}
+    + **Remove all masses above parent ion** - in case of single-charged precursor this should remove unrelated contamination, but for double- or triple-charged species some valuable information may be lost.
+    + **Remove all masses below** - possible values are **Absolute, counts** or **Relative to base peak, %**, and set absolute or relative threshold for noise removal.
+    + **Leave only \# major fragments** - if number > 0 is specified, only that many major fragments will be retained.
 
-At this point you may either adjust the MSMS search parameters (e.g. change the cutoffs if the number of detected features is too small or too large) and re-run the search, or send the detected features to the MetIDTracker workbench panel for further analysis ([Fig. 8](#sendMSMStoWorkbench)).
+* **MS1 pattern extraction** - MS1 feature extraction is not implemented yet, but some parameters in this section are used in the analysis.
 
-![Fig. 8 Sending MSMS search results to workbench panel](assets/images/OET/sendMSMStoWorkbench.png){#sendMSMStoWorkbench}
+    + **Flag MSMS features where precursor is not monoisotopic peak** - it is quite common, especially for the more abundant features, that not monoisotopic peak but one of the heavier isotopes is isolated for fragmentation. This may affet the MSMS library matching and it is useful to know if the minor isotope was fragmentd instead of the monoisotopic peak.
+    
+        - **Minor isotope detection mass error, ppm** - controls the mass accuracy for isotope detection.
 
-MetIDTracker workbench allows to explore the data set (\[[Fig. 9](#idtWorkbenchWithMzRtPlot)), identify the MSMS features through library search and annotate features in various ways. You may save and close the experiment at any time now, all the search and annotation data are preserved between the sessions. You may also choose to upload the experiment to MetIDTracker database and continue the analysis in online mode. This process is covered in a separate [tutorial](db_experiment_from_offline_tutorial.html).
+    + **Chromatogram extraction window** - determines the width of the region across which ion chromatogram is extracted for each detected MSMS feature parent ion (feature RT +/- extraction window). If MS1-only files are present, chromatograms are extracted from these files, otherwise they are extracted from MS1 scan subset of the MSMS files.
 
-![Fig. 9 MSMS search results in workbench panel with MZ/RT data explorer dialog](assets/images/OET/idtWorkbenchWithMzRtPlot.png){#idtWorkbenchWithMzRtPlot}
+
+Click "Extract MSMS features" to start the analysis. Progress dialog allows to monitor the search. Once the analysis is completed the message is displayed showing the number of features found in each MSMS raw data file ([Fig. 7](#msmsSearchCompleteMessage)).
+ 
+ <br>
+ 
+![Fig. 7 Information message for completed MSMS feature extraction](assets/images/OET/msmsSearchCompleteMessage.png){#msmsSearchCompleteMessage}
+ 
+ <br>
+ 
+Detected MSMS features are added to the data tree under corresponding file nodes. Clicking on the MSMS feature will display parent ion chromatogram(s), parent MS1 scan and extracted MSMS for the feature ([Fig. 8](#msmsSearchResultsInDataExaminer)).
+ 
+ <br>
+ 
+![Fig. 8 MSMS search results in raw data examiner panel](assets/images/OET/msmsSearchResultsInDataExaminer.png){#msmsSearchResultsInDataExaminer}
+ 
+ <br>
+ 
+ ### Transferring the data to workbench
+ 
+At this point you may either adjust the MSMS search parameters (e.g. change the cutoffs if the number of detected features is too small or too large) and re-run the search, or send the detected features to the MetIDTracker workbench panel for further analysis ([Fig. 9](#sendMSMStoWorkbench)).
+ 
+ <br>
+
+![Fig. 9 Sending MSMS search results to workbench panel](assets/images/OET/sendMSMStoWorkbench.png){#sendMSMStoWorkbench}
+ 
+ <br>
+ 
+MetIDTracker workbench allows to explore the data set ([Fig. 10](#idtWorkbenchWithMzRtPlot)), identify the MSMS features through library search and annotate features in various ways. You may save and close the experiment at any time now, all the search and annotation data are preserved between the sessions. You may also choose to upload the experiment to MetIDTracker database and continue the analysis in online mode. This process is covered in a separate [tutorial](db_experiment_from_offline_tutorial.html).
+ 
+ <br>
+ 
+![Fig. 10 MSMS search results in workbench panel with MZ/RT data explorer dialog](assets/images/OET/idtWorkbenchWithMzRtPlot.png){#idtWorkbenchWithMzRtPlot}

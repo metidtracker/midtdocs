@@ -1,1 +1,7 @@
-# Report bugs
+---
+title: "Report bugs"
+output: 
+  html_document:
+    toc: FALSE
+---
+

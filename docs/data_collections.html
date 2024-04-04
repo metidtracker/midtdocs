@@ -1,0 +1,872 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+
+
+<title>Data collections</title>
+
+<script src="site_libs/header-attrs-2.26/header-attrs.js"></script>
+<script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/spacelab.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<style>h1 {font-size: 34px;}
+       h1.title {font-size: 38px;}
+       h2 {font-size: 30px;}
+       h3 {font-size: 24px;}
+       h4 {font-size: 18px;}
+       h5 {font-size: 16px;}
+       h6 {font-size: 12px;}
+       code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
+       pre:not([class]) { background-color: white }</style>
+<script src="site_libs/jqueryui-1.13.2/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/font-awesome-6.4.2/css/all.min.css" rel="stylesheet" />
+<link href="site_libs/font-awesome-6.4.2/css/v4-shims.min.css" rel="stylesheet" />
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+
+
+
+
+
+
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+details > summary > p:only-child {
+  display: inline;
+}
+pre code {
+  padding: 0;
+}
+</style>
+
+
+<style type="text/css">
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #adb5bd;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script type="text/javascript">
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark the anchor link active (and if it's in a dropdown, also mark that active)
+  var dropdown = menuAnchor.closest('li.dropdown');
+  if (window.bootstrap) { // Bootstrap 4+
+    menuAnchor.addClass('active');
+    dropdown.find('> .dropdown-toggle').addClass('active');
+  } else { // Bootstrap 3
+    menuAnchor.parent().addClass('active');
+    dropdown.addClass('active');
+  }
+
+  // Navbar adjustments
+  var navHeight = $(".navbar").first().height() + 15;
+  var style = document.createElement('style');
+  var pt = "padding-top: " + navHeight + "px; ";
+  var mt = "margin-top: -" + navHeight + "px; ";
+  var css = "";
+  // offset scroll position for anchor links (for fixed navbar)
+  for (var i = 1; i <= 6; i++) {
+    css += ".section h" + i + "{ " + pt + mt + "}\n";
+  }
+  style.innerHTML = "body {" + pt + "padding-bottom: 40px; }\n" + css;
+  document.head.appendChild(style);
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before, .tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "\e259";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "\e258";
+  font-family: 'Glyphicons Halflings';
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+
+
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+@media print {
+.toc-content {
+  /* see https://github.com/w3c/csswg-drafts/issues/4434 */
+  float: right;
+}
+}
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+.tocify-subheader {
+  display: inline;
+}
+.tocify-subheader .tocify-item {
+  font-size: 0.95em;
+}
+
+</style>
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="navbar navbar-inverse  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-bs-toggle="collapse" data-target="#navbar" data-bs-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">MetIDTracker documentation</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="./Setup.html">Setup</a>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    Manual
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="./basicOperations.html">Basic operations</a>
+    </li>
+    <li>
+      <a href="./trackerLims.html">MetIDTracker LIMS system</a>
+    </li>
+    <li>
+      <a href="./trackerWorkbench.html">MetIDTracker workbench</a>
+    </li>
+    <li>
+      <a href="./rawDataExaminer.html">Raw data examiner</a>
+    </li>
+    <li>
+      <a href="./compoundDatabase.html">Compound database</a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    Tutorials
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="./offline_experiment_tutorial.html">Creating offline raw data analysis experiment</a>
+    </li>
+    <li>
+      <a href="./db_experiment_from_offline_tutorial.html">Uploading offline experiment to database</a>
+    </li>
+    <li>
+      <a href="./db_experiment_from_Agilent_cef_tutorial.html">Creating database-stored experiment from Agilent MSMS search results</a>
+    </li>
+    <li>
+      <a href="./data_annotation.html">Data annotation in IDTracker workbench</a>
+    </li>
+    <li>
+      <a href="./data_collections.html">Data collections in workbench</a>
+    </li>
+  </ul>
+</li>
+<li>
+  <a href="./changelog.html">Change log</a>
+</li>
+<li>
+  <a href="./faq.html">FAQ</a>
+</li>
+<li>
+  <a href="./bugreport.html">Report bugs</a>
+</li>
+<li>
+  <a href="./developers.html">Developers</a>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li>
+  <a href="https://github.com/metidtracker/midtdocs">
+    <span class="fa fa-github fa-lg"></span>
+     
+  </a>
+</li>
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div id="header">
+
+
+
+<h1 class="title toc-ignore">Data collections</h1>
+
+</div>
+
+
+<div id="introduction" class="section level1">
+<h1>Introduction</h1>
+<p>IDTracker allows to create and store various types of data
+collections in order to simplify and streamline data analysis and
+interpretation. The following types of data collections are supported at
+the moment:</p>
+<ul>
+<li><p>MSMS feature collections</p></li>
+<li><p>MSMS feature cluster collections</p>
+<ul>
+<li>Based on MZ/RT search list</li>
+<li>Based on spectra similarity and optional retention time window</li>
+<li>Based on Binner annotations list</li>
+</ul></li>
+<li><p>MS/RT search lists</p></li>
+<li><p>Binner annotation lists</p></li>
+</ul>
+<p>Feature and cluster collections may be stored in the database, if
+underlying experimental data are already uploaded, or as parts of the
+offline raw data analysis experiments.</p>
+</div>
+<div id="managing-data-collections" class="section level1">
+<h1>Managing data collections</h1>
+<p>Data collection manager (<a href="#dataCollectionsManager">Fig.
+1</a>) allows to create, retrieve, edit, and delete various types of
+data collections. It hosts separate tabs for different data collection
+types (see sections below). The <img
+src="assets/images/icons/refreshDbData.png" width="24" height="24" />
+icon on the dialog toolbar is to force synchronization of all data
+collections with database.</p>
+<div class="float" id="dataCollectionsManager">
+<img src="assets/images/DM/dataCollectionsManager.png"
+alt="Fig. 1 Data collections manager dialog" />
+<div class="figcaption">Fig. 1 Data collections manager dialog</div>
+</div>
+<p><br/></p>
+<div id="feature-collection-manager" class="section level2">
+<h2>Feature collection manager</h2>
+<p>Feature collection manager (<a href="#dataCollectionsManager">Fig.
+1</a>, active tab) contains the list of existing MSMS feature
+collections with some associated metadata (optional description, # of
+features in collection, owner, date created). To retrieve the features
+for any of these collections and load them into the workbench you may
+either double-click on it, or select it and click “Load selected feature
+collection for analysis” button (<img
+src="assets/images/icons/openCollection.png" width="24" height="24" />)
+on the toolbar.</p>
+<p>When working with offline raw data analysis experiments only feature
+collections for this experiment are listed in the table. “Active
+experiment complete feature set” is the default collection that includes
+all the features in the offline experiment and can not be edited.</p>
+<div id="create-new-feature-collection" class="section level3">
+<h3>Create new feature collection</h3>
+<p>Feature collection manager allows to create new empty collection or
+new collection from the list of MSMS feature IDs. Click “New feature
+collection” button (<img src="assets/images/icons/newFeatureSubset.png"
+width="24" height="24" />) to call the feature collection editor dialog
+(<a href="#newFeatureCollection">Fig. 2</a>). Specify collection name
+and description (optional). Name would be checked against the existing
+collections to avoid confusion from duplicate collection names. If you
+have a list of MSMS feature IDs that you want to include in the new
+collection you may attach it using “Browse” button. The list must be a
+plain text file with single MSMS feature ID per line (MSN_ prefix
+followed by 12 numbers):</p>
+<pre><code>MSMS_FEATURE_ID
+MSN_000001281730
+MSN_000003604324
+MSN_000001282245
+MSN_000001282583
+......
+</code></pre>
+<p>Feature ID list will be verified against database, only existing
+feature will be included. Check the “Load collection in the workbench”
+checkbox if you are creating a non-empty collection and would like to
+start working with it right away. Click “Create new feature collection…”
+button to complete the process.</p>
+<div class="float" id="newFeatureCollection">
+<img src="assets/images/DM/newFeatureCollection.png"
+alt="Fig. 2 Create new feature collection dialog" />
+<div class="figcaption">Fig. 2 Create new feature collection
+dialog</div>
+</div>
+<p><br/></p>
+</div>
+<div id="edit-existing-feature-collection" class="section level3">
+<h3>Edit existing feature collection</h3>
+<p>You may edit name and description of existing collection, and add
+MSMS features to it from the text file the same way as when creating a
+new collection (<a href="#editFeatureCollection">Fig. 3</a>). Feature ID
+list would be verified against the database and all the features already
+present in the collection will be excluded to avoid duplication. New
+name would be verified to make sure that a different feature collection
+with the same name is not already present in the database or offline
+project.</p>
+<div class="float" id="editFeatureCollection">
+<img src="assets/images/DM/editFeatureCollection.png"
+alt="Fig. 3 Edit feature collection dialog" />
+<div class="figcaption">Fig. 3 Edit feature collection dialog</div>
+</div>
+<p><br/></p>
+<p>To delete the database-stored feature collection you must have
+administrative access to IDtracker.</p>
+</div>
+</div>
+<div id="feature-cluster-data-set-manager" class="section level2">
+<h2>Feature cluster data set manager</h2>
+<p>Feature cluster is a relatively small group of MS or MSMS features
+satisfying the set of criteria. For example it is possible to use the
+list of M/Z - retention time value pairs to search a large data set of
+MSMS features. In many cases there would be more than one MSMS feature
+for which parent ion M/Z and retention time will match the same MZ/RT
+value pair from the search list within specified tolerance limits. These
+MSMS features with similar MZ/RT values will be combined in a cluster
+and all clusters produced as a result of such search procedure will form
+a feature cluster data set. There are other ways to create feature
+cluster data sets which will be covered in separate sections of the
+manual and tutorials. Feature cluster data sets may be stored in the
+database, if underlying experimental data are already uploaded, or as a
+part of the offline raw data analysis experiment.</p>
+<p>All feature cluster data sets currently stored in the database are
+listed in the table on the “MSMS feature cluster data sets” tab of the
+data collections manager (<a href="#msmsClusterDataSetManager">Fig.
+4</a>).</p>
+<div class="float" id="msmsClusterDataSetManager">
+<img src="assets/images/DM/msmsClusterDataSetManager.png"
+alt="Fig. 4 Feature cluster collection manager" />
+<div class="figcaption">Fig. 4 Feature cluster collection manager</div>
+</div>
+<p><br/></p>
+<p>To load the feature cluster data set into the workbench you may
+either double-click on it in the table, or select it and click “Load
+selected MSMS cluster data set for analysis” button (<img
+src="assets/images/icons/openCollection.png" width="24" height="24" />)
+on the toolbar.</p>
+<div id="edit-existing-cluster-data-set" class="section level3">
+<h3>Edit existing cluster data set</h3>
+<p>You may edit name and description of existing cluster data set (<a
+href="#editFeatureClusterCollection">Fig. 5</a>). New name would be
+verified to make sure that a different feature cluster data set with
+this name is not already present in the database or offline project.</p>
+<div class="float" id="editFeatureClusterCollection">
+<img src="assets/images/DM/editFeatureClusterCollection.png"
+alt="Fig. 5 Edit feature cluster data set dialog" />
+<div class="figcaption">Fig. 5 Edit feature cluster data set
+dialog</div>
+</div>
+<p><br/></p>
+<p>To delete the database-stored feature cluster data set you must have
+administrative access to IDtracker.</p>
+</div>
+</div>
+<div id="feature-lookup-list-manager" class="section level2">
+<h2>Feature lookup list manager</h2>
+<p>Analysis of untargeted metabolomics data often produces a number of
+unknown (unidentified) features of interest that are characterized only
+by monoisotopic M/Z and retention time. It is possible to use these
+lists of MZ-RT pairs to search the annotated MSMS data in IDTraker in
+order to help with the identification of unknowns. With
+database-centered workflow is is useful to store both the search results
+(in the form of feature cluster data set) and the list of features used
+for the search (feature lookup list). All currently available feature
+lookup lists are shown in the table on the “Feature lookup lists” tab of
+the data collection manager (<a href="#featureLookupDataSets">Fig.
+6</a>).</p>
+<div class="float" id="featureLookupDataSets">
+<img src="assets/images/DM/featureLookupDataSets.png"
+alt="Fig. 6 Feature lookup list manager" />
+<div class="figcaption">Fig. 6 Feature lookup list manager</div>
+</div>
+<p><br/></p>
+<div id="create-new-feature-lookup-list" class="section level3">
+<h3>Create new feature lookup list</h3>
+<p>Click “Create new feature lookup list” button (<img
+src="assets/images/icons/newFeatureSubset.png" width="24"
+height="24" />) to call the feature lookup list editor dialog (<a
+href="#createNewFeatureLookupDataSet">Fig. 7</a>). Specify list name and
+description (optional). Name would be checked against the existing lists
+to avoid confusion from duplicates.</p>
+<div class="float" id="createNewFeatureLookupDataSet">
+<img src="assets/images/DM/createNewFeatureLookupDataSet.png"
+alt="Fig. 7 Create new feature lookup list dialog" />
+<div class="figcaption">Fig. 7 Create new feature lookup list
+dialog</div>
+</div>
+<p><br/></p>
+<p>List of features may be imported from plain text file (TAB or comma
+delimited), or from CEF file. Text files must have a header line that
+contains MZ, RT, and Name columns. Rank, SMILES, InChiKey, P-value, and
+Fold change columns are optional. Rank, P-value, and Fold change columns
+must contain numbers and may be used to sort the search results by
+importance (higher rank -&gt; more important feature, etc.). SMILES may
+be used to display the structure of the lookup features when known.
+InChiKey may be used to find the SMILES for the features in the internal
+compound database when SMILES are not provided in the input list.</p>
+</div>
+<div id="edit-existing-feature-lookup-list" class="section level3">
+<h3>Edit existing feature lookup list</h3>
+<p>To edit name and description of the existing feature lookup list
+double click on the corresponding line in the Feature lookup list
+manager or select the list in the table and click (<img
+src="assets/images/icons/editCollection.png" width="24" height="24" />)
+icon on the toolbar to bring up the editor dialog (<a
+href="#ditFeatureLookupList">Fig. 8</a>).</p>
+<div class="float" id="editFeatureLookupList">
+<img src="assets/images/DM/editFeatureLookupList.png"
+alt="Fig. 8 Edit existing feature lookup list dialog" />
+<div class="figcaption">Fig. 8 Edit existing feature lookup list
+dialog</div>
+</div>
+<p><br/></p>
+<p>To delete the database-stored feature lookup list you must have
+administrative access to IDtracker.</p>
+</div>
+</div>
+<div id="binner-annotation-data-sets-manager" class="section level2">
+<h2>Binner annotation data sets manager</h2>
+<p>Binner is an application that allows to find related MS features
+(isotopologues, adducts, and in-source fragments) using a set of MS1
+data. Binner annotations may help to identify MSMS features by correctly
+defining the type of parent ion as opposed to the default [M+H]/[M-H].
+Similarly to the lists of lookup features, Binner annotation data sets
+may be stored in the IDtracker database in order to provide
+reproducibility and ease of reuse. All currently available Binner
+annotation data sets are shown in the table on the “Binner annotation
+data sets” tab of the data collection manager (<a
+href="#binnerAnnotationDataSets">Fig. 9</a>).</p>
+<div class="float" id="binnerAnnotationDataSets">
+<img src="assets/images/DM/binnerAnnotationDataSets.png"
+alt="Fig. 9 Binner annotation data set manager" />
+<div class="figcaption">Fig. 9 Binner annotation data set manager</div>
+</div>
+<p><br/></p>
+<div id="add-new-binner-annotation-data-set" class="section level3">
+<h3>Add new Binner annotation data set</h3>
+<p>Click “Create new Binner annotation data set” button (<img
+src="assets/images/icons/newFeatureSubset.png" width="24"
+height="24" />) to call the Binner annotation data set editor dialog (<a
+href="#createNewBinnerAnnotationsDataSet">Fig. 10</a>). Specify data set
+name and description (optional). Name would be checked against the
+existing lists to avoid confusion from duplicates. Depending on the
+settings Binner may stil contain some redundant features which will
+create problems when searching for MSMS features in IDTracker database.
+To remove this redundancy small M/Z and RT windows are used during the
+import to combine the data for redundant Binner features (molecular
+ions). Default values are 20 ppm for M/Z and 0.3 min for retention time.
+Click “Import Binner annotations from file” button and select Binner
+output Excel file. Binner output files are often quite large and import
+may take some time. Once import is completed the parsed data are
+displayed in the table at the bottom of the dialog.</p>
+<div class="float" id="createNewBinnerAnnotationsDataSet">
+<img src="assets/images/DM/createNewBinnerAnnotationsDataSet.png"
+alt="Fig. 10 Binner annotation data set manager" />
+<div class="figcaption">Fig. 10 Binner annotation data set manager</div>
+</div>
+<p><br/></p>
+</div>
+<div id="edit-existing-binner-annotation-data-set"
+class="section level3">
+<h3>Edit existing Binner annotation data set</h3>
+<p>To edit name and description of the existing Binner annotation data
+set double click on the corresponding line in the Binner annotation data
+set manager or select the data set in the table and click (<img
+src="assets/images/icons/editCollection.png" width="24" height="24" />)
+icon on the toolbar to bring up the editor dialog (<a
+href="#editBinnerAnnotationsDataSet">Fig. 11</a>).</p>
+<div class="float" id="editBinnerAnnotationsDataSet">
+<img src="assets/images/DM/editBinnerAnnotationsDataSet.png"
+alt="Fig. 11 Edit existing Binner annotation data set dialog" />
+<div class="figcaption">Fig. 11 Edit existing Binner annotation data set
+dialog</div>
+</div>
+<p><br/></p>
+<p>To delete the database-stored Binner annotation data set you must
+have administrative access to IDtracker.</p>
+</div>
+</div>
+</div>
+<div id="using-feature-collections" class="section level1">
+<h1>Using feature collections</h1>
+<div id="adding-features-to-collection" class="section level2">
+<h2>Adding features to collection</h2>
+<p>You may add one or more MSMS features to any of the existing
+collections or create a new collections and add selected features to it
+in a single operation. A few different ways to do it are described in
+the sections below.</p>
+<div id="adding-from-msms-feature-table" class="section level3">
+<h3>Adding from MSMS feature table</h3>
+<p>Select one or more features in the MSMS feature table. Press and hold
+“Shift” button to make the continuous selection of rows. Press and hold
+“Control” button to select non-adjacent rows. click on any row and then
+press “Control-A” to select all visible rows in the table. When the rows
+of interest are selected, right-click on the table to display the
+context popup menu (<a href="#addFeaturesToCollectionFromTable">Fig.
+12</a>). The following options are available:</p>
+<ul>
+<li>Create new collection from selected features</li>
+<li>Add selected features to recent collection</li>
+<li>Add selected features to existing collection</li>
+<li>Remove selected features from the currently active collection</li>
+</ul>
+<div class="float" id="addFeaturesToCollectionFromTable">
+<img src="assets/images/DM/addFeaturesToCollectionFromTable.png"
+alt="Fig. 12 Edit existing Binner annotation data set dialog" />
+<div class="figcaption">Fig. 12 Edit existing Binner annotation data set
+dialog</div>
+</div>
+<p><br/></p>
+<p>If you choose “Create new collection from selected features”, the
+feature collection editor dialog (<a
+href="#createNewFeatureCollectionFromSelected">Fig. 13</a>) will be
+shown. After you specify the new collection name, optional description
+and click “Create new feature collection with selected features”, the
+new collection will be saved to the IDtracker database. If you are
+working with the offline project new collection will be added to this
+project, but you must save the project to be able to use it in the later
+sessions (the “Save project” prompt is always displayed when closing the
+project or closing the software with active project).</p>
+<div class="float" id="createNewFeatureCollectionFromSelected">
+<img src="assets/images/DM/createNewFeatureCollectionFromSelected.png"
+alt="Fig. 13 Creating new feature collection from selected features" />
+<div class="figcaption">Fig. 13 Creating new feature collection from
+selected features</div>
+</div>
+<p><br/></p>
+<p>If you choose “Add selected features to recent collection” you can
+add the features to any of the recently opened collections listed in the
+sub-menu (<a href="#addFeaturesToCollectionFromTable">Fig. 12</a>). This
+list is updated every time you load the existing feature collection for
+analysis or create new the collection. Its maximum size is now set to 15
+items. In the menu they are sorted in alphabetical order, but internally
+stored in the order they were added. After maximum size is reached the
+oldest item in the list will be removed to free the space for the new
+one.</p>
+<p>If the collection to which you want to add the features already
+exists but is not in the “Recent …” list you must use the “Add selected
+features to existing collection” option. The list of all available
+collections will be shown (<a
+href="#addFeaturesToExistingCollection">Fig. 14</a>), select the
+collection of interest and click “Add features to selected collection”
+button to complete the operation.</p>
+<div class="float" id="addFeaturesToExistingCollection">
+<img src="assets/images/DM/addFeaturesToExistingCollection.png"
+alt="Fig. 14 Add feature(s) to the existing collection dialog" />
+<div class="figcaption">Fig. 14 Add feature(s) to the existing
+collection dialog</div>
+</div>
+<p><br/></p>
+<p>To remove the selected features from the currently active collection
+you must be the owner of this collection (as listed in the “Created by”
+column of the feature collection manager).</p>
+</div>
+<div id="adding-from-mzrt-plot" class="section level3">
+<h3>Adding from MZ/RT plot</h3>
+<p>Sometimes it may be useful to explore the data set using MZ/RT plot.
+To show the plot window go to “Explore data” menu in the IDTracker
+workbench menu bar and select “Show MetIDTracker data explorer” (<a
+href="#showDataExplorerPlot">Fig. 15</a>). When you call it the first
+time, the plot will be empty and you must click the “Refresh plot”
+button to populate it.</p>
+<div class="float" id="showDataExplorerPlot">
+<img src="assets/images/DM/showDataExplorerPlot.png"
+alt="Fig. 15 IDtracker data explorer plot" />
+<div class="figcaption">Fig. 15 IDtracker data explorer plot</div>
+</div>
+<p><br/></p>
+<p>Different plot controls will be covered elsewhere. This section of
+the tutorial will only explain how to select a group of features and add
+them to the feature collection.</p>
+<p>Zoom to the region of interest on the plot, press and hold the
+“Shift” button, then press the left mouse button and drag the mouse
+until the features of interest are within the highlighted rectangle.
+Right-click on the highlight to display the context popup menu (<a
+href="#addFeaturesToCollectionFromMZRTPlot">Fig. 16</a>). Options for
+adding the features to collections are the same as described in the <a
+href="#adding-from-msms-feature-table">Adding from MSMS feature
+table</a> section above.</p>
+<p>To clear the selection press “Shift” and click anywhere within the
+plot area.</p>
+<div class="float" id="addFeaturesToCollectionFromMZRTPlot">
+<img src="assets/images/DM/addFeaturesToCollectionFromMZRTPlot.png"
+alt="Fig. 16 Adding the features to collection from IDtracker data explorer plot" />
+<div class="figcaption">Fig. 16 Adding the features to collection from
+IDtracker data explorer plot</div>
+</div>
+<p><br/></p>
+</div>
+<div id="adding-from-mz-freaquency-analysis-window"
+class="section level3">
+<h3>Adding from M/Z freaquency analysis window</h3>
+</div>
+</div>
+</div>
+
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open');
+  });
+});
+</script>
+
+<!-- code folding -->
+
+<script>
+$(document).ready(function ()  {
+
+    // temporarily add toc-ignore selector to headers for the consistency with Pandoc
+    $('.unlisted.unnumbered').addClass('toc-ignore')
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_');
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = false;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

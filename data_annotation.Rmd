@@ -1,0 +1,32 @@
+---
+title: "Data annotation"
+---
+
+# Introduction
+
+IDTracker software allows to annotate the data in a number of ways. Some types of annotation are applied automatically based on the results of data processing (e.g. type of MSMS match, identification status, whether parent MSMS ion is not a monoisotopic peak). Other types of annotation, such as ID level, standard annotation, free form text annotation, linked document, may be assigned by the user. Data also may be retrieved from the database based on the combination of assigned annotations.
+
+# Manually assigned annotations
+
+## Identification level
+
+
+## Standard annotation
+
+
+## Free form annotation
+
+
+## Linking documents as annottaion
+
+
+# Automatically assigned annotations
+
+
+## MSMS match type
+
+
+## Parent ion from minor isotope
+
+
+

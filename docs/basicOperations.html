@@ -1,0 +1,770 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+
+
+<title>Basic operations</title>
+
+<script src="site_libs/header-attrs-2.26/header-attrs.js"></script>
+<script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/spacelab.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<style>h1 {font-size: 34px;}
+       h1.title {font-size: 38px;}
+       h2 {font-size: 30px;}
+       h3 {font-size: 24px;}
+       h4 {font-size: 18px;}
+       h5 {font-size: 16px;}
+       h6 {font-size: 12px;}
+       code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
+       pre:not([class]) { background-color: white }</style>
+<script src="site_libs/jqueryui-1.13.2/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/font-awesome-6.4.2/css/all.min.css" rel="stylesheet" />
+<link href="site_libs/font-awesome-6.4.2/css/v4-shims.min.css" rel="stylesheet" />
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+
+
+
+
+
+
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+details > summary > p:only-child {
+  display: inline;
+}
+pre code {
+  padding: 0;
+}
+</style>
+
+
+<style type="text/css">
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #adb5bd;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script type="text/javascript">
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark the anchor link active (and if it's in a dropdown, also mark that active)
+  var dropdown = menuAnchor.closest('li.dropdown');
+  if (window.bootstrap) { // Bootstrap 4+
+    menuAnchor.addClass('active');
+    dropdown.find('> .dropdown-toggle').addClass('active');
+  } else { // Bootstrap 3
+    menuAnchor.parent().addClass('active');
+    dropdown.addClass('active');
+  }
+
+  // Navbar adjustments
+  var navHeight = $(".navbar").first().height() + 15;
+  var style = document.createElement('style');
+  var pt = "padding-top: " + navHeight + "px; ";
+  var mt = "margin-top: -" + navHeight + "px; ";
+  var css = "";
+  // offset scroll position for anchor links (for fixed navbar)
+  for (var i = 1; i <= 6; i++) {
+    css += ".section h" + i + "{ " + pt + mt + "}\n";
+  }
+  style.innerHTML = "body {" + pt + "padding-bottom: 40px; }\n" + css;
+  document.head.appendChild(style);
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before, .tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "\e259";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "\e258";
+  font-family: 'Glyphicons Halflings';
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+
+
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+@media print {
+.toc-content {
+  /* see https://github.com/w3c/csswg-drafts/issues/4434 */
+  float: right;
+}
+}
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+.tocify-subheader {
+  display: inline;
+}
+.tocify-subheader .tocify-item {
+  font-size: 0.95em;
+}
+
+</style>
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="navbar navbar-inverse  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-bs-toggle="collapse" data-target="#navbar" data-bs-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">MetIDTracker documentation</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="./Setup.html">Setup</a>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    Manual
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="./basicOperations.html">Basic operations</a>
+    </li>
+    <li>
+      <a href="./trackerLims.html">MetIDTracker LIMS system</a>
+    </li>
+    <li>
+      <a href="./trackerWorkbench.html">MetIDTracker workbench</a>
+    </li>
+    <li>
+      <a href="./rawDataExaminer.html">Raw data examiner</a>
+    </li>
+    <li>
+      <a href="./compoundDatabase.html">Compound database</a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    Tutorials
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="./offline_experiment_tutorial.html">Creating offline raw data analysis experiment</a>
+    </li>
+    <li>
+      <a href="./db_experiment_from_offline_tutorial.html">Uploading offline experiment to database</a>
+    </li>
+    <li>
+      <a href="./db_experiment_from_Agilent_cef_tutorial.html">Creating database-stored experiment from Agilent MSMS search results</a>
+    </li>
+    <li>
+      <a href="./data_annotation.html">Data annotation in IDTracker workbench</a>
+    </li>
+    <li>
+      <a href="./data_collections.html">Data collections in workbench</a>
+    </li>
+  </ul>
+</li>
+<li>
+  <a href="./changelog.html">Change log</a>
+</li>
+<li>
+  <a href="./faq.html">FAQ</a>
+</li>
+<li>
+  <a href="./bugreport.html">Report bugs</a>
+</li>
+<li>
+  <a href="./developers.html">Developers</a>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li>
+  <a href="https://github.com/metidtracker/midtdocs">
+    <span class="fa fa-github fa-lg"></span>
+     
+  </a>
+</li>
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div id="header">
+
+
+
+<h1 class="title toc-ignore">Basic operations</h1>
+
+</div>
+
+
+<p>MetIDTracker is intended to be used as a tool for collaborative
+annotation of LC-MS/MSMS data. It is developed to improve the
+identification confidence in untargeted metabolomics experiments but may
+also be used to annotate other kinds of MS/MSMS data.</p>
+<p>The system includes two components - the software with graphic user
+interface and the database. The database serves as a repository for
+reference data (compound database, MSMS libraries, etc.), experimental
+results (MS and MSMS spectra), and metadata (sample description,
+experimental conditions, instrument methods, etc.). Multiple users may
+access the same database and collaborate on the annotation of
+spectra.</p>
+<p>It is highly recommended to run the software on a computer with at
+least 16GB RAM and to use a large high-resolution monitor (24” or
+more).</p>
+<div id="staring-the-program" class="section level2">
+<h2>Staring the program</h2>
+<p>To start MetIDTracker double-click StartMetIDTracker.bat file inside
+the MetIDTracker… folder. Software distribution includes its own version
+of Java runtime, so it doesn’t matter if you have Java installed on your
+computer or not. By default, maximum RAM allocation for the program is
+set to 8GB. If your computer has RAM smaller than 12GB you may want to
+reduce memory allocation to MetIDTracker by editing HEAP_SIZE variable
+in the StartMetIDTracker.bat file before starting the program. The
+software was not tested with memory allocation of less than 4GB,
+however.</p>
+<div id="establishing-connection-between-metidtracker-and-database"
+class="section level3">
+<h3>Establishing connection between MetIDTracker and database</h3>
+<p>During program startup it will try to establish connection with the
+database using the settings from preferences. If this fails (e.g. during
+the first time you run the program, when database location and
+credentials were not provided yet), Database connection setup dialog is
+displayed (<a href="#db_conn_setup_dialog">Fig. 1</a>).</p>
+<div class="float" id="db_conn_setup_dialog">
+<img src="assets/images/5bf92be9f759.001.png"
+alt="Fig. 1 Database connection setup dialog" />
+<div class="figcaption">Fig. 1 Database connection setup dialog</div>
+</div>
+<p>Edit host name, port, user, and password fields to match the
+parameters of your database configuration (SID/database and schema are
+determined by the database dump you’ve used at the previous steps and
+should not be changed). Click “Test connection” (<a
+href="#db_connection_test_dialog">Fig. 2</a>) button to verify that
+database connection can be established using the parameters in the form.
+Click “Continue program startup” to save the connection parameters and
+launch the program.</p>
+<div class="float" id="db_connection_test_dialog">
+<img src="assets/images/5bf92be9f759.002.png"
+alt="Fig. 2 Testing database connection parameters" />
+<div class="figcaption">Fig. 2 Testing database connection
+parameters</div>
+</div>
+<p>Database connection parameters are stored in program preferences and
+unless the database can not be accessed (because it is down or there are
+network issues) or access credentials are changed, the connection will
+be established automatically, and Database connection setup dialog will
+not be shown.</p>
+<p>While the program is starting up it will display the splash screen
+with the program version and build date (<a href="#startup_splash">Fig.
+3</a>).</p>
+<div class="float" id="startup_splash">
+<img src="assets/images/5bf92be9f759.003.png"
+alt="Fig. 3 Startup splash screen" />
+<div class="figcaption">Fig. 3 Startup splash screen</div>
+</div>
+<p>Current startup operation is displayed in blue at the bottom of the
+splash screen “Initializing user interface” stage may take some time
+(half a minute or more, depending on the available CPU resources and
+RAM).</p>
+</div>
+<div id="logging-into-the-database" class="section level3">
+<h3>Logging into the database</h3>
+<p>MetIDTracker is a collaborative environment, and each user must
+provide his/her personal credentials to access and annotate the data. In
+the fresh installation there is a single user in the database with
+username “admin” and password “admin” (no quotations). Admin user may
+create other users with administrative or regular access, and it is
+recommended to change the admin password during the first program
+run.</p>
+<p>At every program startup the login dialog is presented (<a
+href="#login_dialog">Fig. 4</a>). You must be logged in in to use the
+software.</p>
+<div class="float" id="login_dialog">
+<img src="assets/images/database_login_dialog.png"
+alt="Fig. 4 MetIDTracker login dialog" />
+<div class="figcaption">Fig. 4 MetIDTracker login dialog</div>
+</div>
+<p>Users may change their passwords. To do that, click “Change password”
+button on the login dialog, fill all the information in the “Change
+password” dialog (<a href="#change_password_dialog">Fig. 5</a>) and
+click “Change password” button to confirm the change. Enter new password
+in the login dialog and click “Log in”.</p>
+<div class="float" id="change_password_dialog">
+<img src="assets/images/change_password_dialog.png"
+alt="Fig. 5 Change password dialog" />
+<div class="figcaption">Fig. 5 Change password dialog</div>
+</div>
+<p>Once you log in, the software will fetch the necessary data from the
+database (progress dialog will be displayed during that time). Your name
+and user icon will show as the first item of the “Database access” menu.
+If you log in as a user with administrative privileges, <img
+src="assets/images/icons/activeUser.png" width="24" height="24" /> icon
+is replaced by <img src="assets/images/icons/superUser.png" width="24"
+height="24" /> (superuser), and “Show user manager” and “Show
+organization manager” items on the “Database access” menu are
+activated.</p>
+</div>
+</div>
+<div id="managing-system-users" class="section level2">
+<h2>Managing system users</h2>
+<p>If you log in as a user with administrative privileges, you will be
+able to access the User Manager (<a href="#user_manager_dialog">Fig.
+6</a>) through the “Database access” menu. Use icons on the panel
+toolbar to create, edit or delete the users. “Create User” and “Edit
+User” dialogs (<a href="#user_editor_dialog">Fig. 7</a>) are identical,
+except “Edit User” dialog is pre-populated with the data for user
+selected in the User Manager. All fields must be populated with data.
+Every user has to be associate with organization (see the section
+below).</p>
+<div class="float" id="user_manager_dialog">
+<img src="assets/images/user_manager_dialog.png"
+alt="Fig. 6 User manager dialog" />
+<div class="figcaption">Fig. 6 User manager dialog</div>
+</div>
+<div class="float" id="user_editor_dialog">
+<img src="assets/images/edit_user_dialog.png"
+alt="Fig. 7 User editor dialog" />
+<div class="figcaption">Fig. 7 User editor dialog</div>
+</div>
+</div>
+<div id="managing-organizations" class="section level2">
+<h2>Managing organizations</h2>
+<p>MetIDTracker is developed as a part of a larger software package
+adapted to the needs of the service lab, so the underlying database
+requires some additional structured information about the users.
+Organization Manager (<a href="#organization_manager_dialog">Fig.
+8</a>), available for users with administrative access, allows users to
+add or edit this information. You may open Organization Manager through
+the “Database access” menu.Use icons on the panel toolbar to create,
+edit or delete the organizations.</p>
+<div class="float" id="organization_manager_dialog">
+<img src="assets/images/organization_manager_dialog.png"
+alt="Fig. 8 Organization Manager" />
+<div class="figcaption">Fig. 8 Organization Manager</div>
+</div>
+<p>“Add New Organization” and “Edit Organization” dialogs (<a
+href="#organization_editor_dialog">Fig. 9</a>) are identical, except the
+“Edit Organization” dialog is pre-populated with the data for
+organization selected in the Organization Manager. All fields must be
+populated with data.</p>
+<div class="float" id="organization_editor_dialog">
+<img src="assets/images/organization_editor_dialog.png"
+alt="Fig. 9 Organization editor dialog" />
+<div class="figcaption">Fig. 9 Organization editor dialog</div>
+</div>
+</div>
+<div id="general-notes-about-graphical-user-interface"
+class="section level2">
+<h2>General notes about Graphical User Interface</h2>
+<div id="rearranging-panels" class="section level3">
+<h3>Rearranging panels</h3>
+<p>The user interface is based on DockingFrames library
+(www.docking-frames.org). It allows for flexible customization of the
+working area based on user preferences, preserving the layout between
+the sessions, and using more than one computer monitor for data
+analysis.</p>
+<div class="float" id="df_panel_controls">
+<img src="assets/images/5bf92be9f759.011.png"
+alt="Fig. 10 Panel controls" />
+<div class="figcaption">Fig. 10 Panel controls</div>
+</div>
+<p>Panel controls used in the new GUI are shown on <a
+href="#df_panel_controls">Fig. 10</a>. The horizontal bar (1) allows to
+minimize any panel to a small bar with icon, panel name and “restore”
+button (4). The corner button (2) allows to toggle the panel between its
+current size maximized within its parent panel. The detach/attach button
+(3) is present only on major panels (“MetIDTracker workbench”,
+“MetIDTracker LIMS”, “Raw data examiner”, “Databases”). It allows the
+user to use the whole panel as a separate program window that may be
+moved to the second monitor.</p>
+<p>All major panels may be rearranged inside the main program window and
+all smaller panels inside each of the major panels may also be
+rearranged according to user preferences. Moving the panel is achieved
+by clicking on its title tab (5) and dragging it to the desired
+location. Legitimate locations are highlighted by the blue frame and
+panel will snap to the new position when you release the mouse button
+(<a href="#df_rearrange_panels">Fig. 11</a>).</p>
+<div class="float" id="df_rearrange_panels">
+<img src="assets/images/5bf92be9f759.012.png"
+alt="Fig. 11 Switching between side-by-side and overlay layouts and back using drag and drop" />
+<div class="figcaption">Fig. 11 Switching between side-by-side and
+overlay layouts and back using drag and drop</div>
+</div>
+<p>Layout of all program windows is preserved between sessions (program
+will re-open with the layout it when last closed). User may show/hide
+major program panels using “Panels” menu (<a
+href="#global_panels_menu">Fig2.12</a>).</p>
+<div class="float" id="global_panels_menu">
+<img src="assets/images/5bf92be9f759.013.png"
+alt="Fig. 12 Program panels menu" />
+<div class="figcaption">Fig. 12 Program panels menu</div>
+</div>
+<p>All top-level panels include the menu bar with the last menu “Panels”
+which allows to select which sub-panels of the panel are visible and
+which are hidden (<a href="#sub_panels_menu">Fig. 13</a>). They also
+have an additional icon next to panel controls to call the popup menu
+for all the commands associated with the panel (<a
+href="#panel_commands_menu">Fig. 14</a>).</p>
+<div class="float" id="sub_panels_menu">
+<img src="assets/images/sub_panels_menu.png"
+alt="Fig. 13 Sub-panels menu" />
+<div class="figcaption">Fig. 13 Sub-panels menu</div>
+</div>
+<div class="float" id="panel_commands_menu">
+<img src="assets/images/panel_commands_menu.png"
+alt="Fig. 14 Panel commands menu" />
+<div class="figcaption">Fig. 14 Panel commands menu</div>
+</div>
+</div>
+<div id="progress-dialog" class="section level3">
+<h3>Progress dialog</h3>
+<p>The progress dialog serves several purposes: it allows the user to
+monitor the execution of long tasks (database search, library search,
+etc.), it prevents the user from interacting with the program when the
+tasks that require heavy computations are running, and it allows the
+user to interrupt the long running tasks if necessary using commands
+from the context menu (<a href="#progress_dialog">Fig. 15</a>). Maximal
+allowed number of concurrent running tasks is defined in the general
+preferences.</p>
+<div class="float" id="progress_dialog">
+<img src="assets/images/progress_dialog.png"
+alt="Fig. 15 Progress dialog" />
+<div class="figcaption">Fig. 15 Progress dialog</div>
+</div>
+</div>
+<div id="table-layout-manager" class="section level3">
+<h3>Table layout manager</h3>
+<p>Some of the ID tracker tables contain a large number of columns which
+makes it difficult to see the necessary data and in different workflows
+the most suitable subset of columns, relative column order and line
+sorting order may be different. This manual describes how to customize
+these parameters.</p>
+<p>To call table customization dialog right-click on the table header
+and select “Show table preferences” near the bottom of the context popup
+menu (<a href="#thPopupMenu">Fig. 16</a>).</p>
+<div class="float" id="thPopupMenu">
+<img src="assets/images/5bf92be9f759.114.png"
+alt="Fig. 16 Table header context popup menu" />
+<div class="figcaption">Fig. 16 Table header context popup menu</div>
+</div>
+<p>The table customization dialog has two parts (<a
+href="#customizeTableDialog">Fig. 17</a>). The upper part contains all
+the columns in the current order. All hidden columns are listed at the
+end. To enable or disable the column check/un-check the corresponding
+box in the “Visible” column.</p>
+<div class="float" id="customizeTableDialog">
+<img src="assets/images/5bf92be9f759.115.png"
+alt="Fig. 17 Table customization dialog" />
+<div class="figcaption">Fig. 17 Table customization dialog</div>
+</div>
+<p>It is now possible to sort the tables by multiple columns
+(Excel-like). To add the column to the sorter select it in the upper
+list, right-click and choose “Add column to sorter” from the context
+menu. The selected column will appear at the end of the sorter list
+below with ascending sort direction by default. You may change the
+direction of the sorting by selecting the necessary value in the “Sort
+order” column (<a href="#changing_sort_order">Fig. 18</a>).</p>
+<div class="float" id="changing_sort_order">
+<img src="assets/images/5bf92be9f759.116.png"
+alt="Fig. 18 Changing sort order" />
+<div class="figcaption">Fig. 18 Changing sort order</div>
+</div>
+<p>To change sorting priority, select the sorter in the list,
+right-click and select “Increase sort priority to move sorter up,
+or”Decrease …” to move it down. Select “Remove column from sorter” to
+stop sorting by the values in this column (<a
+href="#changing_sort_priority">Fig. 19</a>).</p>
+<div class="float" id="changing_sort_priority">
+<img src="assets/images/5bf92be9f759.117.png"
+alt="Fig. 19 Changing sort priority" />
+<div class="figcaption">Fig. 19 Changing sort priority</div>
+</div>
+<p>Click “Apply” to apply the changes to the table. The changes will be
+saved, and the new layout will be used the next time you start the
+software. It also applies to the order of the columns. To reorder
+columns click and drag the column header to the new position (this
+operation is disabled on some tables, so the column order remains
+constant).</p>
+</div>
+</div>
+
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open');
+  });
+});
+</script>
+
+<!-- code folding -->
+
+<script>
+$(document).ready(function ()  {
+
+    // temporarily add toc-ignore selector to headers for the consistency with Pandoc
+    $('.unlisted.unnumbered').addClass('toc-ignore')
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_');
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = false;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

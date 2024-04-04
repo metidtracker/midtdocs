@@ -1,0 +1,780 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+
+
+<title>MetIDTracker LIMS system</title>
+
+<script src="site_libs/header-attrs-2.26/header-attrs.js"></script>
+<script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/spacelab.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<style>h1 {font-size: 34px;}
+       h1.title {font-size: 38px;}
+       h2 {font-size: 30px;}
+       h3 {font-size: 24px;}
+       h4 {font-size: 18px;}
+       h5 {font-size: 16px;}
+       h6 {font-size: 12px;}
+       code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
+       pre:not([class]) { background-color: white }</style>
+<script src="site_libs/jqueryui-1.13.2/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/font-awesome-6.4.2/css/all.min.css" rel="stylesheet" />
+<link href="site_libs/font-awesome-6.4.2/css/v4-shims.min.css" rel="stylesheet" />
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+
+
+
+
+
+
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+details > summary > p:only-child {
+  display: inline;
+}
+pre code {
+  padding: 0;
+}
+</style>
+
+
+<style type="text/css">
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #adb5bd;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script type="text/javascript">
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark the anchor link active (and if it's in a dropdown, also mark that active)
+  var dropdown = menuAnchor.closest('li.dropdown');
+  if (window.bootstrap) { // Bootstrap 4+
+    menuAnchor.addClass('active');
+    dropdown.find('> .dropdown-toggle').addClass('active');
+  } else { // Bootstrap 3
+    menuAnchor.parent().addClass('active');
+    dropdown.addClass('active');
+  }
+
+  // Navbar adjustments
+  var navHeight = $(".navbar").first().height() + 15;
+  var style = document.createElement('style');
+  var pt = "padding-top: " + navHeight + "px; ";
+  var mt = "margin-top: -" + navHeight + "px; ";
+  var css = "";
+  // offset scroll position for anchor links (for fixed navbar)
+  for (var i = 1; i <= 6; i++) {
+    css += ".section h" + i + "{ " + pt + mt + "}\n";
+  }
+  style.innerHTML = "body {" + pt + "padding-bottom: 40px; }\n" + css;
+  document.head.appendChild(style);
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before, .tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "\e259";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "\e258";
+  font-family: 'Glyphicons Halflings';
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+
+
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+@media print {
+.toc-content {
+  /* see https://github.com/w3c/csswg-drafts/issues/4434 */
+  float: right;
+}
+}
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+.tocify-subheader {
+  display: inline;
+}
+.tocify-subheader .tocify-item {
+  font-size: 0.95em;
+}
+
+</style>
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="navbar navbar-inverse  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-bs-toggle="collapse" data-target="#navbar" data-bs-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">MetIDTracker documentation</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="./Setup.html">Setup</a>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    Manual
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="./basicOperations.html">Basic operations</a>
+    </li>
+    <li>
+      <a href="./trackerLims.html">MetIDTracker LIMS system</a>
+    </li>
+    <li>
+      <a href="./trackerWorkbench.html">MetIDTracker workbench</a>
+    </li>
+    <li>
+      <a href="./rawDataExaminer.html">Raw data examiner</a>
+    </li>
+    <li>
+      <a href="./compoundDatabase.html">Compound database</a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    Tutorials
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="./offline_experiment_tutorial.html">Creating offline raw data analysis experiment</a>
+    </li>
+    <li>
+      <a href="./db_experiment_from_offline_tutorial.html">Uploading offline experiment to database</a>
+    </li>
+    <li>
+      <a href="./db_experiment_from_Agilent_cef_tutorial.html">Creating database-stored experiment from Agilent MSMS search results</a>
+    </li>
+    <li>
+      <a href="./data_annotation.html">Data annotation in IDTracker workbench</a>
+    </li>
+    <li>
+      <a href="./data_collections.html">Data collections in workbench</a>
+    </li>
+  </ul>
+</li>
+<li>
+  <a href="./changelog.html">Change log</a>
+</li>
+<li>
+  <a href="./faq.html">FAQ</a>
+</li>
+<li>
+  <a href="./bugreport.html">Report bugs</a>
+</li>
+<li>
+  <a href="./developers.html">Developers</a>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li>
+  <a href="https://github.com/metidtracker/midtdocs">
+    <span class="fa fa-github fa-lg"></span>
+     
+  </a>
+</li>
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div id="header">
+
+
+
+<h1 class="title toc-ignore">MetIDTracker LIMS system</h1>
+
+</div>
+
+
+<p>LIMS stands for Laboratory Information Management System. Its purpose
+is to provide a database back end and friendly user interface for
+managing multiple kinds of data associated with MSMS experiments (<a
+href="#tracker_lims_panel">Fig. 1</a>).</p>
+<div class="float" id="tracker_lims_panel">
+<img src="assets/images/MetIDTrackerLIMSPanel.png"
+alt="Fig. 1 MetIDTracker LIMS panel" />
+<div class="figcaption">Fig. 1 MetIDTracker LIMS panel</div>
+</div>
+<div id="projects-and-experiments" class="section level1">
+<h1>Projects and experiments</h1>
+<div id="project-configuration" class="section level2">
+<h2>Project configuration</h2>
+<p>Projects allow the grouping of related identification experiments.
+Every experiment has to be associated with the project. To create the
+new project, go to “LIMS” menu of the “MetIDTracker LIMS” panel and
+select “New MetIDTracker project” command to display the Project Editor
+Dialog (<a href="#tracker_project_editor">Fig. 2</a>).</p>
+<div class="float" id="tracker_project_editor">
+<img src="assets/images/tracker_project_editor.png"
+alt="Fig. 2 MetIDTracker project editor dialog" />
+<div class="figcaption">Fig. 2 MetIDTracker project editor dialog</div>
+</div>
+<p>The name is obligatory, description and notes are optional, Project
+ID, start date and laboratory are populated automatically based on the
+currently logged-in user data.</p>
+<p>To edit project information, select it in the tree, right-click and
+choose “Show Edit compound identification project” from the popup menu
+(<a href="#project_context_menu">Fig. 3</a>).</p>
+<div class="float" id="project_context_menu">
+<img src="assets/images/project_context_menu.png"
+alt="Fig. 3 Project context menu" />
+<div class="figcaption">Fig. 3 Project context menu</div>
+</div>
+</div>
+<div id="experiment-configuration" class="section level2">
+<h2>Experiment configuration</h2>
+<p>Creation of the experiments and data upload to the central repository
+are described in separate tutorials (<a
+href="offline_experiment_tutorial.html">here</a> and <a
+href="db_experiment_from_offline_tutorial.html">here</a>). To edit some
+basic experiment information, select the experiment in the tree,
+right-click and choose “Show Edit compound identification project” from
+the popup menu (<a href="#tracker_experiment_context_menu">Fig. 4</a>)
+to show Experiment Editor Dialog (<a
+href="#tracker_experiment_editor_dialog">Fig. 5</a>).</p>
+<div class="float" id="tracker_experiment_context_menu">
+<img src="assets/images/tracker_experiment_context_menu.png"
+alt="Fig. 4 Experiment context menu" />
+<div class="figcaption">Fig. 4 Experiment context menu</div>
+</div>
+<div class="float" id="tracker_experiment_editor_dialog">
+<img src="assets/images/tracker_experiment_editor_dialog.png"
+alt="Fig. 5 Experiment Editor Dialog" />
+<div class="figcaption">Fig. 5 Experiment Editor Dialog</div>
+</div>
+</div>
+</div>
+<div id="data-acquisition-and-analysis" class="section level1">
+<h1>Data acquisition and analysis</h1>
+<div id="vendor-manager" class="section level2">
+<h2>Vendor manager</h2>
+<p>Vendor manager (<a href="#vendor_manager_panel">Fig. 6</a>) allows
+the user to enter and edit (<a href="#vendor_editor">Fig. 7</a>) some
+basic information about the hardware and software manufacturers. These
+data are required to properly track instruments, software and a number
+of other items in the LIMS.</p>
+<div class="float" id="vendor_manager_panel">
+<img src="assets/images/vendor_manager_panel.png"
+alt="Fig. 6 Vendor manager panel" />
+<div class="figcaption">Fig. 6 Vendor manager panel</div>
+</div>
+<div class="float" id="vendor_editor">
+<img src="assets/images/vendor_editor.png" alt="Fig. 7 Vendor editor" />
+<div class="figcaption">Fig. 7 Vendor editor</div>
+</div>
+</div>
+<div id="instrument-manager" class="section level2">
+<h2>Instrument manager</h2>
+<p>Instrument manager (<a href="#instrument_manager_panel">Fig. 8</a>)
+allows the user to enter and edit some basic information about the LC-MS
+and GC-MS instruments used to perform the analysis (<a
+href="#instrument_editor_dialog">Fig. 9</a>).</p>
+<div class="float" id="instrument_manager_panel">
+<img src="assets/images/instrument_manager_panel.png"
+alt="Fig. 8 Instrument manager panel" />
+<div class="figcaption">Fig. 8 Instrument manager panel</div>
+</div>
+<div class="float" id="instrument_editor_dialog">
+<img src="assets/images/instrument_editor_dialog.png"
+alt="Fig. 9 Instrument editor" />
+<div class="figcaption">Fig. 9 Instrument editor</div>
+</div>
+</div>
+<div id="chromatographic-columns-manager" class="section level2">
+<h2>Chromatographic columns manager</h2>
+<p>Chromatographic columns manager (<a
+href="#chromatographic_column_manager">Fig. 10</a>) allows the user to
+keep an inventory of columns used for sample separation - add, edit (<a
+href="#chromatographic_column_editor">Fig. 11</a>), delete columns.</p>
+<div class="float" id="chromatographic_column_manager">
+<img src="assets/images/chromatographic_column_manager.png"
+alt="Fig. 10 Chromatographic columns manager" />
+<div class="figcaption">Fig. 10 Chromatographic columns manager</div>
+</div>
+<div class="float" id="chromatographic_column_editor">
+<img src="assets/images/chromatographic_column_editor.png"
+alt="Fig. 11 Chromatographic column editor" />
+<div class="figcaption">Fig. 11 Chromatographic column editor</div>
+</div>
+</div>
+<div id="mobile-phase-manager" class="section level2">
+<h2>Mobile phase manager</h2>
+<p>The mobile phase manager <a href="#mobile_phase_manager">Fig. 12</a>
+keeps an inventory of mobile phases used for the chromatographic
+separation of compounds and allows to add, edit (<a
+href="#mobile_phase_editor">Fig. 13</a>) or delete mobile phase
+components.</p>
+<div class="float" id="mobile_phase_manager">
+<img src="assets/images/mobile_phase_manager.png"
+alt="Fig. 12 Mobile phase manager" />
+<div class="figcaption">Fig. 12 Mobile phase manager</div>
+</div>
+<div class="float" id="mobile_phase_editor">
+<img src="assets/images/mobile_phase_editor.png"
+alt="Fig. 13 Mobile phase editor" />
+<div class="figcaption">Fig. 13 Mobile phase editor</div>
+</div>
+</div>
+<div id="software-manager" class="section level2">
+<h2>Software manager</h2>
+<p>Software manager (<a href="#software_manager_panel">Fig. 14</a>)
+allows the user to enter and edit (<a href="#software_editor">Fig.
+15</a>) some basic information about instrument control and data
+analysis software. It is required to properly define and track data
+acquisition and data analysis methods in the LIMS.</p>
+<div class="float" id="software_manager_panel">
+<img src="assets/images/software_manager_panel.png"
+alt="Fig. 14 Software manager" />
+<div class="figcaption">Fig. 14 Software manager</div>
+</div>
+<p><img src="assets/images/software_editor.png" id="software_editor"
+alt="Fig. 15 Software editor" /> Part of software definition is vendor
+selection through vendor selector dialog (<a
+href="#vendor_selector">Fig. 16</a>).</p>
+<div class="float" id="vendor_selector">
+<img src="assets/images/vendor_selector.png"
+alt="Fig. 16 Vendor selector" />
+<div class="figcaption">Fig. 16 Vendor selector</div>
+</div>
+</div>
+<div id="data-acquisition-method-manager" class="section level2">
+<h2>Data acquisition method manager</h2>
+<p>Data acquisition method manager (<a
+href="#data_acquisition_method_manager">Fig. 17</a>) is intended to
+maintain the list of instrument (LC-MS and GC-MS) methods. Method files
+are stored in the database together with some descriptive information
+and may be downloaded for re-use in new studies.</p>
+<div class="float" id="data_acquisition_method_manager">
+<img src="assets/images/data_acquisition_method_manager.png"
+alt="Fig. 17 Data acquisition method manager" />
+<div class="figcaption">Fig. 17 Data acquisition method manager</div>
+</div>
+<p>Data acquisition method editor (<a
+href="#data_acquisition_method_editor">Fig. 18</a>) allows the user to
+specify several parameters for the method. Gradient and mobile phase
+definition are not fully implemented yet, so the corresponding panels
+are hidden on the figure. For definition of the new method all fields
+are obligatory.</p>
+<p><img src="assets/images/data_acquisition_method_editor.png"
+id="data_acquisition_method_editor"
+alt="Fig. 18 Data acquisition method editor" /> Part of acquisition
+method definition is software selection through software selector dialog
+(<a href="#software_selector">Fig. 19</a>).</p>
+<div class="float" id="software_selector">
+<img src="assets/images/software_selector.png"
+alt="Fig. 19 Software selector" />
+<div class="figcaption">Fig. 19 Software selector</div>
+</div>
+</div>
+<div id="data-extraction-method-manager" class="section level2">
+<h2>Data extraction method manager</h2>
+<p>Data extraction method manager (<a
+href="#data_extraction_method_manager">Fig. 20</a>) is intended to
+maintain the list of vendor or third-party methods used to extract MS
+and/or MSMS data from raw data files. Method files are stored in the
+database together with some descriptive information and may be
+downloaded for re-use in new studies.</p>
+<div class="float" id="data_extraction_method_manager">
+<img src="assets/images/data_extraction_method_manager.png"
+alt="Fig. 20 Data extraction method manager" />
+<div class="figcaption">Fig. 20 Data extraction method manager</div>
+</div>
+<p>Data extraction methods are highly diverse and difficult to classify
+in a meaningful way, so only a field for free-form description is
+provided (<a href="#data_extraction_method_editor">Fig. 21</a>).</p>
+<div class="float" id="data_extraction_method_editor">
+<img src="assets/images/data_extraction_method_editor.png"
+alt="Fig. 21 Data extraction method editor" />
+<div class="figcaption">Fig. 21 Data extraction method editor</div>
+</div>
+</div>
+<div id="sops-and-protocols-manager" class="section level2">
+<h2>SOPs and protocols manager</h2>
+<p>The SOPs and protocols manager (<a href="#sops_manager_panel">Fig.
+22</a>)maintains a library of standard procedures and protocols of
+different categories. Documents are stored in the database together with
+some descriptive information and may be downloaded as needed.</p>
+<div class="float" id="sops_manager_panel">
+<img src="assets/images/sop_manager_panel.png"
+alt="Fig. 22 SOPs and protocols manager" />
+<div class="figcaption">Fig. 22 SOPs and protocols manager</div>
+</div>
+<p>To upload new or edit existing SOP document use SOP/Protocol editor
+(<a href="#sop_editor">Fig. 23</a>). Protocol name, category,
+description, and document file must be specified to define a new
+protocol. Other fields are auto-populated . If the document file is
+specified when editing the protocol, it will replace the document
+currently associated with the protocol ID.</p>
+<div class="float" id="sop_editor">
+<img src="assets/images/sop_editor.png"
+alt="Fig. 23 SOP/protocol editor" />
+<div class="figcaption">Fig. 23 SOP/protocol editor</div>
+</div>
+</div>
+<div id="stock-samples-manager" class="section level2">
+<h2>Stock samples manager</h2>
+<p>Compound identification experiments are often performed using
+multiple aliquots of the same sample for analysis under different
+chromatographic and MSMS conditions. Stock samples manager (<a
+href="#stock_sample_manager_panel">Fig. 24</a>) is designed to maintain
+the list of these samples.</p>
+<div class="float" id="stock_sample_manager_panel">
+<img src="assets/images/stock_sample_manager.png"
+alt="Fig. 24 Stock samples manager" />
+<div class="figcaption">Fig. 24 Stock samples manager</div>
+</div>
+<p>To define the new stock sample it is necessary to specify name,
+description, type and species (<a href="#stock_sample_editor">Fig.
+25</a>).</p>
+<div class="float" id="stock_sample_editor">
+<img src="assets/images/stock_sample_editor.png"
+alt="Fig. 25 Stock sample editor" />
+<div class="figcaption">Fig. 25 Stock sample editor</div>
+</div>
+<p>Sample types are selected (<a href="#sample_type_lookup_dialog">Fig.
+26</a>) from the list based on <a
+href="https://www.ncbi.nlm.nih.gov/mesh/">NCBI MESH term list</a>.</p>
+<div class="float" id="sample_type_lookup_dialog">
+<img src="assets/images/sample_type_selector.png"
+alt="Fig. 26 Sample type lookup" />
+<div class="figcaption">Fig. 26 Sample type lookup</div>
+</div>
+<p>Species are selected (<a href="#species_lookup_dialog">Fig. 27</a>)
+from <a href="https://www.ncbi.nlm.nih.gov/taxonomy">NCBI taxonomy
+list</a>.</p>
+<div class="float" id="species_lookup_dialog">
+<img src="assets/images/species_selector.png"
+alt="Fig. 27 Species lookup" />
+<div class="figcaption">Fig. 27 Species lookup</div>
+</div>
+</div>
+<div id="sample-preparation-manager" class="section level2">
+<h2>Sample preparation manager</h2>
+<p>Sample preparation manager has two parts - the list of all sample
+preparations (<a href="#sampllePrepListTable">Fig. 28</a>) and the
+linked editor panel (<a href="#samplePrepEditor">Fig. 29</a>).</p>
+<div class="float" id="sampllePrepListTable">
+<img src="assets/images/sampllePrepListTable.png"
+alt="Fig. 28 Sample preparations listing table" />
+<div class="figcaption">Fig. 28 Sample preparations listing table</div>
+</div>
+<div class="float" id="samplePrepEditor">
+<img src="assets/images/samplePrepEditor.png"
+alt="Fig. 29 Sample preparation editor" />
+<div class="figcaption">Fig. 29 Sample preparation editor</div>
+</div>
+<p>To view or edit sample preparation details select it in the table.
+All sample preparation details may be edited except the list of the
+samples.</p>
+</div>
+<div id="instrument-sequences-panel" class="section level2">
+<h2>Instrument sequences panel</h2>
+<p>Instrument sequences panel (<a
+href="#experimentWorklistInTracker">Fig. 30</a>) is populated when the
+experiment is selected in the project tree.It allows to view and export
+data about sample run order, acquisition methods, injection volumes,
+etc.</p>
+<div class="float" id="experimentWorklistInTracker">
+<img src="assets/images/experimentWorklistInTracker.png"
+alt="Fig. 30 Instrument sequence table" />
+<div class="figcaption">Fig. 30 Instrument sequence table</div>
+</div>
+</div>
+<div id="data-summary-panel" class="section level2">
+<h2>Data summary panel</h2>
+<p>This feature is still under development. The section of the manual
+will be updated once the functionality is in place.</p>
+</div>
+</div>
+
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open');
+  });
+});
+</script>
+
+<!-- code folding -->
+
+<script>
+$(document).ready(function ()  {
+
+    // temporarily add toc-ignore selector to headers for the consistency with Pandoc
+    $('.unlisted.unnumbered').addClass('toc-ignore')
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_');
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = false;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

@@ -1,0 +1,717 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+
+
+<title>Raw Data Examiner</title>
+
+<script src="site_libs/header-attrs-2.26/header-attrs.js"></script>
+<script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/spacelab.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<style>h1 {font-size: 34px;}
+       h1.title {font-size: 38px;}
+       h2 {font-size: 30px;}
+       h3 {font-size: 24px;}
+       h4 {font-size: 18px;}
+       h5 {font-size: 16px;}
+       h6 {font-size: 12px;}
+       code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
+       pre:not([class]) { background-color: white }</style>
+<script src="site_libs/jqueryui-1.13.2/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/font-awesome-6.4.2/css/all.min.css" rel="stylesheet" />
+<link href="site_libs/font-awesome-6.4.2/css/v4-shims.min.css" rel="stylesheet" />
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+
+
+
+
+
+
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+details > summary > p:only-child {
+  display: inline;
+}
+pre code {
+  padding: 0;
+}
+</style>
+
+
+<style type="text/css">
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #adb5bd;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script type="text/javascript">
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark the anchor link active (and if it's in a dropdown, also mark that active)
+  var dropdown = menuAnchor.closest('li.dropdown');
+  if (window.bootstrap) { // Bootstrap 4+
+    menuAnchor.addClass('active');
+    dropdown.find('> .dropdown-toggle').addClass('active');
+  } else { // Bootstrap 3
+    menuAnchor.parent().addClass('active');
+    dropdown.addClass('active');
+  }
+
+  // Navbar adjustments
+  var navHeight = $(".navbar").first().height() + 15;
+  var style = document.createElement('style');
+  var pt = "padding-top: " + navHeight + "px; ";
+  var mt = "margin-top: -" + navHeight + "px; ";
+  var css = "";
+  // offset scroll position for anchor links (for fixed navbar)
+  for (var i = 1; i <= 6; i++) {
+    css += ".section h" + i + "{ " + pt + mt + "}\n";
+  }
+  style.innerHTML = "body {" + pt + "padding-bottom: 40px; }\n" + css;
+  document.head.appendChild(style);
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before, .tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "\e259";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "\e258";
+  font-family: 'Glyphicons Halflings';
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+
+
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+@media print {
+.toc-content {
+  /* see https://github.com/w3c/csswg-drafts/issues/4434 */
+  float: right;
+}
+}
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+.tocify-subheader {
+  display: inline;
+}
+.tocify-subheader .tocify-item {
+  font-size: 0.95em;
+}
+
+</style>
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="navbar navbar-inverse  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-bs-toggle="collapse" data-target="#navbar" data-bs-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">MetIDTracker documentation</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="./Setup.html">Setup</a>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    Manual
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="./basicOperations.html">Basic operations</a>
+    </li>
+    <li>
+      <a href="./trackerLims.html">MetIDTracker LIMS system</a>
+    </li>
+    <li>
+      <a href="./trackerWorkbench.html">MetIDTracker workbench</a>
+    </li>
+    <li>
+      <a href="./rawDataExaminer.html">Raw data examiner</a>
+    </li>
+    <li>
+      <a href="./compoundDatabase.html">Compound database</a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    Tutorials
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="./offline_experiment_tutorial.html">Creating offline raw data analysis experiment</a>
+    </li>
+    <li>
+      <a href="./db_experiment_from_offline_tutorial.html">Uploading offline experiment to database</a>
+    </li>
+    <li>
+      <a href="./db_experiment_from_Agilent_cef_tutorial.html">Creating database-stored experiment from Agilent MSMS search results</a>
+    </li>
+    <li>
+      <a href="./data_annotation.html">Data annotation in IDTracker workbench</a>
+    </li>
+    <li>
+      <a href="./data_collections.html">Data collections in workbench</a>
+    </li>
+  </ul>
+</li>
+<li>
+  <a href="./changelog.html">Change log</a>
+</li>
+<li>
+  <a href="./faq.html">FAQ</a>
+</li>
+<li>
+  <a href="./bugreport.html">Report bugs</a>
+</li>
+<li>
+  <a href="./developers.html">Developers</a>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li>
+  <a href="https://github.com/metidtracker/midtdocs">
+    <span class="fa fa-github fa-lg"></span>
+     
+  </a>
+</li>
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div id="header">
+
+
+
+<h1 class="title toc-ignore">Raw Data Examiner</h1>
+
+</div>
+
+
+<p>Raw Data Examiner panel (<a href="#raw_data_examiner_panel">Fig.
+1</a>) provides the basic functionality to explore the raw MS and MSMS
+data.It works both with arbitrary mzML and mzXML files and in the
+context of compound identification experiment.</p>
+<p><br></p>
+<div class="float" id="raw_data_examiner_panel">
+<img src="assets/images/raw_data_examiner_panel.png"
+alt="Fig. 1 Raw data examiner panel" />
+<div class="figcaption">Fig. 1 Raw data examiner panel</div>
+</div>
+<p><br></p>
+<div id="data-tree-panel" class="section level2">
+<h2>Data tree panel</h2>
+<p>Data tree panel (<a href="#raw_data_file_tree">Fig. 2</a>) shows the
+currently loaded raw data files and chromatograms / spectra linked to
+them.</p>
+<p><br></p>
+<div class="float" id="raw_data_file_tree">
+<img src="assets/images/raw_data_file_tree.png"
+alt="Fig. 2 Data tree panel" />
+<div class="figcaption">Fig. 2 Data tree panel</div>
+</div>
+<p><br></p>
+<p>Control buttons at the right side of the panel header allow to expand
+/ collapse Chromatogram and Spectra tree nodes (<img
+src="assets/images/icons/expand.png" width="24" height="24" /> / <img
+src="assets/images/icons/collapse.png" width="24" height="24" />), and
+toggle between grouping tree nodes by file or by data type (<img
+src="assets/images/icons/groupByFile.png" width="24" height="24" /> /
+<img src="assets/images/icons/groupByType.png" width="24"
+height="24" />). Other sub-panels of the Raw Data Examiner will show
+relevant information depending on which data tree node is selected.</p>
+<p><br></p>
+</div>
+<div id="scan-navigator-panel" class="section level2">
+<h2>Scan navigator panel</h2>
+<p>Scan navigator panel (<a href="#raw_data_scan_navigator_panel">Fig.
+3</a>) is listing the scans for the currently selected raw data file. It
+lists scan number, retention time, MS level, polarity. For MSMS scans it
+also lists parent ion M/Z and isolation window (Range). All table
+columns allow sorting and filtering. Clicking on MS1 scan will display
+it on MS1 spectra plot and in MS1 table (<a
+href="#msOne_spectra_plot_and_table">Fig. 3</a>). If there are any child
+MSMS scans associated with currently selected MS1 scan, the first MSMS
+scan following MS1 will display on MS2 spectra plot and in MS2 table (<a
+href="#msTwo_spectra_plot_and_table">Fig. 5</a>). Clicking on MSMS scan
+will display it together with parent MS1 scan on the corresponding plots
+and tables. When TIC or BPC are displayed in the chromatogram panel, the
+position of the selected scan will be indicated by a vertical blue
+line.</p>
+<p><br></p>
+<div class="float" id="raw_data_scan_navigator_panel">
+<img src="assets/images/raw_data_scan_navigator_panel.png"
+alt="Fig. 3 Scan navigator panel" />
+<div class="figcaption">Fig. 3 Scan navigator panel</div>
+</div>
+<p><br></p>
+<div class="float" id="msOne_spectra_plot_and_table">
+<img src="assets/images/msOne_spectra_plot_and_table.png"
+alt="Fig. 4 MS1 spectrum plot and table" />
+<div class="figcaption">Fig. 4 MS1 spectrum plot and table</div>
+</div>
+<p><br></p>
+<div class="float" id="msTwo_spectra_plot_and_table">
+<img src="assets/images/msTwo_spectra_plot_and_table.png"
+alt="Fig. 5 MSMS spectrum plot and table" />
+<div class="figcaption">Fig. 5 MSMS spectrum plot and table</div>
+</div>
+<p><br></p>
+</div>
+<div id="data-file-properties" class="section level2">
+<h2>Data file properties</h2>
+<p>Data file properties panel (<a
+href="#raw_data_file_properties_panel">Fig. 6</a>) is listing the
+properties of raw data file as recorded in mzML / mzXML.</p>
+<p><br></p>
+<div class="float" id="raw_data_file_properties_panel">
+<img src="assets/images/raw_data_file_properties_panel.png"
+alt="Fig. 6 Data file properties" />
+<div class="figcaption">Fig. 6 Data file properties</div>
+</div>
+<p><br></p>
+</div>
+<div id="extracting-chromatograms" class="section level2">
+<h2>Extracting chromatograms</h2>
+<p><br></p>
+<p><img src="assets/images/chromatogramExtractionSetupPanel.png"
+id="chromatogramExtractionSetupPanel"
+alt="Fig. 7 Chromatogram definition panel" /> <br></p>
+<p>To extract various types of chromatograms use “Define chromatograms”
+panel (<a href="#chromatogramExtractionSetupPanel">Fig. 7</a>) to
+specify the parameters:</p>
+<ul>
+<li>Select one or more data files in the table</li>
+<li>Choose chromatogram type (TIC, BPC or extracted ion)</li>
+<li>Choose MS level</li>
+<li>Specify m/z window for XIC extraction (numerical value and units of
+measure)</li>
+<li>Change polarity if necessary (not automated yet)</li>
+<li>For extracted ion chromatogram (XIC) type in one or more m/z values
+separated by comma, check “Sum all” if you want cumulative XIC,
+otherwise separate XICs will be extracted for each m/z value.</li>
+<li>If you want to limit RT range, specify lower and upper limits and
+check “Limit RT range” checkbox</li>
+<li>Click “Extract chromatograms”.</li>
+</ul>
+<p>All settings except data file selection are preserved across
+sessions.</p>
+<p>You may copy one or more M/Z values from MS1 or MS2 tables as
+comma-separated text (<a href="#copyMassesForXICextraction">Fig. 8</a>)
+and paste them into “M/Z values” field instead of manually typing.</p>
+<p><br></p>
+<div class="float" id="copyMassesForXICextraction">
+<img src="assets/images/copyMassesForXICextraction.png"
+alt="Fig. 8 How to copy selected masses from MS1/MS2 tables" />
+<div class="figcaption">Fig. 8 How to copy selected masses from MS1/MS2
+tables</div>
+</div>
+<p><br></p>
+</div>
+<div id="extracting-average-mass-spectrum" class="section level2">
+<h2>Extracting average mass spectrum</h2>
+<p>To extract average MS or MSMS over selected RT span use Chromatogram
+extraction setup panel (<a href="#averageMSExtractionSettingsPanel">Fig.
+9</a>) to specify the parameters.</p>
+<p><br></p>
+<div class="float">
+<img src="assets/images/averageMSExtractionSettingsPanel.png"
+alt="Fig. 9 Extract/search MS panel" />
+<div class="figcaption">Fig. 9 Extract/search MS panel</div>
+</div>
+<p><br></p>
+<p>To extract average MS:</p>
+<ul>
+<li>Select data file(s) from the data file table</li>
+<li>Specify retention range (manually or from selection on the
+chromatogram panel (<a href="#getMSaveragingRangeFromSelection">Fig.
+10</a>). To select the range on a chromatogram, hold the “Shift” button,
+press the left mouse button, drag the mouse across the desired range and
+release the mouse button. To clear selection shift-click anywhere in the
+chromatogram panel.</li>
+<li>Specify m/z window for peak averaging</li>
+<li>Specify MS level (1 - MS1, 2 - MS2, etc.)</li>
+<li>Click “Extract average MS”</li>
+</ul>
+<p><br></p>
+<div class="float">
+<img src="assets/images/getMSaveragingRangeFromSelection.png"
+alt="Fig. 10 Setting MS averaging interval from chromatogram selection" />
+<div class="figcaption">Fig. 10 Setting MS averaging interval from
+chromatogram selection</div>
+</div>
+<p><br></p>
+</div>
+<div id="raw-data-tools" class="section level2">
+<h2>Raw data tools</h2>
+<p>Raw data tools are accessible from the “Raw data tools” menu (<a
+href="#rawDataToolsMenu">Fig. 11</a>)</p>
+<p><br></p>
+<div class="float">
+<img src="assets/images/rawDataToolsMenu.png"
+alt="Fig. 11 Raw data tools menu" />
+<div class="figcaption">Fig. 11 Raw data tools menu</div>
+</div>
+<p><br></p>
+<div id="openclose-raw-data-files" class="section level3">
+<h3>Open/Close raw data files</h3>
+<p>These option may be used to visually examine MS data files in mzML or
+mzXML format (generate chromatograms, browse spectra, etc.). When raw
+data files are opened, TIC is extracted automatically.</p>
+<p>The options are not available when there is an active raw data
+analysis project.</p>
+</div>
+<div id="raw-data-conversion" class="section level3">
+<h3>Raw data conversion</h3>
+<p>To batch-convert raw data from vendor format to open format IDTracker
+has a built-in user interface for msconvert (<a
+href="#rawDataConverterDialog">Fig. 12</a>). To run the raw data
+conversion you will need to specify the location of msconvert.exe file
+in the preferences (see above). Msconvert is part of the ProteoWizard
+package and may be downloaded <a
+href="https://proteowizard.sourceforge.io/download.html">here</a>. The
+number of conversions run in parallel is determined by the “Maximal
+number of tasks” value in the program preferences. The coversion
+includes vendor peak picking but doesn’t apply any additional filters to
+maximally preserve the data on all available MS levels.</p>
+<p><br></p>
+<div class="float">
+<img src="assets/images/rawDataConverterDialog.PNG"
+alt="Fig. 12 Raw data conversion setup dialog" />
+<div class="figcaption">Fig. 12 Raw data conversion setup dialog</div>
+</div>
+<p><br></p>
+</div>
+<div id="auxiliary-raw-data-tools" class="section level3">
+<h3>Auxiliary raw data tools</h3>
+<p>This set of tools is designed to help with some common tasks during
+data analysis and report preparation. At the moment it only can handle
+Agilent .D data files. To display the tools dialog (<a
+href="#auxRawDataTools">Fig. 13</a>) select “Show raw data file tools”
+from raw data tools menu.</p>
+<p><br></p>
+<div class="float">
+<img src="assets/images/auxRawDataTools.png"
+alt="Fig. 13 Auxiliary raw data file tools dialog" />
+<div class="figcaption">Fig. 13 Auxiliary raw data file tools
+dialog</div>
+</div>
+<p><br></p>
+<div id="extract-worklist" class="section level4">
+<h4>Extract worklist</h4>
+<p>This panel (<a href="#auxRawDataTools">Fig. 13</a>) allows to extract
+the data acquisition worklist form the directory containing a set of
+Agilent .D data files. The search for data files in non-recursive (the
+subfolders that may contain additional .D files are ignored). You may
+generate new worklist (<img src="assets/images/icons/scanFolder.png"
+width="24" height="24" />), add more data files to the list (<img
+src="assets/images/icons/addFromFolder.png" width="24" height="24" />),
+save worklist to file (<img src="assets/images/icons/saveWorklist.png"
+width="24" height="24" />), copy it to clipboard (<img
+src="assets/images/icons/copyWorklistToClipboard.png" width="24"
+height="24" />), or clear the list (<img
+src="assets/images/icons/clearWorklist.png" width="24"
+height="24" />).</p>
+<p><br></p>
+</div>
+<div id="cleanup-raw-data" class="section level4">
+<h4>Cleanup raw data</h4>
+<p><br></p>
+</div>
+<div id="metabolomics-workbench-raw-data-upload-preparation"
+class="section level4">
+<h4>Metabolomics Workbench raw data upload preparation</h4>
+<p><br></p>
+</div>
+</div>
+</div>
+
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open');
+  });
+});
+</script>
+
+<!-- code folding -->
+
+<script>
+$(document).ready(function ()  {
+
+    // temporarily add toc-ignore selector to headers for the consistency with Pandoc
+    $('.unlisted.unnumbered').addClass('toc-ignore')
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_');
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = false;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

@@ -5,17 +5,29 @@ left:
   - text: "Setup"
     href: ./Setup.html
   - text: "Manual"
-    href: ./Manual.html
+    menu:
+       - text: "Basic operations"
+         href: ./basicOperations.html
+       - text: "MetIDTracker LIMS system"
+         href: ./trackerLims.html
+       - text: "MetIDTracker workbench"
+         href: ./trackerWorkbench.html
+       - text: "Raw data examiner"
+         href: ./rawDataExaminer.html
+       - text: "Compound database"
+         href: ./compoundDatabase.html
   - text: "Tutorials"
     menu:
-       - text: "Offline experiment"
+       - text: "Creating offline raw data analysis experiment"
          href: ./offline_experiment_tutorial.html
-       - text: "Creating online experiment from offline"
+       - text: "Uploading offline experiment to database"
          href: ./db_experiment_from_offline_tutorial.html
-       - text: "Creating online experiment (Agilent MSMS results)"
+       - text: "Creating database-stored experiment from Agilent MSMS search results"
          href: ./db_experiment_from_Agilent_cef_tutorial.html
-       - text: "Data analysis"
-         href: ./data_analysis.html  
+       - text: "Data annotation in IDTracker workbench"
+         href: ./data_annotation.html  
+       - text: "Data collections in workbench"
+         href: ./data_collections.html  
   - text: "Change log"
     href: ./changelog.html
   - text: "FAQ"

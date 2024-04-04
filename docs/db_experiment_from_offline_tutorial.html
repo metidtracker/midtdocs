@@ -11,9 +11,9 @@
 
 
 
-<title>db_experiment_from_offline_tutorial.knit</title>
+<title>Creating database-stored experiment</title>
 
-<script src="site_libs/header-attrs-2.20/header-attrs.js"></script>
+<script src="site_libs/header-attrs-2.26/header-attrs.js"></script>
 <script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <link href="site_libs/bootstrap-3.3.5/css/spacelab.min.css" rel="stylesheet" />
@@ -29,12 +29,12 @@
        h6 {font-size: 12px;}
        code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
        pre:not([class]) { background-color: white }</style>
-<script src="site_libs/jqueryui-1.11.4/jquery-ui.min.js"></script>
+<script src="site_libs/jqueryui-1.13.2/jquery-ui.min.js"></script>
 <link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
 <script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
 <script src="site_libs/navigation-1.1/tabsets.js"></script>
-<link href="site_libs/font-awesome-5.1.0/css/all.css" rel="stylesheet" />
-<link href="site_libs/font-awesome-5.1.0/css/v4-shims.css" rel="stylesheet" />
+<link href="site_libs/font-awesome-6.4.2/css/all.min.css" rel="stylesheet" />
+<link href="site_libs/font-awesome-6.4.2/css/v4-shims.min.css" rel="stylesheet" />
 
 <style type="text/css">
   code{white-space: pre-wrap;}
@@ -317,8 +317,29 @@ div.tocify {
         <li>
   <a href="./Setup.html">Setup</a>
 </li>
-<li>
-  <a href="./Manual.html">Manual</a>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    Manual
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="./basicOperations.html">Basic operations</a>
+    </li>
+    <li>
+      <a href="./trackerLims.html">MetIDTracker LIMS system</a>
+    </li>
+    <li>
+      <a href="./trackerWorkbench.html">MetIDTracker workbench</a>
+    </li>
+    <li>
+      <a href="./rawDataExaminer.html">Raw data examiner</a>
+    </li>
+    <li>
+      <a href="./compoundDatabase.html">Compound database</a>
+    </li>
+  </ul>
 </li>
 <li class="dropdown">
   <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
@@ -328,16 +349,19 @@ div.tocify {
   </a>
   <ul class="dropdown-menu" role="menu">
     <li>
-      <a href="./offline_experiment_tutorial.html">Offline experiment</a>
+      <a href="./offline_experiment_tutorial.html">Creating offline raw data analysis experiment</a>
     </li>
     <li>
-      <a href="./db_experiment_from_offline_tutorial.html">Creating online experiment from offline</a>
+      <a href="./db_experiment_from_offline_tutorial.html">Uploading offline experiment to database</a>
     </li>
     <li>
-      <a href="./db_experiment_from_Agilent_cef_tutorial.html">Creating online experiment (Agilent MSMS results)</a>
+      <a href="./db_experiment_from_Agilent_cef_tutorial.html">Creating database-stored experiment from Agilent MSMS search results</a>
     </li>
     <li>
-      <a href="./data_analysis.html">Data analysis</a>
+      <a href="./data_annotation.html">Data annotation in IDTracker workbench</a>
+    </li>
+    <li>
+      <a href="./data_collections.html">Data collections in workbench</a>
     </li>
   </ul>
 </li>
@@ -370,122 +394,289 @@ div.tocify {
 
 
 
+<h1 class="title toc-ignore">Creating database-stored experiment</h1>
 
 </div>
 
 
-<div id="creating-database-stored-experiment" class="section level1" number="1">
-<h1><span class="header-section-number">1</span> Creating database-stored experiment</h1>
-<p>MetIDTracker is designed as collaborative tool and in order to allow multiple users to provide input for feature identification and annotation data must be stored in the central repository. Offline experiment including analysis results may be uploaded to the repository and converted to online experiment if the necessary metadata are provided by the user. This tutorial will guide you through the process of offline-to-online conversion for MSMS analysis experiment.</p>
-<div id="adding-experiment-metadata" class="section level2" number="1.1">
-<h2><span class="header-section-number">1.1</span> Adding experiment metadata</h2>
-<p>Open the existing offline experiment. Switch to the raw data examiner panel and select “Add experiment metadata” from the “IDtracker integration” menu to show the metadata wizard (<a href="#callingMetadataWizard">Fig. 1</a>).</p>
-<div class="figure">
-<img src="assets/images/UPL/callingMetadataWizard.png" id="callingMetadataWizard" alt="" />
-<p class="caption">Fig. 1 Calling metadata wizard for the offine experiment</p>
+<div
+id="preparing-offline-raw-data-analysis-experiment-for-database-upload"
+class="section level1">
+<h1>Preparing offline raw data analysis experiment for database
+upload</h1>
+<p>MetIDTracker is designed as collaborative tool and in order to allow
+multiple users to provide input for feature identification and
+annotation data must be stored in the central repository. Offline
+experiment including analysis results may be uploaded to the repository
+and converted to online experiment if the necessary metadata are
+provided by the user. This tutorial will guide you through the process
+of offline-to-online conversion for MSMS analysis experiment.</p>
+<div id="adding-experiment-metadata" class="section level2">
+<h2>Adding experiment metadata</h2>
+<p>Open the existing offline experiment. Switch to the raw data examiner
+panel and select “Add experiment metadata” from the “IDtracker
+integration” menu to show the metadata wizard (<a
+href="#callingMetadataWizard">Fig. 1</a>).</p>
+<p><br></p>
+<div class="float" id="callingMetadataWizard">
+<img src="assets/images/UPL/callingMetadataWizard.png"
+alt="Fig. 1 Calling metadata wizard for the offine experiment" />
+<div class="figcaption">Fig. 1 Calling metadata wizard for the offine
+experiment</div>
 </div>
-<p>The wizard will guide you through the process of adding the metadata necessary for uploading the offline experiment to the repository and creating the online experiment.</p>
-<div id="defining-basic-experiment-details" class="section level3" number="1.1.1">
-<h3><span class="header-section-number">1.1.1</span> Defining basic experiment details</h3>
-<p>The first step (<a href="#metadataWizardStep1">Fig. 2</a>) is to define basic experiment details. Most of the data will be carried over from the offline experiment definition, but may also be edited at this point.You must select the parent project for the experiment from the “Project” dropdown.</p>
-<div class="figure">
-<img src="assets/images/UPL/metadataWizardStep1.png" id="metadataWizardStep1" alt="" />
-<p class="caption">Fig. 2 Experiment metadata wizard - basic experiment details</p>
+<p><br></p>
+<p>The wizard will guide you through the process of adding the metadata
+necessary for uploading the offline experiment to the repository and
+creating the online experiment.</p>
+<div id="defining-basic-experiment-details" class="section level3">
+<h3>Defining basic experiment details</h3>
+<p>The first step (<a href="#metadataWizardStep1">Fig. 2</a>) is to
+define basic experiment details. Most of the data will be carried over
+from the offline experiment definition, but may also be edited at this
+point.You must select the parent project for the experiment from the
+“Project” dropdown.</p>
+<p><br></p>
+<div class="float" id="metadataWizardStep1">
+<img src="assets/images/UPL/metadataWizardStep1.png"
+alt="Fig. 2 Experiment metadata wizard - basic experiment details" />
+<div class="figcaption">Fig. 2 Experiment metadata wizard - basic
+experiment details</div>
 </div>
-<p>Click “Next” to save the information and go to “Experiment design” step of the wizard.</p>
+<p><br></p>
+<p>Click “Next” to save the information and go to “Experiment design”
+step of the wizard.</p>
 </div>
-<div id="defining-experiment-design" class="section level3" number="1.1.2">
-<h3><span class="header-section-number">1.1.2</span> Defining experiment design</h3>
-<p>In the database MS and MSMS data must be linked to biological samples. MetIDTracker main task is in-depth characterization of the samples which implies analysis of the data obtained from the same biological material in multiple ways (e.g. exhaustive MSMS through iDDA in positive and negative mode). The term “Stock sample” denotes the source of material for multiple assays. Usually it is a pooled sample created combining aliquots of individual biological samples (for liquid samples) or extracts (for cell and tissue samples). Click “Add sample” button (<img src="assets/images/icons/addSample.png" width="24" height="24" />) on the toolbar to show the corresponding dialog, then click “Select stock sample” button, select sample in the table and double-click it or use “Select stock sample” button to add it to sample definition (<a href="#metadataWizardStep2">Fig. 3</a>). By default the sample will be named “Aliquot of … (stock sample name)”. You may change the name and add some notes at this point. Click “Add sample button” to complete the process. Sample ID at this stage is just a placeholder, actual sample ID will be assigned during the database upload. If you have the raw data coming from blanks or other control samples, these sample types also must be defined in the database as stock samples and added at this stage.</p>
-<div class="figure">
-<img src="assets/images/UPL/metadataWizardStep2.png" id="metadataWizardStep2" alt="" />
-<p class="caption">Fig. 3 Experiment metadata wizard - experiment design</p>
+<div id="defining-experiment-design" class="section level3">
+<h3>Defining experiment design</h3>
+<p>In the database MS and MSMS data must be linked to biological
+samples. MetIDTracker main task is in-depth characterization of the
+samples which implies analysis of the data obtained from the same
+biological material in multiple ways (e.g. exhaustive MSMS through iDDA
+in positive and negative mode). The term “Stock sample” denotes the
+source of material for multiple assays. Usually it is a pooled sample
+created combining aliquots of individual biological samples (for liquid
+samples) or extracts (for cell and tissue samples). Click “Add sample”
+button (<img src="assets/images/icons/addSample.png" width="24"
+height="24" />) on the toolbar to show the corresponding dialog, then
+click “Select stock sample” button, select sample in the table and
+double-click it or use “Select stock sample” button to add it to sample
+definition (<a href="#metadataWizardStep2">Fig. 3</a>). By default the
+sample will be named “Aliquot of … (stock sample name)”. You may change
+the name and add some notes at this point. Click “Add sample button” to
+complete the process. Sample ID at this stage is just a placeholder,
+actual sample ID will be assigned during the database upload. If you
+have the raw data coming from blanks or other control samples, these
+sample types also must be defined in the database as stock samples and
+added at this stage.</p>
+<p><br></p>
+<div class="float" id="metadataWizardStep2">
+<img src="assets/images/UPL/metadataWizardStep2.png"
+alt="Fig. 3 Experiment metadata wizard - experiment design" />
+<div class="figcaption">Fig. 3 Experiment metadata wizard - experiment
+design</div>
 </div>
-<p>If stock sample you intend to use is not added to the database, you must do it prior to adding the samples to your experiment. You may do it directly from the wizard. Click “Add reference sample dialog” button on the toolbar (<img src="assets/images/icons/addStandardSample.png" width="24" height="24" />), specify sample name and description in the “Add new stock sample” dialog (<a href="#stockSampleDialog">Fig. 4</a>), select sample type (<a href="#sampleTypeDialog">Fig. 5</a>) and species (<a href="#speciesSelectionDialog">Fig. 6</a>). Sample type and species selection dialogs are pre-populated with recently used terms. If the necessary term is not listed in the table yet, use “Search” functions of the respective dialogs. Sample types are based on PubMed MESH terms, species list is based on NCBI taxonomy.</p>
-<div class="figure">
-<img src="assets/images/UPL/stockSampleDialog.png" id="stockSampleDialog" alt="" />
-<p class="caption">Fig. 4 Stock sample definition</p>
+<p><br></p>
+<p>If stock sample you intend to use is not added to the database, you
+must do it prior to adding the samples to your experiment. You may do it
+directly from the wizard. Click “Add reference sample dialog” button on
+the toolbar (<img src="assets/images/icons/addStandardSample.png"
+width="24" height="24" />), specify sample name and description in the
+“Add new stock sample” dialog (<a href="#stockSampleDialog">Fig. 4</a>),
+select sample type (<a href="#sampleTypeDialog">Fig. 5</a>) and species
+(<a href="#speciesSelectionDialog">Fig. 6</a>). Sample type and species
+selection dialogs are pre-populated with recently used terms. If the
+necessary term is not listed in the table yet, use “Search” functions of
+the respective dialogs. Sample types are based on PubMed MESH terms,
+species list is based on NCBI taxonomy.</p>
+<p><br></p>
+<div class="float" id="stockSampleDialog">
+<img src="assets/images/UPL/stockSampleDialog.png"
+alt="Fig. 4 Stock sample definition" />
+<div class="figcaption">Fig. 4 Stock sample definition</div>
 </div>
-<div class="figure">
-<img src="assets/images/UPL/sampleTypeDialog.png" id="sampleTypeDialog" alt="" />
-<p class="caption">Fig. 5 Sample type selection dialog</p>
+<p><br></p>
+<div class="float" id="sampleTypeDialog">
+<img src="assets/images/UPL/sampleTypeDialog.png"
+alt="Fig. 5 Sample type selection dialog" />
+<div class="figcaption">Fig. 5 Sample type selection dialog</div>
 </div>
-<div class="figure">
-<img src="assets/images/UPL/speciesSelectionDialog.png" id="speciesSelectionDialog" alt="" />
-<p class="caption">Fig. 6 Species selection dialog</p>
+<p><br></p>
+<div class="float" id="speciesSelectionDialog">
+<img src="assets/images/UPL/speciesSelectionDialog.png"
+alt="Fig. 6 Species selection dialog" />
+<div class="figcaption">Fig. 6 Species selection dialog</div>
 </div>
-<p>Click “Next” to verify and save the information and go to “Sample preparation” step of the wizard.</p>
+<p><br></p>
+<p>Click “Next” to verify and save the information and go to “Sample
+preparation” step of the wizard.</p>
 </div>
-<div id="defining-sample-preparation" class="section level3" number="1.1.3">
-<h3><span class="header-section-number">1.1.3</span> Defining sample preparation</h3>
-<p>Sample preparation may vary for the same stock sample depending on the type of chromatography or targed subset of compounds (e.g. different extraction methods for hydrophylic and hydrophobic compounds). At this step you must specify prep name, date (<a href="#metadataWizardStep3-date">Fig. 7</a>), person in charge (<a href="#metadataWizardStep3">Fig. 8</a>), and link pre-defined SOPs for sample preparation (<a href="#metadataWizardStep3-sop">Fig. 9</a>). You may also link optional documents with notes for this specific sample preparation.</p>
-<div class="figure">
-<img src="assets/images/UPL/metadataWizardStep3-date.png" id="metadataWizardStep3-date" alt="" />
-<p class="caption">Fig. 7 Experiment metadata wizard - sample preparation, select user</p>
+<div id="defining-sample-preparation" class="section level3">
+<h3>Defining sample preparation</h3>
+<p>Sample preparation may vary for the same stock sample depending on
+the type of chromatography or targed subset of compounds (e.g. different
+extraction methods for hydrophylic and hydrophobic compounds). At this
+step you must specify prep name, date (<a
+href="#metadataWizardStep3-date">Fig. 7</a>), person in charge (<a
+href="#metadataWizardStep3">Fig. 8</a>), and link pre-defined SOPs for
+sample preparation (<a href="#metadataWizardStep3-sop">Fig. 9</a>).</p>
+<p><br></p>
+<div class="float" id="metadataWizardStep3-date">
+<img src="assets/images/UPL/metadataWizardStep3-date.png"
+alt="Fig. 7 Experiment metadata wizard - sample preparation, select prep date" />
+<div class="figcaption">Fig. 7 Experiment metadata wizard - sample
+preparation, select prep date</div>
 </div>
-<div class="figure">
-<img src="assets/images/UPL/metadataWizardStep3.png" id="metadataWizardStep3" alt="" />
-<p class="caption">Fig. 8 Experiment metadata wizard - sample preparation, select user</p>
+<p><br></p>
+<div class="float" id="metadataWizardStep3">
+<img src="assets/images/UPL/metadataWizardStep3.png"
+alt="Fig. 8 Experiment metadata wizard - sample preparation, select user" />
+<div class="figcaption">Fig. 8 Experiment metadata wizard - sample
+preparation, select user</div>
 </div>
-<div class="figure">
-<img src="assets/images/UPL/metadataWizardStep3-sop.png" id="metadataWizardStep3-sop" alt="" />
-<p class="caption">Fig. 9 Experiment metadata wizard - sample preparation, select user</p>
+<p><br></p>
+<div class="float" id="metadataWizardStep3-sop">
+<img src="assets/images/UPL/metadataWizardStep3-sop.png"
+alt="Fig. 9 Experiment metadata wizard - sample preparation, select SOPs" />
+<div class="figcaption">Fig. 9 Experiment metadata wizard - sample
+preparation, select SOPs</div>
 </div>
-<p>Click “Next” to verify and save the information and go to “Data acquisition methods” step of the wizard.</p>
+<p><br></p>
+<p>Click “Next” to verify and save the information and go to “Data
+acquisition methods” step of the wizard.</p>
 </div>
-<div id="defining-data-acquisition-methods" class="section level3" number="1.1.4">
-<h3><span class="header-section-number">1.1.4</span> Defining data acquisition methods</h3>
-<p>MS and MSMS data must be linked to the specific instrument data acquisition methods in the database. At this step you may either select existing method(s) or add new ones. There are a few options to select or add the methods. If raw data are coming from Agilent platform you may simply scan the directory containing original .D files for information, since every Agilent .D folder contains the complete data acquisition method (this scan is one level deep, so if you have nested directories with raw data acquired using different methods, you must scan every directory containing actual .D files to find all method files). Use “Scan directory for sample information” button (<img src="assets/images/icons/scanFolder.png" width="24" height="24" />) on the “Data acquisition methods” panel toolbar to scan .D files for methods.</p>
-<p>For other platforms, if the methods are already in the database you may use the ““Show data acquisition method selector” button (<img src="assets/images/icons/linkToDataAcquisitionMethod.png" width="24" height="24" />) to display the table of existing methods and select from it (<a href="#metadataWizardStep4-existing">Fig. 10</a>).</p>
-<div class="figure">
-<img src="assets/images/UPL/metadataWizardStep4-existing.png" id="metadataWizardStep4-existing" alt="" />
-<p class="caption">Fig. 10 Experiment metadata wizard - data acquisition methods, select existing</p>
+<div id="defining-data-acquisition-methods" class="section level3">
+<h3>Defining data acquisition methods</h3>
+<p>MS and MSMS data must be linked to the specific instrument data
+acquisition methods in the database. At this step you may either select
+existing method(s) or add new ones. There are a few options to select or
+add the methods. If raw data are coming from Agilent platform you may
+simply scan the directory containing original .D files for information,
+since every Agilent .D folder contains the complete data acquisition
+method (this scan is one level deep, so if you have nested directories
+with raw data acquired using different methods, you must scan every
+directory containing actual .D files to find all method files). Use
+“Scan directory for sample information” button (<img
+src="assets/images/icons/scanFolder.png" width="24" height="24" />) on
+the “Data acquisition methods” panel toolbar to scan .D files for
+methods.</p>
+<p>For other platforms, if the methods are already in the database you
+may use the ““Show data acquisition method selector” button (<img
+src="assets/images/icons/linkToDataAcquisitionMethod.png" width="24"
+height="24" />) to display the table of existing methods and select from
+it (<a href="#metadataWizardStep4-existing">Fig. 10</a>).</p>
+<p><br></p>
+<div class="float" id="metadataWizardStep4-existing">
+<img src="assets/images/UPL/metadataWizardStep4-existing.png"
+alt="Fig. 10 Experiment metadata wizard - data acquisition methods, select existing" />
+<div class="figcaption">Fig. 10 Experiment metadata wizard - data
+acquisition methods, select existing</div>
 </div>
-<p>If specific acquisition method was not yet uploaded to the database, use the “Add acquisition method dialog” button (<img src="assets/images/icons/addDataAcquisitionMethod.png" width="24" height="24" />) to call the corresponding dialog (<a href="#metadataWizardStep4-new">Fig. 11</a>). Method name and description will be auto-populated when you select the method file, all the other fields are obligatory. Mobile phase and gradient panels are still under development and must be ignored.</p>
-<div class="figure">
-<img src="assets/images/UPL/metadataWizardStep4-new.png" id="metadataWizardStep4-new" alt="" />
-<p class="caption">Fig. 11 Experiment metadata wizard - data acquisition methods, add new method</p>
+<p><br></p>
+<p>If specific acquisition method was not yet uploaded to the database,
+use the “Add acquisition method dialog” button (<img
+src="assets/images/icons/addDataAcquisitionMethod.png" width="24"
+height="24" />) to call the corresponding dialog (<a
+href="#metadataWizardStep4-new">Fig. 11</a>). Method name and
+description will be auto-populated when you select the method file, all
+the other fields are obligatory. Mobile phase and gradient panels are
+still under development and must be ignored.</p>
+<p><br></p>
+<div class="float" id="metadataWizardStep4-new">
+<img src="assets/images/UPL/metadataWizardStep4-new.png"
+alt="Fig. 11 Experiment metadata wizard - data acquisition methods, add new method" />
+<div class="figcaption">Fig. 11 Experiment metadata wizard - data
+acquisition methods, add new method</div>
 </div>
-<p>Click “Next” to verify and save the information and go to “Add instrument worklist” step of the wizard.</p>
+<p><br></p>
+<p>Click “Next” to verify and save the information and go to “Add
+instrument worklist” step of the wizard.</p>
 </div>
-<div id="adding-instrument-worklist" class="section level3" number="1.1.5">
-<h3><span class="header-section-number">1.1.5</span> Adding instrument worklist</h3>
-<p>This is the final stage of metadata definition where all previously added pieces of information are properly linked with sample run sequence. Using table contextual menu you must link every data file to the sample (<a href="#metadataWizardStep5-samples">Fig. 12</a>) and acquisition method (<a href="#metadataWizardStep5-methods">Fig. 13</a>), specify injection volume (<a href="#metadataWizardStep5-injvol">Fig. 14</a>), and if necessary, injection timestamp. mzML files usually contain the correct timestamp and this field will be populated automatically. mzXML files, however do not carry this information over from the original vendor file, so it must be specified manually (<a href="#metadataWizardStep5-timestamp">Fig. 15</a>). You may assign values to multiple files at once if you select more than one file before choosing the command from the contextual menu.</p>
-<div class="figure">
-<img src="assets/images/UPL/metadataWizardStep5-samples.png" id="metadataWizardStep5-samples" alt="" />
-<p class="caption">Fig. 12 Experiment metadata wizard - instrument worklist, link samples to data files</p>
+<div id="adding-instrument-worklist" class="section level3">
+<h3>Adding instrument worklist</h3>
+<p>This is the final stage of metadata definition where all previously
+added pieces of information are properly linked with sample run
+sequence. Using table contextual menu you must link every data file to
+the sample (<a href="#metadataWizardStep5-samples">Fig. 12</a>) and
+acquisition method (<a href="#metadataWizardStep5-methods">Fig. 13</a>),
+specify injection volume (<a href="#metadataWizardStep5-injvol">Fig.
+14</a>), and if necessary, injection timestamp. mzML files usually
+contain the correct timestamp and this field will be populated
+automatically. mzXML files, however do not carry this information over
+from the original vendor file, so it must be specified manually (<a
+href="#metadataWizardStep5-timestamp">Fig. 15</a>). You may assign
+values to multiple files at once if you select more than one file before
+choosing the command from the contextual menu.</p>
+<p><br></p>
+<div class="float" id="metadataWizardStep5-samples">
+<img src="assets/images/UPL/metadataWizardStep5-samples.png"
+alt="Fig. 12 Experiment metadata wizard - instrument worklist, link samples to data files" />
+<div class="figcaption">Fig. 12 Experiment metadata wizard - instrument
+worklist, link samples to data files</div>
 </div>
-<div class="figure">
-<img src="assets/images/UPL/metadataWizardStep5-methods.png" id="metadataWizardStep5-methods" alt="" />
-<p class="caption">Fig. 13 Experiment metadata wizard - instrument worklist, link acquisition methods to data files</p>
+<p><br></p>
+<div class="float" id="metadataWizardStep5-methods">
+<img src="assets/images/UPL/metadataWizardStep5-methods.png"
+alt="Fig. 13 Experiment metadata wizard - instrument worklist, link acquisition methods to data files" />
+<div class="figcaption">Fig. 13 Experiment metadata wizard - instrument
+worklist, link acquisition methods to data files</div>
 </div>
-<div class="figure">
-<img src="assets/images/UPL/metadataWizardStep5-injvol.png" id="metadataWizardStep5-injvol" alt="" />
-<p class="caption">Fig. 14 Experiment metadata wizard - instrument worklist, setting injection volumes</p>
+<p><br></p>
+<div class="float" id="metadataWizardStep5-injvol">
+<img src="assets/images/UPL/metadataWizardStep5-injvol.png"
+alt="Fig. 14 Experiment metadata wizard - instrument worklist, setting injection volumes" />
+<div class="figcaption">Fig. 14 Experiment metadata wizard - instrument
+worklist, setting injection volumes</div>
 </div>
-<div class="figure">
-<img src="assets/images/UPL/metadataWizardStep5-timestamp.png" id="metadataWizardStep5-timestamp" alt="" />
-<p class="caption">Fig. 15 Experiment metadata wizard - instrument worklist, setting injection volumes</p>
+<p><br></p>
+<div class="float" id="metadataWizardStep5-timestamp">
+<img src="assets/images/UPL/metadataWizardStep5-timestamp.png"
+alt="Fig. 15 Experiment metadata wizard - instrument worklist, setting injection volumes" />
+<div class="figcaption">Fig. 15 Experiment metadata wizard - instrument
+worklist, setting injection volumes</div>
 </div>
-<p>Once all the necessary information is provided click “Save experiment metadata” button. The wizard will check if the metadata definition is complete and save the experiment to preserve the information you entered. At this point the experiment is ready for database upload. You may continue to perform data analysis in the offline mode and upload the experiment later.</p>
-</div>
-</div>
-<div id="uploading-the-experiment" class="section level2" number="1.2">
-<h2><span class="header-section-number">1.2</span> Uploading the experiment</h2>
-<p>Select “Set experiment database upload parameters” from “IDTracker integration” menu (<a href="#experimentDbUploadSetup">Fig. 16</a>). At the moment there is only one parameter - “MS1 extraction window for database upload: +/-”. It’s purpose is to reduce the amount of data uploaded to the database by limiting uploaded MS1 scan portion to the region of interest around the parent ion in a way that is still sufficient to calculate precursor purity and determine whether monoisotopic peak was selected for fragmentation.</p>
-<div class="figure">
-<img src="assets/images/UPL/experimentDbUploadSetup.png" id="experimentDbUploadSetup" alt="" />
-<p class="caption">Fig. 16 Experiment upload parameters</p>
-</div>
-<p>Click “Send experiment data to database” to start the upload. It may take some time depending on the number of features detected and whether analysis data (library search results, etc.) are present. Once upload is complete the experiment is automatically saved to preserve all the offline data in sync with the database copy (this mainly includes identifiers assigned to various objects when they are saved to the database). Once experiment is uploaded to the database all further analysis must be performed in online mode. Editing metadata and repeated uploads will be blocked to preserve data integrity of the central repository (<a href="#blockExistingExperimentUpload">Fig. 17</a>).</p>
-<div class="figure">
-<img src="assets/images/UPL/blockExistingExperimentUpload.png" id="blockExistingExperimentUpload" alt="" />
-<p class="caption">Fig. 17 Experiment upload parameters</p>
+<p><br></p>
+<p>Once all the necessary information is provided click “Save experiment
+metadata” button. The wizard will check if the metadata definition is
+complete and save the experiment to preserve the information you
+entered. At this point the experiment is ready for database upload. You
+may continue to perform data analysis in the offline mode and upload the
+experiment later.</p>
 </div>
 </div>
-<div id="retrieving-experiment-data-from-repository" class="section level2" number="1.3">
-<h2><span class="header-section-number">1.3</span> Retrieving experiment data from repository</h2>
-<p>There is a number of ways to retrieve the data from specific experiment for further analysis.</p>
+<div id="uploading-the-experiment" class="section level2">
+<h2>Uploading the experiment</h2>
+<p>Select “Set experiment database upload parameters” from “IDTracker
+integration” menu (<a href="#experimentDbUploadSetup">Fig. 16</a>). At
+the moment there is only one parameter - “MS1 extraction window for
+database upload: +/-”. It’s purpose is to reduce the amount of data
+uploaded to the database by limiting uploaded MS1 scan portion to the
+region of interest around the parent ion in a way that is still
+sufficient to calculate precursor purity and determine whether
+monoisotopic peak was selected for fragmentation.</p>
+<p><br></p>
+<div class="float" id="experimentDbUploadSetup">
+<img src="assets/images/UPL/experimentDbUploadSetup.png"
+alt="Fig. 16 Experiment upload parameters" />
+<div class="figcaption">Fig. 16 Experiment upload parameters</div>
+</div>
+<p><br></p>
+<p>Click “Send experiment data to database” to start the upload. It may
+take some time depending on the number of features detected and whether
+analysis data (library search results, etc.) are present. Once upload is
+complete the experiment is automatically saved to preserve all the
+offline data in sync with the database copy (this mainly includes
+identifiers assigned to various objects when they are saved to the
+database). Once experiment is uploaded to the database all further
+analysis must be performed in online mode. Editing metadata and repeated
+uploads will be blocked to preserve data integrity of the central
+repository (<a href="#blockExistingExperimentUpload">Fig. 17</a>).</p>
+<p><br></p>
+<div class="float" id="blockExistingExperimentUpload">
+<img src="assets/images/UPL/blockExistingExperimentUpload.png"
+alt="Fig. 17 Experiment upload parameters" />
+<div class="figcaption">Fig. 17 Experiment upload parameters</div>
+</div>
+<p><br></p>
 </div>
 </div>
 

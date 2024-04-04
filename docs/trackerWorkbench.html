@@ -1,0 +1,1138 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+
+
+<title>IDTracker workbench</title>
+
+<script src="site_libs/header-attrs-2.26/header-attrs.js"></script>
+<script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/spacelab.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<style>h1 {font-size: 34px;}
+       h1.title {font-size: 38px;}
+       h2 {font-size: 30px;}
+       h3 {font-size: 24px;}
+       h4 {font-size: 18px;}
+       h5 {font-size: 16px;}
+       h6 {font-size: 12px;}
+       code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
+       pre:not([class]) { background-color: white }</style>
+<script src="site_libs/jqueryui-1.13.2/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/font-awesome-6.4.2/css/all.min.css" rel="stylesheet" />
+<link href="site_libs/font-awesome-6.4.2/css/v4-shims.min.css" rel="stylesheet" />
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+
+
+
+
+
+
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+details > summary > p:only-child {
+  display: inline;
+}
+pre code {
+  padding: 0;
+}
+</style>
+
+
+<style type="text/css">
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #adb5bd;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script type="text/javascript">
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark the anchor link active (and if it's in a dropdown, also mark that active)
+  var dropdown = menuAnchor.closest('li.dropdown');
+  if (window.bootstrap) { // Bootstrap 4+
+    menuAnchor.addClass('active');
+    dropdown.find('> .dropdown-toggle').addClass('active');
+  } else { // Bootstrap 3
+    menuAnchor.parent().addClass('active');
+    dropdown.addClass('active');
+  }
+
+  // Navbar adjustments
+  var navHeight = $(".navbar").first().height() + 15;
+  var style = document.createElement('style');
+  var pt = "padding-top: " + navHeight + "px; ";
+  var mt = "margin-top: -" + navHeight + "px; ";
+  var css = "";
+  // offset scroll position for anchor links (for fixed navbar)
+  for (var i = 1; i <= 6; i++) {
+    css += ".section h" + i + "{ " + pt + mt + "}\n";
+  }
+  style.innerHTML = "body {" + pt + "padding-bottom: 40px; }\n" + css;
+  document.head.appendChild(style);
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before, .tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "\e259";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "\e258";
+  font-family: 'Glyphicons Halflings';
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+
+
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+@media print {
+.toc-content {
+  /* see https://github.com/w3c/csswg-drafts/issues/4434 */
+  float: right;
+}
+}
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+.tocify-subheader {
+  display: inline;
+}
+.tocify-subheader .tocify-item {
+  font-size: 0.95em;
+}
+
+</style>
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="navbar navbar-inverse  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-bs-toggle="collapse" data-target="#navbar" data-bs-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">MetIDTracker documentation</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="./Setup.html">Setup</a>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    Manual
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="./basicOperations.html">Basic operations</a>
+    </li>
+    <li>
+      <a href="./trackerLims.html">MetIDTracker LIMS system</a>
+    </li>
+    <li>
+      <a href="./trackerWorkbench.html">MetIDTracker workbench</a>
+    </li>
+    <li>
+      <a href="./rawDataExaminer.html">Raw data examiner</a>
+    </li>
+    <li>
+      <a href="./compoundDatabase.html">Compound database</a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    Tutorials
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="./offline_experiment_tutorial.html">Creating offline raw data analysis experiment</a>
+    </li>
+    <li>
+      <a href="./db_experiment_from_offline_tutorial.html">Uploading offline experiment to database</a>
+    </li>
+    <li>
+      <a href="./db_experiment_from_Agilent_cef_tutorial.html">Creating database-stored experiment from Agilent MSMS search results</a>
+    </li>
+    <li>
+      <a href="./data_annotation.html">Data annotation in IDTracker workbench</a>
+    </li>
+    <li>
+      <a href="./data_collections.html">Data collections in workbench</a>
+    </li>
+  </ul>
+</li>
+<li>
+  <a href="./changelog.html">Change log</a>
+</li>
+<li>
+  <a href="./faq.html">FAQ</a>
+</li>
+<li>
+  <a href="./bugreport.html">Report bugs</a>
+</li>
+<li>
+  <a href="./developers.html">Developers</a>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li>
+  <a href="https://github.com/metidtracker/midtdocs">
+    <span class="fa fa-github fa-lg"></span>
+     
+  </a>
+</li>
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div id="header">
+
+
+
+<h1 class="title toc-ignore">IDTracker workbench</h1>
+
+</div>
+
+
+<div id="overview" class="section level1">
+<h1>Overview</h1>
+<p>IDTracker workbench panel provide the instruments to retrieve
+experimental data from the database, annotate the features through using
+several different approaches and generate various reports.</p>
+</div>
+<div id="data-retrieval" class="section level1">
+<h1>Data retrieval</h1>
+<p>There is a number of ways to retrieve the data from individual or
+multiple experiments for further analysis:</p>
+<div id="offline-raw-data-analysis-projects" class="section level2">
+<h2>Offline raw data analysis projects</h2>
+</div>
+<div id="database-stored-projects" class="section level2">
+<h2>Database stored projects</h2>
+<p>To load the complete data set for a single experiment use “Open raw
+data analysis experiment from database” command from the “Experiment”
+menu (<a href="#loadExperimentFromDatabase">Fig. 18</a>).</p>
+<div class="float" id="loadExperimentFromDatabase">
+<img src="assets/images/UPL/loadExperimentFromDatabase.png"
+alt="Fig. 18 Get experiment from the repository" />
+<div class="figcaption">Fig. 18 Get experiment from the repository</div>
+</div>
+<p>To load experiment either double-click on it or select the experiment
+and click “Load selected experiment” button. If experiment contains the
+data for both positive and negative mode, both would be loaded.</p>
+</div>
+<div id="data-retrieval-using-database-search" class="section level2">
+<h2>Data retrieval using database search</h2>
+<p>The amount of data in ID tracker and the number of parameters has
+increased since the original search form was created, and it became
+apparent that a more comprehensive and flexible searching mechanism was
+required. At the moment, the search is functional for MS2 data only.</p>
+<p>The search form is a separate dialog called by clicking the <img
+src="assets/images/5bf92be9f759.045.png" /> button on the tracker
+toolbar (first on the left side). The dialog has five panels for
+different search parameter groups. Setting specific values to any
+parameter on any panel will narrow the search results. You may reset all
+the parameters on all panels using the “Reset form” button at the bottom
+of the dialog or reset individual panels using the “Reset to default
+values” button. All parameters are preserved between search
+sessions.</p>
+<p>Search parameters may be saved and loaded to/from database using the
+load (<img src="assets/images/5bf92be9f759.066.png" />) and save (<img
+src="assets/images/5bf92be9f759.067.png" />) buttons on dialog
+toolbar:</p>
+<p><img src="assets/images/5bf92be9f759.068.png" /></p>
+<p>You may either click the “Load selected query …” button or
+double-click the line in the table to load the selected parameter set.
+You may load other user’s parameters, but you may delete only those that
+you created yourself. To create a new set, click <img
+src="assets/images/5bf92be9f759.067.png" /> button, give a descriptive
+name in the dialog and click “Save”.</p>
+<div id="lc-msms-related-options" class="section level3">
+<h3>LC-MSMS related options</h3>
+<p><img src="assets/images/5bf92be9f759.069.png" /></p>
+<p>On the MZ/RT search panel you can specify the precursor M/Z, one or
+more fragment masses, polarity, MS depth, collision energy and retention
+range. As within the original search, checking “Ignore M/Z” will
+disregard any precursor/fragment data.</p>
+</div>
+<div id="sample-and-experiment-options" class="section level3">
+<h3>Sample and experiment options</h3>
+<p><img src="assets/images/5bf92be9f759.070.png" /></p>
+<p>You may limit the search to one or more sample type(s)/experiment(s)
+by selecting one or more lines in each of the tables. You may sort and
+filter the tables to find the necessary data. To clear selections click
+“Reset to default values”.</p>
+</div>
+<div id="id-and-annotations-options" class="section level3">
+<h3>ID and annotations options</h3>
+<p><img src="assets/images/5bf92be9f759.071.png" /></p>
+<p>-“Filter by identification status” defaults to “All”, but you may
+change it to select only identified or only unknowns. -“Filter by name
+or ID” works the same way as in the original search. -“Filter by
+formula” - search by molecular formula -“Filter by InChiKey” - search by
+complete InChiKey or by the first section (14 characters before the
+first dash that encode structure without any stereo information,
+e.g. D/L, R/S compounds will have the same first 14 characters)</p>
+<p>Check “Search all identifications” to search all IDs in the database.
+If left unchecked, only primary/default IDs will be considered</p>
+<p>“Only features with annotation” - limit to features with custom
+manual annotations (NOT ID levels and follow-up steps)</p>
+<p>Select any combination of ID levels and follow-up steps in the
+corresponding tables</p>
+</div>
+<div id="data-acquisition-and-data-extraction-options"
+class="section level3">
+<h3>Data acquisition and data extraction options</h3>
+<p><img src="assets/images/5bf92be9f759.072.png" /></p>
+<p>Allows multiple selections in each table.</p>
+</div>
+<div id="msms-library-options" class="section level3">
+<h3>MSMS Library options</h3>
+<p><img src="assets/images/5bf92be9f759.073.png" /></p>
+<p>Limit search results to hits from specific MSMS libraries and /or
+specific library entries (you may use NIST ID, MONA ID etc.).</p>
+<p>“Search all matches” will consider all library hits, not only the
+default IDs.</p>
+</div>
+</div>
+<div id="exporting-results" class="section level2">
+<h2>Exporting results</h2>
+<div id="exporting-msms-features-in-tab-delimited-format"
+class="section level3">
+<h3>Exporting MSMS features in TAB-delimited format</h3>
+<p><img src="assets/images/5bf92be9f759.074.png" /></p>
+<p>To export the features first run the search to populate MS2 and/or
+MS1 feature tables.</p>
+<p>Click the button “Show ID tracker data export dialog” (marked above)
+to call the export setup dialog. The drop-boxes on the top of the dialog
+allow to select the subset of features to export:</p>
+<ul>
+<li><p>MS level - MS1 or MS2</p></li>
+<li><p>Feature subset</p>
+<ul>
+<li>All - all features loaded after search was competed</li>
+<li>Filtered - only features visible in the table if any of the filters
+in the table header were used</li>
+<li>Selected only - only those selected by the user in the feature
+table</li>
+</ul></li>
+<li><p>Identification status</p>
+<ul>
+<li>All</li>
+<li>Identified only</li>
+<li>Unknowns only</li>
+</ul></li>
+</ul>
+<p>There are two lists of parameters available for export - feature
+properties and identification properties. Columns will be created in the
+export file for all selected fields and data added where available. To
+change the field selection hold the “Control” button and click on the
+field to select/deselect. You may reset the selection to default values
+using the button below the lists. Your current selection will be
+preserved between sessions.</p>
+<p>Use the “Browse” button to set the export file name and location,
+then click “Export MetIDTracker data” to write out the export file.</p>
+</div>
+<div id="exporting-msms-features-in-nist-msp-format"
+class="section level3">
+<h3>Exporting MSMS features in NIST MSP format</h3>
+<p>Click on the <img src="assets/images/5bf92be9f759.004.png" /> button
+on the MetIDTracker Workbench panel toolbar. If no MSMS features are
+selected in the table, the prompt will pop up asking whether you want to
+export all of the features in the table followed by the file explorer to
+select the export destination. If some MSMS features are selected in the
+table, only those features will be exported to the specified file.</p>
+</div>
+<div id="exporting-msms-features-in-sirius-ms-format"
+class="section level3">
+<h3>Exporting MSMS features in SIRIUS MS format</h3>
+<p><a
+href="https://bio.informatik.uni-jena.de/software/sirius/">SIRIUS</a>
+software package provides a set of tools for MSMS interpretation and
+compound identification through MSMS. SIRIUS results are more reliable
+when multiple MSMS data for the same compounds are interpreted together
+(e.g. multiple fragmentation energies). The SIRIUS export function
+allows the grouping of selected MSMS features by the M/Z of the
+precursor ion and retention time based on specified tolerances.</p>
+<p>Click on the <img src="assets/images/5bf92be9f759.004.png" /> button
+on the MetIDTracker Workbench panel toolbar to show the SIRIUS data
+export dialog (423).</p>
+<p><img src="assets/images/5bf92be9f759.075.png" /></p>
+<p>23.23 <em>SIRIUS data export dialog</em></p>
+<p>Specify filters to limit the set of features to export and adjust m/z
+and RT grouping windows if necessary. Choose the destination file and
+click “Export data”. The resulting file in MS format is ready for import
+into SIRIUS for further analysis.</p>
+</div>
+</div>
+<div id="id-tracker-feature-identification-parameters"
+class="section level2">
+<h2>ID tracker feature identification parameters</h2>
+<div id="id-status-flags" class="section level3">
+<h3>ID status flags</h3>
+<p>To consider the cases where feature were identified by automated
+searches against spectral libraries/databases, but were rejected by
+manual curation the “Ambiguity” column is replaced by the “ID status”
+column which has one of the following icons:</p>
+<p><img src="assets/images/5bf92be9f759.004.png" /> Single active ID</p>
+<p><img src="assets/images/5bf92be9f759.004.png" /> Single ID, rejected
+by curator (table cell will have gray border)</p>
+<p><img src="assets/images/5bf92be9f759.004.png" /> Multiple IDs, one
+set as default</p>
+<p><img src="assets/images/5bf92be9f759.004.png" /> Multiple IDs, NONE
+set as default (table cell will have gray border)</p>
+<p><img src="assets/images/5bf92be9f759.004.png" /> True unknown</p>
+<p>24.24 <em>How to disable default id</em></p>
+<p>Right-click anywhere in the identification table and select “Disable
+primary identification” from the popup (424). The ID radio-button will
+clear and the icon in the feature table will change accordingly. To
+assign the ID click on the corresponding radio button in the
+identification table. The database response is still sluggish, so please
+wait for GUI to update properly.</p>
+<p><img src="assets/images/5bf92be9f759.076.png" /></p>
+<p>24.24 <em>Identification table popup menu</em></p>
+</div>
+<div id="id-certainty-levels" class="section level3">
+<h3>ID certainty levels</h3>
+<p>ID certainty levels are for internal use and do not have any direct
+relation to established ID confidence levels specified by different
+metabolomics consortia. Levels are color-coded for easier visualization,
+colors are user-specified. The values are assigned not to the feature,
+but to its default identification. If there is a default ID, the info
+will be shown both in the feature table and in the identifications
+table. If the default ID is disabled, the corresponding cell in the
+feature table will be blank.</p>
+<div id="managing-id-certainty-levels" class="section level4">
+<h4>Managing ID certainty levels</h4>
+<p>There is a list of pre-defined identification levels. It may be
+edited and expanded using the Identification Level Manager (425). You
+may call the manager by clicking the <img
+src="assets/images/5bf92be9f759.004.png" /> icon on the MetIDTracker
+workbench toolbar.</p>
+<p><img src="assets/images/5bf92be9f759.077.png" /></p>
+<p>25.25 <em>Identification Level Manager</em></p>
+<p>You may add, edit, or delete ID levels steps using the Identification
+Level Editor dialog (426). To edit or delete the level it should be
+highlighted in the manager. The editor dialog allows the user to specify
+name, numerical rank, and color code for the level. The lower the rank,
+the higher ID confidence.</p>
+<p><img src="assets/images/5bf92be9f759.078.png" /></p>
+<p>26.26 <em>Identification Level Editor dialog</em></p>
+</div>
+<div id="assigning-id-certainty-level" class="section level4">
+<h4>Assigning ID certainty level</h4>
+<p>Select the identification in the “Identifications” table and
+right-click to show the popup menu. Select “Set ID confidence level”
+-&gt; desired level (427).</p>
+<p><img src="assets/images/5bf92be9f759.079.png" /></p>
+<p>27.27 <em>Setting ID confidence level</em></p>
+</div>
+</div>
+<div id="follow-up-steps" class="section level3">
+<h3>Follow-up steps</h3>
+<div id="managing-follow-up-steps" class="section level4">
+<h4>Managing follow up steps</h4>
+<p>There is a list of pre-defined follow-up steps. It may be edited and
+expanded using the Follow-up step manager (428). You may call the
+manager by clicking the <img src="assets/images/5bf92be9f759.004.png" />
+icon on the MetIDTracker workbench toolbar:</p>
+<p><img src="assets/images/5bf92be9f759.080.png" /></p>
+<p>28.28 <em>Follow-up step manager</em></p>
+<p>You may add, edit, or delete follow-up steps using the Follow-up Step
+Editor dialog (429). To edit or delete the follow-up step it should be
+highlighted in the manager.</p>
+<p><img src="assets/images/5bf92be9f759.081.png" /></p>
+<p>29.29 <em>Follow-up step editor</em></p>
+</div>
+<div id="assigning-follow-up-steps-to-the-feature"
+class="section level4">
+<h4>Assigning follow-up steps to the feature</h4>
+<p>Select the feature in MS1 or MS2 table and right-click to show the
+popup menu. Select “Assign follow-up steps to feature” (430) to show the
+“Edit identification follow-up steps …” dialog (431).</p>
+<p><img src="assets/images/5bf92be9f759.082.png" /></p>
+<p>30.30 <em>MSMS feature popup menu</em></p>
+<p>The dialog will show:</p>
+<p><img src="assets/images/5bf92be9f759.083.png" /></p>
+<p>31.31 <em>Edit identification follow-up steps dialog</em></p>
+<p>If any follow-up steps were already assigned to the feature they will
+be on the right side. Move items around by selecting them and clicking
+add/remove buttons in the middle. Click “Save” to send the new selection
+to the database. If the feature has at least one follow-up step it will
+be flagged in the “Follow-up” column and assigned steps will be listed
+in the “Follow-up” table (432).</p>
+<p><img src="assets/images/5bf92be9f759.084.png" /></p>
+<p>32.32 <em>Identification follow-up step display</em></p>
+</div>
+</div>
+<div id="free-form-and-document-linked-annotations"
+class="section level3">
+<h3>Free form and document-linked annotations</h3>
+<p>It is possible to attach extended annotations to MSMS features. In
+annotation manager (433) you may create formatted text annotations that
+may include pictures and attach documents as annotation (e.g. pdf or
+PowerPoint).</p>
+<p><img src="assets/images/5bf92be9f759.085.png" /></p>
+<p>33.33 <em>Annotation manager</em></p>
+<p>To create a new free-form annotation click <img
+src="assets/images/5bf92be9f759.004.png" /> icon on the annotation
+manager toolbar to show “Edit annotation” dialog (434). The editor
+allows the user to format the text in various ways and add pictures by
+copying/pasting or selecting a file on the disk.</p>
+<p><img src="assets/images/5bf92be9f759.086.png" /></p>
+<p>34.34 <em>Free form annotation editor</em></p>
+<p>To attach a document, click the <img
+src="assets/images/5bf92be9f759.004.png" /> icon on the annotation
+manager toolbar to show the “Attach document annotation” dialog (435).
+Use the “Browse” button to select the document. By default, the title is
+set to the document file name, but you may change it to a more
+meaningful name if necessary.</p>
+<p><img src="assets/images/5bf92be9f759.087.png" /></p>
+<p>35.35 <em>Attach document annotation dialog</em></p>
+<p>Double-click on the annotation in the table to view or edit it.
+Free-form annotations will be opened in the editor, PDF or PowerPoint
+documents will open in a built-in viewer.</p>
+<p>To download the annotation document, select it in the table and click
+the <img src="assets/images/5bf92be9f759.004.png" /> icon on the
+annotation manager toolbar.</p>
+</div>
+<div id="standard-annotations" class="section level3">
+<h3>Standard annotations</h3>
+<p>Standard forms of annotation (ID level and follow-up steps) can be
+applied only to the identified features since they are associated with
+feature ID but not with the feature itself. Unknown features may be
+annotated by typing in free form comments, but it is time consuming and
+more difficult to search and summarize later. For this reason,
+MetIDTracker includes an option to add “Standard annotations” to any
+feature regardless of identification status. It works the same way as
+“Follow-up” steps. To add one or more standard annotations select the
+feature in the table, right-click to display the context menu and select
+“Assign standard feature annotations to feature” (436) to show the “Edit
+standard annotations for selected feature” dialog (437).</p>
+<p><img src="assets/images/5bf92be9f759.088.png" /></p>
+<p>36.36 <em>Invoking standard annotation assignment dialog</em></p>
+<p><img src="assets/images/5bf92be9f759.089.png" /></p>
+<p>37.37 <em>Feature standard annotation editor</em></p>
+<p>Use “Add” and “Remove” buttons in the middle of the form to move the
+annotations between “Available” and “Assigned” lists. Click “Save” to
+commit the changes to the database.</p>
+<p>Standard annotations manager (438) allows users to add new or edit
+existing annotations. To show the standard annotations manager click the
+<img src="assets/images/5bf92be9f759.004.png" /> icon on the ID tracker
+workbench toolbar. Available annotations will be listed in the table.
+All users may add new annotations and edit code and the description for
+existing annotations using Standard Annotations Editor (439). You need
+administrative privileges to delete the annotation as it is with other
+data types in the tracker.</p>
+<p><img src="assets/images/5bf92be9f759.090.png" /></p>
+<p>38.38 <em>Standard annotations manager</em></p>
+<p><img src="assets/images/5bf92be9f759.091.png" /></p>
+<p>39.39 <em>Standard Annotations Editor</em></p>
+<p>For now, standard annotations are shown the same way as follow-up
+steps - using a separate table on the workbench panel. There also will
+be a flag in the “Annotations” column.</p>
+</div>
+</div>
+<div id="custom-feature-collections" class="section level2">
+<h2>Custom feature collections</h2>
+<p>MetIDTracker has extensive feature search capabilities. There is also
+an option to create custom collections of features that can be preserved
+between sessions and loaded on demand.</p>
+<div id="feature-collection-manager" class="section level3">
+<h3>Feature collection manager</h3>
+<p>Feature collection manager (<em>440</em>) allows to create new empty
+feature collections or to create collections from external lists of
+features. The latter may be necessary if some analysis was performed by
+software tools not integrated with Tracker. Feature collection manager
+is called by clicking the <img
+src="assets/images/5bf92be9f759.004.png" /> icon on the MetIDTracker
+workbench toolbar.</p>
+<p><img src="assets/images/5bf92be9f759.092.png" /></p>
+<p>40.40 <em>Feature collection manager</em></p>
+<p>Collections “Current MS1 feature search” and “Current MSMS feature
+search” hold the results of the latest corresponding database searches.
+The MS1 portion doesn’t have almost any functionality yet, so for now it
+is just a placeholder. For now, any user can create new and edit
+existing collections, but only the admin or the person who created the
+collection can delete it.</p>
+<p>To load a collection in the workbench panel for analysis double-click
+on it in the table or select and click the “Load selected …” button on
+the toolbar. To go back to the last database search results, load the
+“Current MSMS feature search” collection or click the “reload” icon <img
+src="assets/images/5bf92be9f759.004.png" /> on the MSMS table toolbar
+(<em>441</em>).</p>
+<p><img src="assets/images/5bf92be9f759.093.png" /></p>
+<p>41.41 <em>Reload latest database search results for MSMS
+features</em></p>
+</div>
+<div id="creating-new-collections" class="section level3">
+<h3>Creating new collections</h3>
+<p>New MSMS feature collections can be created in three ways:</p>
+<ul>
+<li>From the feature collection manager (empty, or reading feature ID
+list from file)</li>
+<li>From features selected on MZ/RT plot</li>
+<li>From features selected in the MSMS features table.</li>
+</ul>
+<div id="creating-feature-collection-using-manager"
+class="section level4">
+<h4>Creating feature collection using manager</h4>
+<p>In the feature collection manager click the “New collection” icon on
+the toolbar to show the collection editor dialog (<em>442</em>), specify
+name and description (optional), check “Load collection in the
+workbench”, if you want to activate the collection for analysis right
+away, and click the “Create new empty feature collection” button.</p>
+<p><img src="assets/images/5bf92be9f759.094.png" /></p>
+<p>42.42 <em>Feature collection data editor</em></p>
+<p>If you want to create the new collection from an external list of
+feature IDs, you may specify the file containing the list using
+“Browse…” button. The file should be plain text with txt, csv or tsv
+extension. It has to contain a single column of MSMS feature IDs, one
+per line. The format of MSMS feature ID is MSN_XXXXXXXXXXXX (MSN_
+followed by 12 digits), they are included in the standard MetIDTracker
+export file. Any line in the file that doesn’t match the ID format will
+be ignored. The IDs in valid format will also be checked against the
+database and if any of them are not present anymore, (features deleted
+from database), they also will be ignored. The final count of valid
+feature IDs will be shown at the end of file import (<em>443</em>).
+Check “Load collection in the workbench”, if you want to activate the
+collection for analysis right away and click the “Create new feature
+collection with selected features” button to complete the process.</p>
+<p><img src="assets/images/5bf92be9f759.095.png" /></p>
+<p>43.43 <em>Creating MSMS feature collection from the list of
+IDs</em></p>
+</div>
+<div id="creating-new-feature-collection-from-mz-rt-plot"
+class="section level4">
+<h4>Creating new feature collection from MZ-RT plot</h4>
+<p>To select the features for collection, zoom to the region of
+interest, if necessary, then press and hold “Shift”, press the left
+mouse button and drag the mouse to highlight the features of interest.
+Release the mouse button and then release the “Shift” key. To clear the
+selection Shift-click on the plot. If you make a new selection, the old
+one is cleared automatically. Right-click on the highlighted region to
+show the context menu and select “Create new collection…” (<em>445</em>)
+to show the “Create new feature collection” dialog (<em>442</em>).</p>
+<p><img src="assets/images/5bf92be9f759.096.png" /></p>
+<p>44.44 <em>Create collection from features selected on MZ/RT
+plot</em></p>
+<p>To display only the selected features in the MetIDTracker workbench
+panel without creating the collection, choose “Filter selected …” from
+the context menu.</p>
+</div>
+<div id="creating-new-feature-collection-from-msms-feature-table"
+class="section level4">
+<h4>Creating new feature collection from MSMS feature table</h4>
+<p>To create a new collection from the MSMS feature table select the
+features, right-click on the table to show the context menu and choose
+“Create new collection from selected features” (<em>445</em>) to show
+“Create new feature collection” dialog (<em>442</em>).</p>
+<p><img src="assets/images/5bf92be9f759.097.png" /></p>
+<p>45.45 <em>New collection from features selected in the table</em></p>
+<p>Adding features to existing collections</p>
+<p>MSMS features can be added to existing collections in three ways:</p>
+<ul>
+<li>From feature collection manager (reading feature ID list from
+file)</li>
+<li>From features selected on MZ/RT plot</li>
+<li>From features selected in the MSMS features table</li>
+</ul>
+</div>
+<div id="adding-features-using-feature-collection-manager"
+class="section level4">
+<h4>Adding features using feature collection manager</h4>
+<p>Select target collection in the manager table and click the “Edit
+collection” icon on the toolbar. Select the file containing the list of
+MSMS feature IDs (see above for the file format details). Edit feature
+collection name and description, if necessary, check “Load collection in
+the workbench”, if you want to activate the collection for analysis
+right away and click the “Save” button. #### Adding features using MZ-RT
+plot To select the features for collection, zoom to the region of
+interest, if necessary, then press and hold “Shift”, press the left
+mouse button and drag the mouse to highlight the features of interest.
+Release the mouse button and then release the “Shift” key. To clear the
+selection Shift-click on the plot. If you make a new selection, the old
+one is cleared automatically. Right-click on the highlighted region to
+show the context menu and select “Add selected features to existing
+collection…” to show the “Add features …” dialog (<em>446</em>). Select
+the target collection, check “Load modified collection in the
+workbench”, if you want to activate the collection for analysis right
+away and click the “Add features to selected collection” button.</p>
+<p><img src="assets/images/5bf92be9f759.098.png" /></p>
+<p>46.46 <em>Add features to existing collection dialog</em></p>
+</div>
+<div id="adding-features-using-msms-feature-table"
+class="section level4">
+<h4>Adding features using MSMS feature table</h4>
+<p>To add features from the MSMS feature table select the features,
+right-click on the table to show the context menu and choose “Add
+selected features to existing collection…” to show the “Add features …”
+dialog (<em>446</em>). Select the target collection, check “Load
+modified collection in the workbench”, if you want to activate the
+collection for analysis right away and click the “Add features to
+selected collection” button.</p>
+</div>
+<div id="removing-features-from-collection" class="section level4">
+<h4>Removing features from collection</h4>
+<p>To remove the features from a collection, load the collection into
+the workbench panel, select the features you want to remove, right-click
+on the table to show the context menu, choose “Remove selected features
+from active feature collection” and confirm removing the features.</p>
+</div>
+</div>
+</div>
+<div id="searching-msms-libraries" class="section level2">
+<h2>Searching MSMS libraries</h2>
+<p>MetIDTracker allows users to search the experimental features against
+MSMS libraries using NIST MSPepSearch.</p>
+<p>The software is available <a
+href="https://chemdata.nist.gov/dokuwiki/doku.php?id=peptidew:mspepsearch">here</a>
+Please use “Current release (02/22/2019, with new hybrid and hi-res
+searches, no GUI)”. MSPepSearch doesn’t require installation, just
+unpack the archive in your preferred location on the disk and set the
+location of the executable in MetIDTracker preferences.</p>
+<p>MSMS libraries have to be modified and formatted in a specific way so
+that the search results may be uploaded to the MetIDTracker database and
+properly linked to the library entries and compound information. Several
+libraries ready to use with MetIDTracker are provided for download <a
+href="https://github.com/araskind/MRC2Toolbox#msms-libraries">here</a>:</p>
+<ul>
+<li><a
+href="https://umich.box.com/s/4p6usq555ab5f46l4bgheigamlbxvj95">MS-DIAL
+metabolomics MSP spectral kit, VS15, positive mode</a></li>
+<li><a
+href="https://umich.box.com/s/2drqabukveaog1ers89qcu3qx9uocfie">MS-DIAL
+metabolomics MSP spectral kit, VS15, negative mode</a></li>
+<li><a
+href="https://umich.box.com/s/dat5kj9xafg6z4qw4vnju9v1z01drsg9">MS-DIAL
+LipidBlast, V68, positive mode</a></li>
+<li><a
+href="https://umich.box.com/s/gm4yf920uad53wpqv1gvsk82epxd2t4w">MS-DIAL
+LipidBlast, V68, negative mode</a></li>
+</ul>
+<p>All libraries are in NIST format. Extract the archives and place the
+library folders in your preferred location on the disk.</p>
+<div id="msms-search-setup" class="section level3">
+<h3>MSMS search setup</h3>
+<p>To call MSPepSearch setup dialog (447) click <img
+src="assets/images/5bf92be9f759.004.png" /> icon on the MetIDTracker
+workbench panel toolbar. If you want to run the search without uploading
+the results to MetIDTracker database, click <img
+src="assets/images/5bf92be9f759.004.png" /> icon. The search setup
+procedure is identical in both cases.</p>
+<p><img src="assets/images/5bf92be9f759.099.png" /></p>
+<p>47.47 <em>PepSearch setup options</em></p>
+<div id="search-options" class="section level4">
+<h4>Search options</h4>
+<p>“Search options” (447) defines the parameters of the search
+algorithm. The GUI is a front-end to the MSPepSearch command line
+options and implements most of the functionality, except the options
+related to the search against unit-mass resolution GCMS libraries. For
+details regarding specific parameters please consult the MSPepSearch
+Readme file and NIST MSSEARCH manual.</p>
+</div>
+<div id="input-data-and-libraries" class="section level4">
+<h4>Input data and libraries</h4>
+<p>“Input data and libraries” (448) is used to specify the source of
+experimental MSMS spectra and the set of MSMS libraries to use in the
+search. “Internal” input means that the set or subset of MSMS features
+currently active in MetIDTracker will be searched against the specified
+libraries. The subset of features is determined by the option selected
+in the “For internal data” dropdown menu. “All” means all features in
+the currently active feature collection. “Filtered” means all features
+visible in the MSMS feature table (relevant when at least one data
+filter is applied to the table). “Selected only” - only features
+selected in the table will be used. Selected subset of features will be
+written out in NIST MSP format to the MetIDTracker directory. If the
+“File” input data source is selected, use the “Browse” button to select
+the MSP input file.</p>
+<p>Use the Add/Remove library buttons to manage the list of libraries.
+Libraries should be in NIST format. Libraries that were not properly
+integrated with MetIDTracker still can be searched, but results cannot
+be uploaded. The MSPepSearch output file will be written out to
+MetIDTracker directory.</p>
+<p><img src="assets/images/5bf92be9f759.100.png" /></p>
+<p>48.48 <em>PepSearch input data and libraries</em></p>
+<p>Use the checkboxes in the “Enabled” column to control which libraries
+should be used for the search.</p>
+</div>
+<div id="output-options" class="section level4">
+<h4>Output options</h4>
+<p>“Output options” (450) set result filters (minimal match factor and
+maximal number of hits per feature) and the types of data included in
+the output file. The latter is only important in case you are planning
+to review search results directly, without uploading to
+MetIDTracker.</p>
+</div>
+<div id="command-preview" class="section level4">
+<h4>Command preview</h4>
+<p>“Command preview” (449) allows the user to generate and copy the
+actual MSPepSearch command based on the options specified in other
+panels.</p>
+<p><img src="assets/images/5bf92be9f759.101.png" /></p>
+<p>49.49 <em>PepSearch command preview</em></p>
+<p><img src="assets/images/5bf92be9f759.102.png" /></p>
+<p>50.50 <em>PepSearch output options</em></p>
+<p>Click “Search NIST MSMS libraries” button to start the search.
+Depending on the size of the dataset, libraries, and search parameters
+it may take significant time, especially for “In-source” and “Hybrid”
+search modes.</p>
+</div>
+</div>
+</div>
+<div id="adduct-and-fragment-assignment" class="section level2">
+<h2>Adduct and fragment assignment</h2>
+<div id="adding-and-editing-new-adducts" class="section level3">
+<h3>Adding and editing new adducts</h3>
+<p>The system for handling adducts and fragments was redesigned and
+significantly enhanced. All adducts now fall into two groups:</p>
+<ul>
+<li>Simple, or charge carriers (M+H, M-H, M+Na, M+Cl, etc)</li>
+<li>Composite - a combination of charge carrier and one or more neutral
+loss and/or “Repeats” (neutral additions, e.g. formic acid, sodium
+formate, etc.)</li>
+</ul>
+<p>Simple and composite adducts are now created and edited separately.
+To create a new simple adduct, neutral loss or repeat click the first
+button on the adduct manager toolbar (<em>451</em>, marked by red
+circle)</p>
+<p><img src="assets/images/5bf92be9f759.103.png" /></p>
+<p>51.51 <em>Simple adduct editor</em></p>
+<p>Editable fields on the form and some values will be automatically
+adjusted depending on the selected category of modification (for repeats
+only “Added group” is allowed, for neutral losses - only “removed
+group”, etc.). For complex neutral losses you may now specify the
+structure using a SMILES string.</p>
+<p>To create a new composite adduct call the composite adduct editor on
+the adduct manager toolbar (<em>452</em>, marked by red circle)</p>
+<p><img src="assets/images/5bf92be9f759.104.png" /></p>
+<p>52.52 <em>Composite adduct editor</em></p>
+<p>In order to create new composite adduct you have to first define the
+charge carrier (click “Select charge carrier” and choose one from the
+table that pops up). Then you must add at least one neutral loss or
+neutral adduct (repeat) using the corresponding buttons. For the cases
+when there is more than one loss or repeat of the same kind you will
+have to add each modification separately. The name for a new adduct will
+be created automatically based on the names of the building blocks, but
+you may add your own description if necessary.</p>
+<p>To edit an adduct select it in the adduct manager table and click the
+“Edit adduct” button on the toolbar. Depending on the type of adduct
+(simple or composite) the appropriate dialog will show pre-populated
+with the data for selected adduct.</p>
+</div>
+<div id="assigning-adduct-to-feature" class="section level3">
+<h3>Assigning adduct to feature</h3>
+<p>By default all the features are assigned simple charge carriers based
+on their charge (<span class="math display">\[M+H\]</span>+, <span
+class="math display">\[M+2H\]</span>2+, <span
+class="math display">\[M+3H\]</span>3+, <span
+class="math display">\[M-H\]</span>-, <span
+class="math display">\[M-2H\]</span>2-, <span
+class="math display">\[M-3H\]</span>3-).</p>
+<p>It is now possible to manually assign any adduct from the list in the
+database to any identified feature. You may select any feature and use
+contextual popup menu to call manual identification dialog
+(<em>453</em>).</p>
+<p><img src="assets/images/5bf92be9f759.105.png" /></p>
+<p>53.53 <em>Manual identification assignment dialog</em></p>
+<p>By default, precursor M/Z for MSMS feature and default adduct for
+charge will be selected in the adducts table. If the feature was
+previously identified and assigned a different adduct, it will be
+selected in the table instead. To look up the compounds in the database
+by neutral mass based on M/Z and selected adduct click the “Search”
+button under the adducts table. You may use other fields in the search
+form to narrow down the search. The fields are additive (the more
+different search parameters you specify the more filters are applied to
+search results). You may exclude searching by mass altogether by
+clearing the mass field. After the search is completed you may select
+one of the entries in the “Database search results” table and click the
+“Assign selected identification” button to set it as a default identity
+for the selected feature. The adduct selected in the adducts table will
+be also assigned as default.</p>
+</div>
+</div>
+</div>
+
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open');
+  });
+});
+</script>
+
+<!-- code folding -->
+
+<script>
+$(document).ready(function ()  {
+
+    // temporarily add toc-ignore selector to headers for the consistency with Pandoc
+    $('.unlisted.unnumbered').addClass('toc-ignore')
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_');
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = false;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

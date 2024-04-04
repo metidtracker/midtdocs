@@ -1,24 +1,17 @@
 ---
 title: "MetIDTracker setup manual"
-output: 
-  html_document:
-    toc: TRUE
 ---
-
-# MetIDTracker setup manual
-
-## Introduction
 
 MetIDTracker is written in Java and in theory may run on any platform that supports Java version 8 and above. However, for some operations it relies on additional software, which is Windows-based, so in order to use all the features of MetIDTracker it has to be installed under Windows operating system.
 
 MetIDTracker relies on the database for storage of reference and experimental data. It was tested with Oracle 19 and PostgreSQL 13. This manual will describe the setup using PostgreSQL database under Windows, since it is a free open-source software and MetIDTracker is developed and run under Windows. However, the database may be installed on a different computer under any other supported operating system, as long as it can be accessed from the computer running MetIDTracker over the network.
 
-## Installing and configuring PostgreSQL database
+# Installing and configuring PostgreSQL database
 The latest version of the software may be downloaded from [here](https://www.enterprisedb.com/downloads/postgres-postgresql-downloads)
 
 For Windows 10 please use the "Windows x86-64" version. Start the installer and follow the prompts. You will be asked to enter the database administrator password, make a note of it for later use.
 
-### Configure Windows Firewall
+## Configure Windows Firewall
 
 If you are planning to run the database and MetIDTracker on different computers, or allow multiple users of MetIDTracker to collaborate on the same projects running the software on personal computers, it is necessary to allow proper access to the database over the network. 
 
@@ -54,7 +47,7 @@ Give the rule some meaningful name and click "Finish" to save it:
 
 ![](assets/images/d72d8b7238f2.008.png)
 
-### Enable SSL for Postgres
+## Enable SSL for Postgres
 
 MetIDTracker is configured to use secure connection with PostgreSQL and the database needs some additional configuration to handle it correctly.
 
@@ -64,7 +57,7 @@ First stop the database. Open Windows Task manager, go to "Services" tab, right-
 
 ![](assets/images/d72d8b7238f2.009.png)
 
-#### Create server key and certificate
+### Create server key and certificate
 
 To create the key and certificate you will need the openssl program. The easiest and safest way to get openssl for Windows is to install Git. You may get it here: <https://gitforwindows.org/>
 
@@ -155,7 +148,7 @@ To start the database, open Windows Task manager, go to "Services" tab, right-cl
 
 ## Deploying MetIDTracker database
 
-### Create database and user
+## Create database and user
 
 Before deploying MetIDTracker database schema it is necessary to create the parent database and user that will provide credentials for the software database connection. PostgreSQL installation on Windows includes user-friendly pgAdmin  application for managing the database. To start it, double-click "Path\to\PostgreSQL\13\pgAdmin 4\bin\pgAdmin4.exe" (substitute Path\to for actual location on disk).
 
@@ -179,7 +172,7 @@ In "General" tab specify user name, in "Definition" specify the password, in "Pr
 
 Make a note of user ID and password you just created since you will need this information to establish connection from the software to the database.
 
-### Uploading MetIDTracker database
+## Uploading MetIDTracker database
 
 MetIDTracker database is distributed as database dump file that may be loaded into the new database in a single operation. To upload the database, open windows command prompt and enter the following command:
 
@@ -188,7 +181,7 @@ MetIDTracker database is distributed as database dump file that may be loaded in
 Edit "Path\to" to reflect the actual location of the pg\_restore and dump file on your disk. You will be prompted for the database administrator password. Type it at the prompt and press "Enter" (the password will not show when you type, and the cursor will not move). The database dump file is about 1GB in size, so it will take some time for the upload to finish (once upload is done the prompt sign ">" should appear on the new line in command prompt window).
 
 
-### Establishing connection between MetIDTracker and database
+## Establishing connection between MetIDTracker and database
 During program startup it will try to establish connection with database using default settings from preferences. If this fails, Database connection setup dialog is displayed. Edit host name, port, user, and password fields to match the parameters of your database configuration (SID/database and schema are determined by the database dump you’ve used at the previous steps and should not be changed): 
 
 ![](assets/images/d72d8b7238f2.015.png)
@@ -198,7 +191,7 @@ Click "Test connection" button to verify that database connection can be establi
 ![](assets/images/d72d8b7238f2.016.png)
 
 
-## Third party software used by MetIDTracker
+# Third party software used by MetIDTracker
 For a number of operations MetIDTracker relies on third party software. This software needs to be installed on the same computer and the location of each external program has to specified in the preferences.
 
 - [NIST MSPepSearch](https://chemdata.nist.gov/dokuwiki/doku.php?id=peptidew:mspepsearch)
