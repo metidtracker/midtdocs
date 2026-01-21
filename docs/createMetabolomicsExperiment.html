@@ -1,0 +1,749 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+
+
+<title>Creating metabolomics experiment</title>
+
+<script src="site_libs/header-attrs-2.30/header-attrs.js"></script>
+<script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/spacelab.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<style>h1 {font-size: 34px;}
+       h1.title {font-size: 38px;}
+       h2 {font-size: 30px;}
+       h3 {font-size: 24px;}
+       h4 {font-size: 18px;}
+       h5 {font-size: 16px;}
+       h6 {font-size: 12px;}
+       code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
+       pre:not([class]) { background-color: white }</style>
+<script src="site_libs/jqueryui-1.13.2/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<link href="site_libs/font-awesome-6.5.2/css/all.min.css" rel="stylesheet" />
+<link href="site_libs/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet" />
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+
+
+
+
+
+
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+details > summary > p:only-child {
+  display: inline;
+}
+pre code {
+  padding: 0;
+}
+</style>
+
+
+<style type="text/css">
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #adb5bd;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script type="text/javascript">
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark the anchor link active (and if it's in a dropdown, also mark that active)
+  var dropdown = menuAnchor.closest('li.dropdown');
+  if (window.bootstrap) { // Bootstrap 4+
+    menuAnchor.addClass('active');
+    dropdown.find('> .dropdown-toggle').addClass('active');
+  } else { // Bootstrap 3
+    menuAnchor.parent().addClass('active');
+    dropdown.addClass('active');
+  }
+
+  // Navbar adjustments
+  var navHeight = $(".navbar").first().height() + 15;
+  var style = document.createElement('style');
+  var pt = "padding-top: " + navHeight + "px; ";
+  var mt = "margin-top: -" + navHeight + "px; ";
+  var css = "";
+  // offset scroll position for anchor links (for fixed navbar)
+  for (var i = 1; i <= 6; i++) {
+    css += ".section h" + i + "{ " + pt + mt + "}\n";
+  }
+  style.innerHTML = "body {" + pt + "padding-bottom: 40px; }\n" + css;
+  document.head.appendChild(style);
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before, .tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "\e259";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "\e258";
+  font-family: 'Glyphicons Halflings';
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+
+
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+@media print {
+.toc-content {
+  /* see https://github.com/w3c/csswg-drafts/issues/4434 */
+  float: right;
+}
+}
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+.tocify-subheader {
+  display: inline;
+}
+.tocify-subheader .tocify-item {
+  font-size: 0.95em;
+}
+
+</style>
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="navbar navbar-inverse  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-bs-toggle="collapse" data-target="#navbar" data-bs-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">MetIDTracker documentation</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="./Setup.html">Setup</a>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    Manual
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="./basicOperations.html">Basic operations</a>
+    </li>
+    <li>
+      <a href="./trackerLims.html">MetIDTracker LIMS system</a>
+    </li>
+    <li>
+      <a href="./trackerWorkbench.html">MetIDTracker workbench</a>
+    </li>
+    <li>
+      <a href="./rawDataExaminer.html">Raw data examiner</a>
+    </li>
+    <li>
+      <a href="./compoundDatabase.html">Compound database</a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    Tutorials
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="./offline_experiment_tutorial.html">Creating offline raw data analysis experiment</a>
+    </li>
+    <li>
+      <a href="./db_experiment_from_offline_tutorial.html">Uploading offline experiment to database</a>
+    </li>
+    <li>
+      <a href="./db_experiment_from_Agilent_cef_tutorial.html">Creating database-stored experiment from Agilent MSMS search results</a>
+    </li>
+    <li>
+      <a href="./data_annotation.html">Data annotation in IDTracker workbench</a>
+    </li>
+    <li>
+      <a href="./data_collections.html">Data collections in workbench</a>
+    </li>
+    <li>
+      <a href="./createMetabolomicsExperiment.html">Creating metabolomics experiment</a>
+    </li>
+    <li>
+      <a href="./mergeDataSets.html">Merging targeted data sets</a>
+    </li>
+  </ul>
+</li>
+<li>
+  <a href="./changelog.html">Change log</a>
+</li>
+<li>
+  <a href="./faq.html">FAQ</a>
+</li>
+<li>
+  <a href="./bugreport.html">Report bugs</a>
+</li>
+<li>
+  <a href="./developers.html">Developers</a>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li>
+  <a href="https://github.com/metidtracker/midtdocs">
+    <span class="fa fa-github fa-lg"></span>
+     
+  </a>
+</li>
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div id="header">
+
+
+
+<h1 class="title toc-ignore">Creating metabolomics experiment</h1>
+
+</div>
+
+
+<p>This tutorial describes the process of creating the metabolomics
+experiment based on experiment metadata stored in LIMS and various
+targeted and untargeted analysis results.</p>
+<div id="create-new-experiment-from-lims" class="section level2">
+<h2>Create new experiment from LIMS</h2>
+<p>Switch to “METLIMS access” panel, select the experiment in
+“Experiment listing” table and choose “Send design to experiment” from
+the panel’s “Data retrieval” menu (<a href="#selectExperiment">Fig.
+1</a>).</p>
+<div class="float" id="selectExperiment">
+<img src="assets/images/METAB/001-SelectExperiment.png"
+alt="Fig. 1 Get experiment metadata from LIMS to create new data analysis project" />
+<div class="figcaption">Fig. 1 Get experiment metadata from LIMS to
+create new data analysis project</div>
+</div>
+<p>“Create new data analysis experiment” dialog will appear (<a
+href="#saveNewProject">Fig. 2</a>) that allows to choose the name of the
+new project (defaults to LIMS experiment name) and it’s location on the
+disk (defaults to last used)</p>
+<div class="float" id="saveNewProject">
+<img src="assets/images/METAB/002-SaveNewProject.png"
+alt="Fig. 2 “Create new data analysis experiment” dialog" />
+<div class="figcaption">Fig. 2 “Create new data analysis experiment”
+dialog</div>
+</div>
+<p>Switch to “Experiment design” panel, select “Edit reference samples”
+from panel’s “Samples” menu and add the necessary control samples (<a
+href="#addControlSamples">Fig. 3</a>)</p>
+<div class="float" id="addControlSamples">
+<img src="assets/images/METAB/003-AddControlSamples.png"
+alt="Fig. 3 Add control samples" />
+<div class="figcaption">Fig. 3 Add control samples</div>
+</div>
+</div>
+<div id="add-data-for-specific-assay-mode" class="section level2">
+<h2>Add data for specific assay / mode</h2>
+<p>Switch to “Feature data” panel and use panel’s “Load data” menu to
+initiate the data load (<a href="#dataLoadMenu">Fig. 4</a>).</p>
+<div class="float" id="dataLoadMenu">
+<img src="assets/images/METAB/004-DataLoadMenu.png"
+alt="Fig. 4 Data load menu" />
+<div class="figcaption">Fig. 4 Data load menu</div>
+</div>
+<div id="define-data-pipeline" class="section level3">
+<h3>Define data pipeline</h3>
+<p>“Data pipeline” is a combination of data acquisition and data
+analysis method. Data pipeline name must be unique within the project,
+so must be the combination of data acquisition and data analysis
+methods. Different data analysis methods applied to the same raw data
+(same acquisition method) may be combined within a project as separate
+data pipelines. Data pipeline definition process is common for any type
+of input data. Data pipeline definition panel is located at the bottom
+of the data upload dialog (<a href="#dataPipelineDefinition">Fig.
+5</a>).</p>
+<div class="float" id="dataPipelineDefinition">
+<img src="assets/images/METAB/015-DataPipelineDefinition.png"
+alt="Fig. 5 Data pipeline definition panel" />
+<div class="figcaption">Fig. 5 Data pipeline definition panel</div>
+</div>
+<p>All fields except description are obligatory. Assay (<a
+href="#selectAssay">Fig. 6</a>), data acquisition method (<a
+href="#selectAcquisitionMethod">Fig. 7</a>), data analysis method (<a
+href="#selectDataAnalysisMethod">Fig. 8</a>) and MoTrPAC assay code are
+selected from the database.</p>
+<div class="float" id="selectAssay">
+<img src="assets/images/METAB/009-SelectAssay.png"
+alt="Fig. 6 Selecting the assay" />
+<div class="figcaption">Fig. 6 Selecting the assay</div>
+</div>
+<p>Data in methods and assay tables can be filtered using search fields
+in each column header. Acquisition methods are stored within each
+Agilent .D file, so it’s possible to copy method name from there and
+paste in the “Method name” column search field to select the correct
+method.</p>
+<p>If acquisition method is not found in the table, it must be added to
+the database <a
+href="trackerLims.html#Data_acquisition_method_manager">added to the
+database</a> first. Acquisition method editor may be called directly
+from the data load dialog using “Add data acquisition method” button
+(<img src="assets/images/icons/addDataAcquisitionMethod.png" width="32"
+height="32" />) on the toolbar.</p>
+<div class="float" id="selectAcquisitionMethod">
+<img src="assets/images/METAB/010-SelectAcquisitionMethod.png"
+alt="Fig. 7 Selecting data acquisition method" />
+<div class="figcaption">Fig. 7 Selecting data acquisition method</div>
+</div>
+<p>If data analysis method is not found in the table, it must be added
+to the database <a
+href="trackerLims.html#Data_extraction_method_manager">added to the
+database</a> first. Data analysis method editor may be called directly
+from the data load dialog using “Add data extraction method” button
+(<img src="assets/images/icons/addDataProcessingMethod.png" width="32"
+height="32" />) on the toolbar.</p>
+<div class="float" id="selectDataAnalysisMethod">
+<img src="assets/images/METAB/011-SelectDataAnalysisMethod.png"
+alt="Fig. 8 Selecting data analysis method" />
+<div class="figcaption">Fig. 8 Selecting data analysis method</div>
+</div>
+</div>
+<div id="add-untargeted-analysis-data" class="section level3">
+<h3>Add untargeted analysis data</h3>
+<ul>
+<li>Select “Load quantitative data from multiple files” from the “Load
+data” menu of the “Feature data” panel to display the data load dialog
+(<a href="#loadUntargetedDialog">Fig. 9</a>).</li>
+</ul>
+<div class="float" id="loadUntargetedDialog">
+<img src="assets/images/METAB/005-IODialogMultiCEF.png"
+alt="Fig. 9 Loading recursive search results" />
+<div class="figcaption">Fig. 9 Loading recursive search results</div>
+</div>
+<ul>
+<li><a href="#Define_data_pipeline">Define the data pipeline</a>.</li>
+<li>Select CEF library used for the recursive search (<a
+href="#selectCefLibrary">Fig. 10</a>)</li>
+</ul>
+<div class="float" id="selectCefLibrary">
+<img src="assets/images/METAB/008-SelectCefLibrary.png"
+alt="Fig. 10 Selecting CEF library used for the recursive search" />
+<div class="figcaption">Fig. 10 Selecting CEF library used for the
+recursive search</div>
+</div>
+<ul>
+<li>Select the results of the recursive search in CEF format (<a
+href="#selectRecursiveResults">Fig. 11</a>)</li>
+</ul>
+<div class="float" id="selectRecursiveResults">
+<img src="assets/images/METAB/012-SelectCEFDataFiles.png"
+alt="Fig. 11 Selecting the recursive search results" />
+<div class="figcaption">Fig. 11 Selecting the recursive search
+results</div>
+</div>
+<div id="matching-the-data-files-to-the-samples" class="section level4">
+<h4>Matching the data files to the samples</h4>
+<p>If data file names were generated by LIMS selected CEF data files
+will be automatically matched to the samples based on LIMS sample ID.
+This will work for both regular samples and controls. If some controls
+were not added to experiment design before importing the data they can
+be added at the stage of data import using “Edit reference samples”
+button (<img src="assets/images/icons/standardSample.png" width="32"
+height="32" />) on the dialog toolbar. Unmatched data files must be then
+manually matched to the samples. This may be done file by file (<a
+href="#assignSampleToSingleFile">Fig. 12</a>) or for multiple files when
+they all correspond to the same sample, e.g. experiment pool (<a
+href="#assignSampleToSingleFile">Fig. 13</a>)</p>
+<div class="float" id="assignSampleToMultipleFiles">
+<img src="assets/images/METAB/014-AssignSampleToSingleFile.png"
+alt="Fig. 12 Assigning the sample to a single data file" />
+<div class="figcaption">Fig. 12 Assigning the sample to a single data
+file</div>
+</div>
+<div class="float">
+<img src="assets/images/METAB/013-AssignSampleToMultipleFiles.png"
+alt="Fig. 13 Assigning the sample to multiple data files" />
+<div class="figcaption">Fig. 13 Assigning the sample to multiple data
+files</div>
+</div>
+<p>Click “Import data” button a the bottom right corner of the dialog to
+start data import.</p>
+<p>Per feature statistics is calculated during data import. Features not
+detected in regular samples and pools are automatically excluded from
+the import.</p>
+</div>
+</div>
+<div id="add-targeted-analysis-data" class="section level3">
+<h3>Add targeted analysis data</h3>
+<div id="from-plain-text-file" class="section level4">
+<h4>From plain text file</h4>
+<p>Targeted analysis data may be imported from plain text files (TAB- or
+comma-separated). The files should have one line per compound and one
+column per data file. Column containing compound name is obligatory and
+is selected by the user from the list of all columns in the data file.
+Retention time column is optional and also may be selected by the user
+if present in the data.</p>
+<p>Steps to import the data:</p>
+<ul>
+<li>Verify compound name data (<a href="#compoundNameVerification">Fig.
+14</a>). This is an optional step since it will be performed during the
+data load in any case, but it may save some time down the road. Two
+kinds of reference data may be used to link compound name in the data
+file to the standardized compound information - compound database
+(REFMET) or compound library previously uploaded to the database.</li>
+</ul>
+<div class="float" id="compoundNameVerification">
+<img src="assets/images/METAB/017-CompoundNameVerification.png"
+alt="Fig. 14 Compound data verification setup" />
+<div class="figcaption">Fig. 14 Compound data verification setup</div>
+</div>
+<p>After the input file is selected “Feature column” and “RT column”
+dropdown menus are populated with column names. Check that correct
+columns are selected. If RT column is absent in the data check that the
+first (blank) option is selected in the “RT column” dropdown. If input
+data come from the normalization routine they may include additional
+lines between the header and compound data. Use “Ignore # lines after
+header” spinner to specify how many lines must be excluded. Click
+“Verify compound names in targeted data file”.</p>
+<p>If any of the compound names in the analysis results file can not be
+matched to REFMET (directly or as synonyms), these unmatched names will
+be listed in the information dialog (<a
+href="#compoundMatchNotFound">Fig. 15</a>). Data containing unmatched
+compounds can not be imported in the project.</p>
+<div class="float" id="compoundMatchNotFound">
+<img src="assets/images/METAB/018-CompoundMatchNotFound.png"
+alt="Fig. 15 Compound data verification errors" />
+<div class="figcaption">Fig. 15 Compound data verification errors</div>
+</div>
+<ul>
+<li>Select “Load targeted data from plain text” from the “Load data”
+menu of the “Feature data” panel to display the data load dialog.</li>
+<li><a href="#Define_data_pipeline">Define the data pipeline</a>.</li>
+<li>Select the text file containing targeted analysis data (<a
+href="#selectTargetedDataFile">Fig. 16</a>)</li>
+</ul>
+<div class="float" id="selectTargetedDataFile">
+<img src="assets/images/METAB/016-SelectTargetedDataFile.png"
+alt="Fig. 16 Selecting targeted data file" />
+<div class="figcaption">Fig. 16 Selecting targeted data file</div>
+</div>
+<p>Select feature name and RT columns and the number of lines to skip as
+described above and click “Verify compound names in targeted data file”.
+If no unmatched compounds are found button text will change to “Parse
+targeted data file”. Click the button to move to the next step.</p>
+<ul>
+<li><a href="#Matching_the_data_files_to_the_samples">Match data files
+to samples</a> if necessary and click “Import data” tp complete the
+process.</li>
+</ul>
+</div>
+<div id="from-simple-profinder-export-file" class="section level4">
+<h4>From simple ProFinder export file</h4>
+<p>Under development</p>
+</div>
+<div
+id="from-combination-of-profinder-export-files-in-different-formats"
+class="section level4">
+<h4>From combination of ProFinder export files in different formats</h4>
+<p>Under development</p>
+</div>
+</div>
+<div id="add-instrument-worklist-data" class="section level3">
+<h3>Add instrument worklist data</h3>
+<p>This option is currently supported for Agilent platform. Instrument
+worklist data include injection time and volume, acquisition method and
+other information for each raw data file. Having it in the project
+allows better data visualization and quality control.</p>
+<p>Worklist data may be added after the quantitative data (targeted or
+untargeted) are imported. Switch to “Assay worklist” panel and select
+“Scan directory for sample information” from “Load” menu (<a
+href="#scanDirForWorklistMenu">Fig. 17</a>). Navigate to the directory
+containing corresponding raw data files and click “Select folder” to
+extract worklist information from .D files. If not all the data files
+present in the imported analysis results can be found in the specified
+directory, unmatched files would be listed in the warning dialog. Use
+“Add sample information from directory” command from “Load” menu to scan
+additional directories for missing worklist data.</p>
+<div class="float" id="scanDirForWorklistMenu">
+<img src="assets/images/METAB/019-ScanDirForWorklistMenu.png"
+alt="Fig. 17 Scan directory for worklist information" />
+<div class="figcaption">Fig. 17 Scan directory for worklist
+information</div>
+</div>
+</div>
+</div>
+
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open');
+  });
+});
+</script>
+
+<!-- code folding -->
+
+<script>
+$(document).ready(function ()  {
+
+    // temporarily add toc-ignore selector to headers for the consistency with Pandoc
+    $('.unlisted.unnumbered').addClass('toc-ignore')
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_');
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = false;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

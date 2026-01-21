@@ -25,9 +25,13 @@ left:
        - text: "Creating database-stored experiment from Agilent MSMS search results"
          href: ./db_experiment_from_Agilent_cef_tutorial.html
        - text: "Data annotation in IDTracker workbench"
-         href: ./data_annotation.html  
+         href: ./data_annotation.html
        - text: "Data collections in workbench"
-         href: ./data_collections.html  
+         href: ./data_collections.html
+       - text: "Creating metabolomics experiment"
+         href: ./createMetabolomicsExperiment.html
+       - text: "Merging targeted data sets"
+         href: ./mergeDataSets.html
   - text: "Change log"
     href: ./changelog.html
   - text: "FAQ"

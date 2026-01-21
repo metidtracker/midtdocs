@@ -78,7 +78,7 @@ Data acquisition method manager ([Fig. 17](#data_acquisition_method_manager)) is
 
 ![Fig. 17 Data acquisition method manager](assets/images/data_acquisition_method_manager.png){#data_acquisition_method_manager}
 
-Data acquisition method editor ([Fig. 18](#data_acquisition_method_editor)) allows the user to specify several parameters for the method. Gradient and mobile phase definition are not fully implemented yet, so the corresponding panels are hidden on the figure. For definition of the new method all fields are obligatory.
+[](#data_acquisition_method_section)Data acquisition method editor ([Fig. 18](#data_acquisition_method_editor)) allows the user to specify several parameters for the method. Gradient and mobile phase definition are not fully implemented yet, so the corresponding panels are hidden on the figure. For definition of the new method all fields are obligatory.
 
 ![Fig. 18 Data acquisition method editor](assets/images/data_acquisition_method_editor.png){#data_acquisition_method_editor} Part of acquisition method definition is software selection through software selector dialog ([Fig. 19](#software_selector)).
 
